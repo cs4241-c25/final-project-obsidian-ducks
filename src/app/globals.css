@@ -3,6 +3,51 @@
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  
+  
+  --color-auburn-100: #F9E7E9
+  --color-auburn-200: #EDB8BD
+  --color-auburn-300: #F9E7E9
+  --color-auburn-400: #DC717C
+  --color-auburn-500: #AB2B38
+  --color-auburn-600: #89222D
+  --color-auburn-700: #781E27
+  --color-auburn-800: #56151C
+  --color-auburn-900: #451116
+  --color-auburn-950: #330D11
+  
+  --color-russian-violet-100: #DBD3FC
+  --color-russian-violet-200: #B7A8F9
+  --color-russian-violet-300: #937CF7
+  --color-russian-violet-400: #6E50F4
+  --color-russian-violet-500: #4A25F1
+  --color-russian-violet-600: #330EDA
+  --color-russian-violet-700: #290BAE
+  --color-russian-violet-800: #1F0882
+  --color-russian-violet-900: #140657
+  --color-russian-violet-950: #0A032B
+  
+  --color-alice-blue-100: #FCFDFF
+  --color-alice-blue-200: #F7FAFF
+  --color-alice-blue-300: #F0F5FF
+  --color-alice-blue-400: #EDF3FF
+  --color-alice-blue-500: #EBF2FF
+  --color-alice-blue-600: #E8F0FF
+  --color-alice-blue-700: #E5EEFF
+  --color-alice-blue-800: #B5CFFF
+  --color-alice-blue-900: #85AFFF
+  --color-alice-blue-950: #2470FF
+  
+  --color-onyx-100: #D8D8D8
+  --color-onyx-200: #C5C5C5
+  --color-onyx-300: #9E9E9E
+  --color-onyx-400: #8B8B8B
+  --color-onyx-500: #9E9E9E
+  --color-onyx-600: #777777
+  --color-onyx-700: #515151
+  --color-onyx-800: #252525
+  --color-onyx-900: #181818
+  --color-onyx-950: #0C0C0C
 }
 
 /*
