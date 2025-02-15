@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <div className="bg-">
+    <div className="">
       <div>Wpi buys</div>
     </div>
   );
