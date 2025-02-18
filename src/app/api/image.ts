@@ -1,14 +1,14 @@
-import { CompleteMultipartUploadCommandOutput, S3Client,} from '@aws-sdk/client-s3';
+import { S3Client,} from '@aws-sdk/client-s3';
 import { NextResponse } from "next/server";
 import uploadFile from 'lib/uploadFile';
 
 
-const S3 = new S3Client()
 
 const MAX_SIZE = 5 * 1024 * 1024;
 const maxImages = 4;
 //todo extract all of this to a seprate function that can be called in server side files
 export async function POST(req:Request) {
+  const S3 = new S3Client()
   const formData = await req.formData();
   const files = formData.getAll('images') as File[];
   if(files.length > maxImages) {
@@ -22,7 +22,6 @@ export async function POST(req:Request) {
       if(urlResult.sucess === false || urlResult.url === undefined) {
         return NextResponse.json({ message: urlResult.message }, {status:urlResult.status})
       }
-
 
       urls.push(urlResult.url)
 
