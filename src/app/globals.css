@@ -1,17 +1,6 @@
 @import 'tailwindcss';
 
-@function derive-rgb-values-from-hex($hex) {
-  @return red($hex), green($hex), blue($hex);
-}
-
-
 @theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
-  --color-mint-500: oklch(0.72 0.11 178);
-
-
   --color-auburn-100: #F9E7E9;
   --color-auburn-200: #EDB8BD;
   --color-auburn-300: #F9E7E9;

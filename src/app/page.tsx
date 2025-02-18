@@ -1,7 +1,14 @@
+import Link from "next/link";
+
+import Button from "@/components/Button";
+
 export default function Home() {
-  return (
-    <div className="bg-auburn-100">
-      <div>Wpi buys</div>
-    </div>
-  );
+    return (
+        <main>
+            <div>Wpi buys</div>
+            <Link href="/sell">
+                <Button>Sell an Item</Button>
+            </Link>
+        </main>
+    );
 }
