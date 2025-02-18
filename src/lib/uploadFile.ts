@@ -1,13 +1,30 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 
-export default async function uploadFile(file: File,S3:S3Client, allowedTypes:string[],maxSize:number) {
+
+
+type uploadFileResult = {
+  sucess:boolean
+  url?:string
+  message:string
+  status:number
+}
+
+export default async function uploadFile(file: File,S3:S3Client, allowedTypes:string[],maxSize:number):Promise<uploadFileResult> {
   if(allowedTypes.includes(file.type) === false) {
-    throw Error("invalid file type")
+    return {
+      sucess:false,
+      message:"file type is not allowed",
+      status:400
+    }
   }
 
   if(file.size > maxSize) {
-    throw new Error(" file too large ")
+    return {
+      sucess:false,
+      message:"file too large",
+      status:400
+    }
   }
 
   const upload = new Upload({
@@ -24,7 +41,16 @@ export default async function uploadFile(file: File,S3:S3Client, allowedTypes:st
   });
   const compleatedUpload = await upload.done()
   if(compleatedUpload.Bucket === undefined || compleatedUpload.Key === undefined) {
-    throw new Error("failed generate url for file")
+   return {
+     sucess:false,
+     message:"failed to create url",
+     status:500
+   }
   }
-  return `https://fly.storage.tigris.dev/${compleatedUpload.Bucket}/${compleatedUpload.Key}`
+  return {
+    sucess:true,
+    url:`https://fly.storage.tigris.dev/${compleatedUpload.Bucket}/${compleatedUpload.Key}`,
+    message:"sucsessfuly uploaded image",
+    status:200
+  }
 }

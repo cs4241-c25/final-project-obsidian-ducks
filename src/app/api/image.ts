@@ -1,6 +1,6 @@
 import { CompleteMultipartUploadCommandOutput, S3Client,} from '@aws-sdk/client-s3';
 import { NextResponse } from "next/server";
-import uploadFilegi from 'lib/uploadFile';
+import uploadFile from 'lib/uploadFile';
 
 
 const S3 = new S3Client()
@@ -14,20 +14,26 @@ export async function POST(req:Request) {
   if(files.length > maxImages) {
     return NextResponse.json({ messsage: "too many images" }, {status:400})
   }
-  const uploads:Promise<CompleteMultipartUploadCommandOutput>[] = []
+  const urls:string[] = []
   const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
   for (const file of files) {
-    uploadFile(file,S3, allowedTypes, MAX_SIZE)
-  }
+    try {
+      const urlResult = await uploadFile(file, S3, allowedTypes, MAX_SIZE);
+      if(urlResult.sucess === false || urlResult.url === undefined) {
+        return NextResponse.json({ message: urlResult.message }, {status:urlResult.status})
+      }
 
-  try {
-    const compleatedUploads = await Promise.all(uploads) // resolve all the promises
-    return Response.json({
-      urls:compleatedUploads.map((compleatedUpload) => {
-        return `https://fly.storage.tigris.dev/${compleatedUpload.Bucket}/${compleatedUpload.Key}`
-      }),
-    });
-  } catch {
-    return NextResponse.json({ messsage: "failed to upload" }, {status:500})
+
+      urls.push(urlResult.url)
+
+    } catch (error) {
+      if (error instanceof Error) {
+        return NextResponse.json({ messsage:"somthing went wrong plese try again later" }, {status:500})
+      }
+    }
   }
+  return NextResponse.json({
+    messsage:"Sucessfuly uploaded images",
+    urls:urls
+  }, {status:500})
 }
