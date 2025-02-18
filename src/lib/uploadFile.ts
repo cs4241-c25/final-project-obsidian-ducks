@@ -30,7 +30,7 @@ export default async function uploadFile(file: File,S3:S3Client, allowedTypes:st
   const upload = new Upload({
     params: {
         Bucket: process.env.BUCKET_NAME,
-        Key: file.name, //todo should we create a hash for thsi
+        Key: file.name, //todo should we create a hash for this
         Body: file,
       },
     client: S3,
