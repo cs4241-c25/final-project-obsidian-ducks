@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "dev-sockets": "next dev --turbopack",
+    "dev": "node ./src/server.js",
+    "dev-old": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
+    "start-old": "next start",
     "lint": "next lint"
   },
   "type": "module",

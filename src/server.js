@@ -10,7 +10,8 @@ const app = express();
 const server = app.listen(3000);
 const wss = new WebSocketServer({ noServer: true });
 const nextApp = next({ dev: process.env.NODE_ENV !== "production" });
-const clients = new Set<WebSocket>();
+const clients = new Set();
+
 
 nextApp.prepare().then(() => {
   app.use((req, res) => {
@@ -51,4 +52,6 @@ nextApp.prepare().then(() => {
       });
     }
   });
+}).finally(() => {
+  console.log("app hosted at http://localhost:3000")
 })
