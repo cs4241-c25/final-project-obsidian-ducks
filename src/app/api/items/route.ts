@@ -2,6 +2,8 @@ import { connectToDatabase } from "@/lib/db";
 
 import Item from "@/models/Item";
 import {NextResponse} from "next/server";
+import {S3Client} from "@aws-sdk/client-s3";
+import uploadFile from "@/lib/uploadFile";
 
 // /**
 //  * Retrieves all the items being sold
@@ -30,28 +32,27 @@ import {NextResponse} from "next/server";
  * Posts a new item for sale
  */
 export async function POST(request: Request){
+    await connectToDatabase();
     const formData = await request.formData();
-    const title = formData.get("title");
-    console.log(title);
-    return Response.json({message: "OK"});
 
-    // try {
-    //     const data = await req.json()
-    //     console.log(data)
-    //     const item = await Item.create(data);
-    //     return new Response(JSON.stringify({data: item}), {
-    //         status: 200,
-    //         headers: {'Content-type': 'application/json'}
-    //     })
-    //
-    //
-    // }
-    // catch (error){
-    //     console.log("failled")
-    //     return new Response(JSON.stringify({message: "failed"}),{
-    //             status: 400,
-    //         }
-    //
-    //     )
-    // }
+    // Upload image to S3 bucket
+    const S3 = new S3Client();
+    const file = formData.get("image") as File;
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const MAX_SIZE = 5 * 1024 * 1024;
+    const result = await uploadFile(file, S3, allowedTypes, MAX_SIZE);
+    console.log(result);
+
+    // Remove image from form data
+    formData.delete("image");
+
+    // Upload everything else to database
+    const item = new Item(
+        Object.fromEntries(formData.entries()) // Converts it to a JS object
+    );
+    await item.save();
+
+    return Response.json({
+        message: "success"
+    });
 }

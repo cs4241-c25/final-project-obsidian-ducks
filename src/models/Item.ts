@@ -1,8 +1,8 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
 import { ITEM_CATEGORIES } from "@/lib/types";
 
-const ItemSchema = new Schema({
+const ItemSchema = new mongoose.Schema({
     title: {
         type: String,
         trim: true,
@@ -24,6 +24,6 @@ const ItemSchema = new Schema({
     }
 });
 
-const Item = model('Item', ItemSchema);
+const Item =  mongoose.models.Item || mongoose.model('Item', ItemSchema);
 
 export default Item
