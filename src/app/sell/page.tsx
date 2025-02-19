@@ -1,6 +1,6 @@
 import SalesForm from "./SalesForm";
 
-export default function ListingPage() {
+export default function SellAnItemPage() {
     return (
         <main>
             <SalesForm />

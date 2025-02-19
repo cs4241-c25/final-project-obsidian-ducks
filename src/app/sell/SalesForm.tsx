@@ -3,16 +3,9 @@ import PhotoInput from "@/components/PhotoInput";
 import TextInput from "@/components/TextInput";
 import SelectInput from "@/components/SelectInput";
 
-export default function SalesForm() {
-    const itemCategories = [
-        "Furniture",
-        "Electronics",
-        "Clothes",
-        "Stationary",
-        "Home Essentials",
-        "Handmade"
-    ];
+import { itemCategories } from "@/lib/types";
 
+export default function SalesForm() {
     return (
         <form>
             <h1>Sell an Item</h1>
