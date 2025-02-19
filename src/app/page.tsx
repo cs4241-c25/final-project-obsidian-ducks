@@ -11,6 +11,9 @@ export default function Home() {
             <Link href="/sell">
                 <Button>Sell an Item</Button>
             </Link>
+            <Link href="/profile">
+                <Button>Profile</Button>
+            </Link>
         </main>
     );
 }
