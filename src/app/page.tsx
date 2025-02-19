@@ -10,7 +10,10 @@ export default function Home() {
             <ChatSession/>
             <FileUploadTest/>
             <Link href="/sell">
-                <Button>Sell an Item</Button>
+                <Button type={"button"}>Sell an Item</Button>
+            </Link>
+            <Link href="/profile">
+                <Button type={"button"}>Profile</Button>
             </Link>
         </main>
     );

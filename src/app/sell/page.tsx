@@ -1,9 +1,9 @@
-import SalesForm from "./SalesForm";
+import PostItemForm from "./PostItemForm";
 
-export default function ListingPage() {
+export default function SellAnItemPage() {
     return (
         <main>
-            <SalesForm />
+            <PostItemForm />
         </main>
     );
 }
