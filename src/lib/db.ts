@@ -16,6 +16,4 @@ export async function connectToDatabase(): Promise<void> {
     }
 }
 
-
-
 connectToDatabase();
