@@ -1,32 +1,34 @@
 import { connectToDatabase } from "@/lib/db";
-
-import Item from "@/models/Item";
-import {NextResponse} from "next/server";
-import {S3Client} from "@aws-sdk/client-s3";
 import uploadFile from "@/lib/uploadFile";
 
-// /**
-//  * Retrieves all the items being sold
-//  */
-// export async function GET(req: Request){
-//     await connectToDatabase()
-//     try {
-//         const items = await Item.find({});
-//         return new Response(JSON.stringify({status: 200, data: items}), {
-//
-//             headers: {'Content-type': 'application/json'}
-//         })
-//
-//     }
-//     catch (error){
-//         console.log("failled")
-//         return new Response(JSON.stringify({message: "failed"}),{
-//                 status: 400,
-//             }
-//
-//         )
-//     }
-// }
+import Item from "@/models/Item";
+
+import {S3Client} from "@aws-sdk/client-s3";
+
+/**
+ * Fetches all the items being sold
+ */
+export async function GET(req: Request){
+    await connectToDatabase();
+    try {
+        const items = await Item.find({}).exec();
+        return new Response(
+            JSON.stringify(items),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: { "Content-type": "application/json" }
+        });
+    } catch (e) {
+        return new Response(
+            null,
+            {
+                status: 500,
+                statusText: "Internal Server Error"
+            }
+        )
+    }
+}
 
 /**
  * Posts a new item for sale
