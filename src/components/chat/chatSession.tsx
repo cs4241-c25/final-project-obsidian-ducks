@@ -18,7 +18,13 @@ export default function ChatSession() {
   }, []);
 
   const sendMessage = () => {
-    webSocket.send(newMessage);
+    webSocket.send(JSON.stringify({
+      event:"MESSAGE",
+      message:newMessage,
+      sender:"",
+      recver:"",
+      read:false
+    }));
     setNewMessage('');
   };
 

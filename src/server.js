@@ -9,26 +9,37 @@ const server = app.listen(3000);
 const wss = new WebSocketServer({ noServer: true });
 const nextApp = next({ dev: process.env.NODE_ENV !== "production" });
 
-/** @type {Set<WebSocket>} */
-const clients = new Set();
+/** @type {Map<String,WebSocket>} */
+const clients = new Map();
 
 /**
 * Code for handling a new websocket connection
 * @param {WebSocket} ws
 */
 function onConnection(ws) {
-  clients.add(ws);
   console.log('New client connected');
   ws.onmessage = (message) => {
     console.log(`Message received: ${message}`);
-    clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN && (message.toString() !== `{"event":"ping"}`)) {
-        client.send(message.data);
+    try {
+      /** @type{import("./types").Message */
+      const msgJson = JSON.parse(message.data)
+      switch (msgJson.event) {
+        case "MESSAGE":
+          break;
+        case "REGISTER":
+          clients.set(msgJson.sender,ws);
+          break;
       }
-    });
+    } catch(error) {
+      console.log(error)
+    }
+    // clients.forEach((client) => {
+    //   if (client !== ws && client.readyState === WebSocket.OPEN && (message.data !== `{"event":"ping"}`)) {
+    //   }
+    // });
   }
   ws.onclose = () => {
-    clients.delete(ws);
+    // clients.delete(ws); // todo figure out how to remove cclient
     console.log('Client disconnected');
   }
 }
