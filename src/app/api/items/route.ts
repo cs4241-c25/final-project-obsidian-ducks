@@ -1,4 +1,4 @@
-import { connectToDatabase } from "@/lib/db";
+import "@/lib/db";
 import uploadFile from "@/lib/uploadFile";
 
 import Item from "@/models/Item";
@@ -9,7 +9,6 @@ import {S3Client} from "@aws-sdk/client-s3";
  * Fetches all the items being sold
  */
 export async function GET(req: Request){
-    await connectToDatabase();
     try {
         const items = await Item.find({}).exec();
         return new Response(
@@ -34,7 +33,6 @@ export async function GET(req: Request){
  * Posts a new item for sale
  */
 export async function POST(request: Request){
-    await connectToDatabase();
     const formData = await request.formData();
 
     // Upload image to S3 bucket
