@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import Button from "@/components/Button";
 import { FileUploadTest } from "@/components/FileUploadTest";
+import Post from "@/components/Post";
 
 export default function Home() {
     return (
@@ -14,6 +15,7 @@ export default function Home() {
             <Link href="/profile">
                 <Button type={"button"}>Profile</Button>
             </Link>
+            <Post/>
         </main>
     );
 }
