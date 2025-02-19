@@ -1,23 +1,12 @@
 "use client"
 import { useState, useEffect } from 'react';
+import MessageDisplay from './MessageDisplay';
+import { useWebSocket } from './chatContext';
 
-let webSocket: WebSocket;
-if (typeof window !== "undefined") {
-  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
 
-  webSocket = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
-  setInterval(() => {
-    if (webSocket.readyState !== webSocket.OPEN) {
-      webSocket = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
-      return;
-    }
 
-    webSocket.send(`{"event":"ping"}`);
-  }, 29000);
-}
-
-export default function WsTest() {
-
+export default function ChatSession() {
+  const webSocket = useWebSocket()
   const [messages, setMessages] = useState<string[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -34,21 +23,29 @@ export default function WsTest() {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       <h1>Real-Time Chat</h1>
-      <div>
+      <div className='flex flex-col gap-10'>
         {messages.map((message, index) => (
-          <div key={index}>{message}</div>
+          <MessageDisplay key={index} message={{
+            event:"MESSAGE",
+            message:message,
+            sender:"",
+            recver:"",
+            read:false
+          }}/>
         ))}
-      </div>
+      </div >
+      <div className='flex flex-row gap-10 px-10'>
         <input
           type="text"
-          className="border border-gray-400 rounded p-2"
+          className="border border-gray-400 grow rounded p-2"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type your message..."
         />
         <button onClick={sendMessage}>Send</button>
+      </div>
     </div>
   );
 };
