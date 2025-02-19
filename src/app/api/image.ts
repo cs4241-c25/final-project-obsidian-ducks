@@ -19,7 +19,7 @@ export async function POST(req:Request) {
   for (const file of files) {
     try {
       const urlResult = await uploadFile(file, S3, allowedTypes, MAX_SIZE);
-      if(urlResult.sucess === false || urlResult.url === undefined) {
+      if(urlResult.success === false || urlResult.url === undefined) {
         return NextResponse.json({ message: urlResult.message }, {status:urlResult.status})
       }
 

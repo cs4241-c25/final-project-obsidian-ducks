@@ -11,7 +11,7 @@ export function FileUploadTest() {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
     const fileUploadResult = await uploadFile(file, S3, allowedTypes, MAX_SIZE);
-    if(fileUploadResult.sucess === false || fileUploadResult.url === undefined) {
+    if(fileUploadResult.success === false || fileUploadResult.url === undefined) {
       return
     }
     console.log(fileUploadResult)

@@ -9,10 +9,10 @@ export default function Home() {
             <div>Wpi buys</div>
             <FileUploadTest/>
             <Link href="/sell">
-                <Button>Sell an Item</Button>
+                <Button type={"button"}>Sell an Item</Button>
             </Link>
             <Link href="/profile">
-                <Button>Profile</Button>
+                <Button type={"button"}>Profile</Button>
             </Link>
         </main>
     );
