@@ -7,7 +7,7 @@ export enum ItemCategory {
     HandMade = "Handmade"
 }
 
-export const itemCategories = [
+export const ITEM_CATEGORIES = [
     ItemCategory.Furniture,
     ItemCategory.Electronics,
     ItemCategory.Clothes,

@@ -5,7 +5,7 @@ import SelectInput from "@/components/SelectInput";
 
 import { S3Client } from "@aws-sdk/client-s3";
 
-import { itemCategories } from "@/lib/types";
+import { ITEM_CATEGORIES } from "@/lib/types";
 import uploadFile from "@/lib/uploadFile";
 
 export default function SalesForm() {
@@ -34,7 +34,7 @@ export default function SalesForm() {
             <PhotoInput />
             <TextInput type={"text"} name={"title"} placeholder={"What are you selling?"}>Title</TextInput>
             <TextInput type={"text"} name={"description"} placeholder={"Describe your item."}>Description</TextInput>
-            <SelectInput name={"category"} options={itemCategories}>Category</SelectInput>
+            <SelectInput name={"category"} options={ITEM_CATEGORIES}>Category</SelectInput>
             <TextInput type={"number"} name={"price"} placeholder={"How much are you selling it for?"}>Price</TextInput>
             <Button type={"submit"}>Submit</Button>
         </form>

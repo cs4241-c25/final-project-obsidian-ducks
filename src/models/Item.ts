@@ -1,34 +1,29 @@
-import mongoose from "mongoose"
+import { Schema, model } from "mongoose";
 
-const ItemSchema = new mongoose.Schema({
+import { ITEM_CATEGORIES } from "@/lib/types";
+
+const ItemSchema = new Schema({
     title: {
         type: String,
+        trim: true,
         required: true,
     },
     description: {
         type: String,
+        trim: true,
         required: true,
     },
     category: {
         type: String,
-        enum: [
-            "Furniture",
-            "Electronics",
-            "Clothes",
-            "Stationary",
-            "Home Essentials",
-            "Handmade"],
+        enum: ITEM_CATEGORIES,
         required: true,
     },
-  /*  photo: {
-        type: String,
-        required: true,
-    },*/
     price: {
-        type: String,
+        type: Number,
         required: true,
     }
-})
-const Item = mongoose.models.Item || mongoose.model('Item', ItemSchema);
+});
+
+const Item = model('Item', ItemSchema);
 
 export default Item
