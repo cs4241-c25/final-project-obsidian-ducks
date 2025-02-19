@@ -59,6 +59,7 @@ export async function POST(request: Request) {
         const item = new Item(
             Object.fromEntries(formData.entries()) // Converts it to a JS object
         );
+        item.image = result.url;
         await item.save();
     } catch (e) {
         console.error(e);
