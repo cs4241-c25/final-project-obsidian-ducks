@@ -19,4 +19,4 @@ export default function ProfilePage() {
             </div>
         </main>
     );
-} //buttons do not do anything yet, just setting up page
+} //buttons do not do anything yet, just setting up page!
