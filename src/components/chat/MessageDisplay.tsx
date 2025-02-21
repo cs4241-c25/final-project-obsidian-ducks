@@ -1,4 +1,4 @@
-import { Message } from "types";
+import { Message } from "@/";
 
 export default function MessageDisplay(props: {message:Message}) {
   return(

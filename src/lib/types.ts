@@ -16,6 +16,15 @@ export const ITEM_CATEGORIES = [
     ItemCategory.HandMade
 ];
 
-
 export type Event = "REGISTER" | "MESSAGE"
+
+//the message type as a normal typescript type 
+export type Messsage = {
+  event:Event
+  message:string,
+  sender:string,
+  recver:string
+}
+
+
 

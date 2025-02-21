@@ -1,9 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
-import MessageDisplay from './MessageDisplay';
-import { useWebSocket } from './chatContext';
-
-
+import MessageDisplay from '@/components/chat/MessageDisplay';
+import { useWebSocket } from '@/components/chat/ChatContext';
 
 export default function ChatSession() {
   const webSocket = useWebSocket()

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-
 import "./globals.css";
-import { ChatContextProvider } from "@/components/chat/chatContext";
+import { ChatContextProvider } from "@/components/chat/ChatContext";
 
 const openSans = Open_Sans({
     subsets: ["latin"]

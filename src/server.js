@@ -3,6 +3,10 @@ import { parse } from 'url';
 import express from "express";
 import next from 'next';
 import { WebSocketServer } from 'ws';
+import Message from './models/Messages';
+import mongoose from 'mongoose';
+
+const url = process.env.MONGODB_URI;
 
 const app = express();
 const server = app.listen(3000);
@@ -18,13 +22,21 @@ const clients = new Map();
 */
 function onConnection(ws) {
   console.log('New client connected');
-  ws.onmessage = (message) => {
+  ws.onmessage = async (message) => {
     console.log(`Message received: ${message}`);
     try {
-      /** @type{import("./types").Message */
+      /** @type{import("./lib/types").Messsage */
       const msgJson = JSON.parse(message.data)
       switch (msgJson.event) {
         case "MESSAGE":
+          const dbMessage = new Message(msgJson);
+          await dbMessage.save()
+          const other = clients.get(msgJson.recver)
+          
+          if (other !== undefined) {
+            other.send(msgJson);
+          }
+          
           break;
         case "REGISTER":
           clients.set(msgJson.sender,ws);
@@ -44,7 +56,11 @@ function onConnection(ws) {
   }
 }
 
-nextApp.prepare().then(() => {
+nextApp.prepare().then(async () => {
+  if (url === undefined || url === null || url === '') {
+      return;
+  }
+  await mongoose.connect(url);
   app.use((req, res) => {
     nextApp.getRequestHandler()(req, res, parse(req.url, true));
   });
