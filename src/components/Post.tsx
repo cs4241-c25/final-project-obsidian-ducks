@@ -1,26 +1,38 @@
 import Button from "@/components/Button";
-
-async function getPosts() {
-    "use server";
-    try {
-        const response = await fetch("http://localhost:3000/api/items", {
-            method: "GET",
-        });
-        if (!response.ok) throw new Error(response.statusText);
-        const data = await response.json();
-        console.log(data);
-    } catch (e) {
-        console.error(e);
-    }
+import Image from "next/image";
+import {ReactNode} from "react";
+import Link from "next/link";
+interface PostInput {
+    children: ReactNode;
+    _id: string;
+    title: string;
+    description: string;
+    category: string;
+    price: number;
+    image: string;
 }
-export default function Post() {
+
+export default function Post(props: PostInput) {
     return (
-        <div className="border-1 border-auburn-500">
-            <Button onClick={getPosts()}></Button>
-            <h1>Image</h1>
-            <div className="flex flex-col content-end">
-            <h1>Name</h1>
-            <h1>Price</h1>
+        <div>
+            <div className="w-[300px] h-[340px] shadow-xl">
+                <div className="relative h-[250px]">
+                    <Link href={`/post/${props._id}`}>
+                        <Button>
+                    <Image priority={false}
+                           src={props.image}
+                           fill alt="Test" style={{objectFit: "cover"}}/>
+                        </Button>
+                    </Link>
+                    <Button className="absolute top-2 right-2 z-10 p-2 rounded-full">
+                        <Image src="/heart.svg" alt="Heart Image" width={15} height={15}/>
+                    </Button>
+                </div>
+                <div className="border-black pl-2 my-2">
+                    <h1 className="font-bold">{props.title}</h1>
+                    <h1>{props.category}</h1>
+                    <h1>{props.price}</h1>
+                </div>
             </div>
         </div>
     )
