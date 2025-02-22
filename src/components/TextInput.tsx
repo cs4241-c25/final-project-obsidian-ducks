@@ -9,9 +9,9 @@ interface TextInput {
 
 export default function TextInput(props: TextInput) {
     return (
-        <label className={"flex flex-col border"}>
+        <label className="flex flex-col">
             {props.children}
-            <input type={props.type} name={props.name} placeholder={props.placeholder}/>
+            <input className="w-2xs h-8" type={props.type} name={props.name} placeholder={props.placeholder}/>
         </label>
     );
 }

@@ -8,7 +8,7 @@ interface SelectInput {
 
 export default function SelectInput(props: SelectInput) {
     return (
-        <label className={"flex flex-col border"}>
+        <label className="flex flex-col">
             {props.children}
             <select name={props.name}>
                 {props.options.map(option =>
