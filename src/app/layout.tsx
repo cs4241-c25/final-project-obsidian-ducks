@@ -23,8 +23,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${openSans.className}`}>
       <Providers>
-        <NavBar/>
         <ChatContextProvider>
+          <NavBar/>
           {children}
         </ChatContextProvider>
       </Providers>

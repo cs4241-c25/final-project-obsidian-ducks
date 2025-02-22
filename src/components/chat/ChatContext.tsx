@@ -1,5 +1,6 @@
 "use client"
 import { Connect } from "@/lib/types"
+import { useSession } from "next-auth/react"
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react"
 
   // setInterval(() => {
@@ -30,13 +31,18 @@ export function ChatContextProvider(props: {children:ReactNode}) {
   const [socket, setSocket] = useState<undefined | WebSocket>();
   const onMessageSubsRef = useRef<((msg:string) =>void)[]>([]);//we use ref here becasue we dont want re renders
   const [name,setName] = useState("")
+  const { data: session, status } = useSession()
   function send_conn() {
     if(socket === undefined) {
       return
     }
+
+    if (status !== "authenticated" || session.user === undefined || session.user.name === null || session.user.name === undefined) {
+      return
+    }
     const connect_msg:Connect = {
       event: 'CONNECT',
-      sender:name
+      sender:session.user.name
     }
     socket.send(JSON.stringify(connect_msg))
   }
