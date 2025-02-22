@@ -1,4 +1,3 @@
-// app/api/auth/[...nextauth]/route.ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '@/models/User';
@@ -18,14 +17,14 @@ export const authOptions = {
                 if (credentials === undefined) {
                     return;
                 }
-                await connectToDatabase(); // Ensure the database is connected
+                await connectToDatabase();
 
-                // Find the user in the database
+
                 const user = await User.findOne({ username: credentials.username, password: credentials.password });
                 if (user) {
                     return { id: user._id.toString(), name: user.username };
                 } else {
-                    return null; // Invalid credentials
+                    return null;
                 }
             },
         }),

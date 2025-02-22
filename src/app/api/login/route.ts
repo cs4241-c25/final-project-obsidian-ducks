@@ -4,7 +4,7 @@ import connectToDatabase from '@/lib/db';
 
 export async function POST(req: Request) {
     try {
-        await connectToDatabase(); // Ensure the database is connected
+        await connectToDatabase();
 
         const formData = await req.formData();
         const username = formData.get('username');
