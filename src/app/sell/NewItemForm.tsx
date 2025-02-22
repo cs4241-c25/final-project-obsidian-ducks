@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-import PhotoInput from "@/components/PhotoInput";
+import PhotoInput from "@/components/FileInput";
 import TextInput from "@/components/TextInput";
 import SelectInput from "@/components/SelectInput";
 
