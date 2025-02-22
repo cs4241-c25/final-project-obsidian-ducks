@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-<<<<<<< HEAD
   async rewrites() {
     return [
       {
@@ -10,20 +9,18 @@ const nextConfig: NextConfig = {
         destination: 'http://localhost:3001/ws' // Proxy to Backend
       }
     ]
-  }
-=======
-        images: {
-            remotePatterns: [
-                {
-                    protocol: 'https',
-                    hostname: 'fly.storage.tigris.dev',
-                    port: '',
-                    pathname: '/wpi-buys1/**',
-                    search: '',
-                },
-            ],
+  },
+  images: {
+    remotePatterns: [
+        {
+            protocol: 'https',
+            hostname: 'fly.storage.tigris.dev',
+            port: '',
+            pathname: '/wpi-buys1/**',
+            search: '',
         },
->>>>>>> main
+    ],
+  },
 };
 
 export default nextConfig;

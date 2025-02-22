@@ -30,6 +30,9 @@ export const authOptions = {
         }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
+    session: {
+      strategy: "jwt", // Ensure JWT strategy is used
+    },
 };
 
 const handler = NextAuth(authOptions);
