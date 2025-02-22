@@ -25,6 +25,7 @@ export default function NavBar(){
                 "border-auburn-600",
                 "border-t-2",
                 "left-0",
+                "z-20",
             ]
         }
         else {
