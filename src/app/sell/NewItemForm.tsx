@@ -18,7 +18,7 @@ async function postItem(formData: FormData) {
     }
 }
 
-export default function PostItemForm() {
+export default function NewItemForm() {
     return (
         <form action={postItem}>
             <h1>Sell an Item</h1>

@@ -1,9 +1,9 @@
-import PostItemForm from "./PostItemForm";
+import NewItemForm from "./NewItemForm";
 
 export default function SellAnItemPage() {
     return (
         <main>
-            <PostItemForm />
+            <NewItemForm />
         </main>
     );
 }
