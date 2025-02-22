@@ -16,13 +16,16 @@ export default function NavBar(){
             classes = [
                 "flex",
                 "absolute",
-                "top-[80px]",
+                "top-[90px]",
                 "bg-auburn-500",
                 "w-full",
                 "items-center",
                 "justify-between",
                 "p-4",
+                "border-auburn-600",
+                "border-t-2",
                 "left-0",
+                "z-20",
             ]
         }
         else {
