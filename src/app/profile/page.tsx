@@ -1,5 +1,9 @@
 import Link from "next/link";
 import Button from "@/components/Button";
+import LoginForm from "@/components/LoginForm";
+import RegisterForm from "@/components/RegisterForm";
+
+
 
 export default function ProfilePage() {
     return (
@@ -8,15 +12,20 @@ export default function ProfilePage() {
 
             <div style={{ marginTop: '20px' }}>
                 <Link href="/shop">
-                    <Button>Your Shop</Button>
+                    <Button type={"button"}>Your Shop</Button>
                 </Link>
                 <Link href="/saved">
-                    <Button>Saved</Button>
+                    <Button type={"button"}>Saved</Button>
                 </Link>
                 <Link href="/edit-profile">
-                    <Button>Edit Profile</Button>
+                    <Button type={"button"}>Edit Profile</Button>
                 </Link>
             </div>
+
+
+            <LoginForm />
+            <RegisterForm />
+
         </main>
     );
 } //buttons do not do anything yet, just setting up page
