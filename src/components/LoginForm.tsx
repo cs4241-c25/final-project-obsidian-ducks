@@ -17,7 +17,7 @@ async function postLogin(formData: FormData) {
         if (data.error) {
             return { error: data.error };
         }
-        console.log("Logged in correctly");
+        console.log("Logged in correctly! :)");
         return { success: true };
     } catch (e) {
         console.error("Login failed:", e);
