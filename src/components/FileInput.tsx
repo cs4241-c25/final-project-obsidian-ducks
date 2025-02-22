@@ -1,10 +1,23 @@
+"use client";
+import { ChangeEvent, useState } from "react";
 
 export default function FileInput() {
+    const [files, setFiles] = useState<File[]>([]);
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files === null) return;
+        const buffer = [];
+        for (const file of e.target.files) {
+            buffer.push(file);
+        }
+        setFiles(buffer);
+    }
+
     return (
         <div className="flex items-center justify-center size-140">
             <label htmlFor="dropzone-file"
-                   className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                   className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                <div className="flex flex-col items-center justify-center pt-5 pb-4">
                     <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -14,7 +27,8 @@ export default function FileInput() {
                         drag and drop</p>
                     <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF</p>
                 </div>
-                <input id="dropzone-file" type="file" className="hidden" name="image"/>
+                <input id="dropzone-file" className="hidden" type="file" accept="image/jpeg, image/jpg, image/png" name="image" multiple={true} required={true} onChange={handleChange}/>
+                <p>{files.map(file => <span className="text-sm text-gray-600">{file.name}<br/></span>)}</p>
             </label>
         </div>
     );
