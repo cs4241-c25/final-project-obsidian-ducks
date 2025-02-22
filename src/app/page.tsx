@@ -6,7 +6,7 @@ async function getPosts() {
             method: "GET",
         });
         if (!response.ok) throw new Error(response.statusText);
-        return response.json();
+        return await response.json();
     } catch (e) {
         console.error(e);
     }

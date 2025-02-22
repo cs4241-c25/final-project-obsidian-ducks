@@ -3,7 +3,6 @@ import Image from "next/image";
 import {ReactNode} from "react";
 import Link from "next/link";
 interface PostInput {
-    children: ReactNode;
     _id: string;
     title: string;
     description: string;
