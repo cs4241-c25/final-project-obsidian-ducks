@@ -25,6 +25,10 @@ const ItemSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true,
+    },
+    username: {
+        type: String,
+        required: true,
     }
 });
 

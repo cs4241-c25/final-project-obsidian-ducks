@@ -15,7 +15,7 @@ export default function Post(props: PostInput) {
         <div>
             <div className="w-full sm:w-[280px] md:w-[300px] h-auto rounded-b-xl shadow-lg">
                 <div className="relative w-full aspect-[5/4]">
-                    <Link href={`/post/${props._id}`}>
+                    <Link href={`/listing/${props._id}`}>
                         <Button type="button">
                     <Image priority={false}
                            src={props.image}
