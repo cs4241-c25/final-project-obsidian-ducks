@@ -21,11 +21,11 @@ export default function Post(props: PostInput) {
                            src={props.image}
                            fill
                            alt={`${props.title}` + " Image"}
-                           className="object-cover rounded-t-xl"/>
+                           className="object-cover rounded-t-xl hover:skew-x-3 duration-150 ease-in-out"/>
                         </Button>
                     </Link>
-                    <Button type="button" className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md">
-                        <Image src="/heart.svg" alt="Heart Image" width={15} height={15}/>
+                    <Button type="button" className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md bg-white hover:bg-auburn-300">
+                        <Image src="/like.svg" alt="Heart Image" width={15} height={15}/>
                     </Button>
                 </div>
                 <div className="border-t onyx-700 p-2">
