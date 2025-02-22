@@ -29,7 +29,7 @@ export default function NavBar(){
             ]
         }
         else {
-            classes = ["hidden", "md:flex", "justify-end", "items-center", "w-full", "h-fill"]
+            classes = ["hidden", "md:flex", "justify-end", "items-center", "w-full", "h-fit"]
         }
         return classes.join(" ");
     }
