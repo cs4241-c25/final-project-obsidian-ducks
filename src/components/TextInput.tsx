@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface TextInput {
-    className: string;
     children: ReactNode;
+    className: string;
     type: string;
     name: string;
     placeholder: string;
