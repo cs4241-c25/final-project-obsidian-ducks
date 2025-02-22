@@ -41,6 +41,7 @@ fn create_request_handler(state,selector) {
     let not_found =
       response.new(404)
       |> response.set_body(mist.Bytes(bytes_tree.new()))
+    io.debug(req)
     case request.path_segments(req) {
       ["api","ws"] ->
           mist.websocket(
@@ -105,7 +106,7 @@ fn handle_connect(state:ChatServer,conn:mist.WebsocketConnection,sender:String) 
 
   //send the list of chats back
   let chats = dict.keys(state.active_chat_rooms)
-  messages.InspectChats("","SERVER",chats)
+  let _sent = messages.InspectChats("","SERVER",chats)
   |> messages.encode_message_json()
   |> json.to_string()
   |> mist.send_text_frame(conn,_) |> io.debug
