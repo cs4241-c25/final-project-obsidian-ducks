@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
 import Image from "next/image";
-import {ReactNode} from "react";
 import Link from "next/link";
 interface PostInput {
     _id: string;

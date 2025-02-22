@@ -9,6 +9,7 @@ async function getPosts() {
         return await response.json();
     } catch (e) {
         console.error(e);
+        throw e;
     }
 }
 
