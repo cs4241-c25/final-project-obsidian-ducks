@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 interface TextInput {
     children: ReactNode;
-    className: string;
+    className?: string;
     type: string;
     name: string;
     placeholder: string;
@@ -11,7 +11,7 @@ interface TextInput {
 
 export default function TextInput(props: TextInput) {
     return (
-        <label className="flex flex-col">
+        <label className="flex flex-col gap-1">
             {props.children}
             <input className={twMerge("w-fit h-10 border rounded-sm px-2 py-1", props.className)}
                    type={props.type}

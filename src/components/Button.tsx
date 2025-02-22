@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 interface Button {
     children: ReactNode;
-    className: string;
+    className?: string;
     type: "button" | "submit" | "reset" | undefined
 }
 

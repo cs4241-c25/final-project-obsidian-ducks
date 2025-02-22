@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
 import FileInput from "@/components/FileInput";
+import TextArea from "@/components/TextArea";
 import TextInput from "@/components/TextInput";
 import SelectInput from "@/components/SelectInput";
 
@@ -25,13 +26,13 @@ export default function ListingForm() {
             <div className="flex gap-4">
                 <FileInput />
                 <div className="flex flex-col gap-3">
-                    <TextInput type="text" name="title" placeholder="What are you selling?">Title</TextInput>
-                    <TextInput type="text" name="description" placeholder="Describe your item.">Description</TextInput>
+                    <TextInput className="w-100" type="text" name="title" placeholder="What are you selling?">Title</TextInput>
+                    <TextArea className="w-100 h-60" name="description" placeholder="E.g., Recently bought new. ">Description</TextArea>
                     <SelectInput name="category" options={ITEM_CATEGORIES}>Category</SelectInput>
-                    <TextInput type="number" name="price" placeholder="What's the price?">Price</TextInput>
-                    <div className="flex">
-                        <Button type="reset">Reset</Button>
-                        <Button type="submit">Submit</Button>
+                    <TextInput className="w-25" type="number" name="price" placeholder="5.99">Price</TextInput>
+                    <div className="flex gap-2">
+                        <Button className="w-25 grow bg-gray-500 hover:bg-gray-600" type="reset">Reset</Button>
+                        <Button className="w-25 grow" type="submit">Submit</Button>
                     </div>
                 </div>
             </div>

@@ -31,7 +31,7 @@ export default function LoginForm() {
         // @ts-ignore
         <form action={postLogin}>
             <h1>Login</h1>
-            <TextInput type="text" name="username" placeholder="Enter your username">Username</TextInput>
+            <TextInput className="w-[1000px]" type="text" name="username" placeholder="Enter your username">Username</TextInput>
             <TextInput type="password" name="password" placeholder="Enter your password">Password</TextInput>
             <Button type="submit">Login</Button>
         </form>
