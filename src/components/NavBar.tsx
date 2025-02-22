@@ -35,10 +35,10 @@ export default function NavBar(){
     }
 
     return (
-        <main className="bg-auburn-500 flex justify-between items-center mx-auto">
+        <nav className="bg-auburn-500 flex justify-between items-center mx-auto h-[7vh]">
             <Link href="../">
                 <Button>
-                    <Image src="/WPIBuysLogo.png" alt="WPIBuys Logo" width={200} height={20}/>
+                    <Image src="/WPIBuysLogo.png" alt="WPIBuys Logo" width={100} height={10}/>
                 </Button>
             </Link>
 
@@ -68,7 +68,6 @@ export default function NavBar(){
                     <Image src="/hamburger.svg" alt="Mobile Menu" width={50} height={50}/>
                 </Button>
             </div>
-
-        </main>
+        </nav>
     );
 }
