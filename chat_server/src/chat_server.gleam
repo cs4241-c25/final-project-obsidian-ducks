@@ -20,6 +20,7 @@ pub fn main() {
   let assert Ok(_server) = create_request_handler(state,selector)
   |> mist.new
   |> mist.port(3001)
+  |> mist.bind("0.0.0.0")
   |> mist.start_http
   process.sleep_forever()
 }
@@ -64,6 +65,7 @@ fn handle_websocket_message(state, conn, message) {
       actor.continue(state)
     }
     mist.Text(msg) -> {
+      io.debug(msg)
       let msg_result = {
           use decoded_msg <- result.try(result.replace_error(messages.decode_message(msg),"failed to parse message"))
           case decoded_msg {
@@ -72,8 +74,8 @@ fn handle_websocket_message(state, conn, message) {
             messages.LeaveChat(_event,sender, chat_id) -> handle_leave_chat(state,sender,chat_id)
             messages.Message(_event,sender,id,content,chat_id) -> handle_message(state,sender,id,content,chat_id)
             messages.Read(_event,sender,msg_id) -> handle_read(state,sender,msg_id)
-            messages.NonValid(_event,_) -> Error("failed to parse message")
             messages.InspectChats(_event, _sender, _chat_ids) ->  handle_inspect_chats(state,conn)
+            messages.NonValid(_event,_) -> Error("failed to parse message")
           }
         }
         case msg_result |> io.debug {
@@ -97,12 +99,16 @@ fn handle_inspect_chats(state:ChatServer,conn:mist.WebsocketConnection) {
 fn handle_connect(state:ChatServer,conn:mist.WebsocketConnection,sender:String) {
   //todo send the user all messages that they got while offline
   //check the db for waht chat rooms the chatter is part of
+  io.debug("new connection")
   let new_chatters = state.chatters
   |> dict.insert(sender,conn)
 
   //send the list of chats back
   let chats = dict.keys(state.active_chat_rooms)
-  let _sent = mist.send_text_frame(conn,json.to_string(messages.encode_message_json(messages.InspectChats("","SERVER",chats))))
+  messages.InspectChats("","SERVER",chats)
+  |> messages.encode_message_json()
+  |> json.to_string()
+  |> mist.send_text_frame(conn,_) |> io.debug
 
   Ok(ChatServer(..state,chatters:new_chatters))
 }

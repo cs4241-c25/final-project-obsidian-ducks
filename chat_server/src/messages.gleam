@@ -4,7 +4,7 @@ import decode/zero
 import gleam/dynamic.{type Dynamic}
 import gleam/json
 import gleam/list
-
+import gleam/io
 pub type Id(a) = a
 
 
@@ -20,7 +20,15 @@ pub type Message {
 }
 
 pub fn decode_message(payload:String) {
-  zero.run(dynamic.from(payload),zero.one_of(message_decoder(),[connect_decoder(),send_chats_decoder(),create_chat_decoder(),leave_chat_decoder()]))
+  json.decode(payload,fn(dynamic) {
+    let decoder = zero.one_of(message_decoder(),[
+      connect_decoder()
+      ,send_chats_decoder()
+      ,create_chat_decoder()
+      ,leave_chat_decoder()]
+    )
+    zero.run(dynamic,decoder) |> io.debug()
+  })
 }
 
 fn connect_decoder() {
@@ -41,7 +49,10 @@ fn message_decoder() {
    use chat_id <- zero.field("chat_id",zero.string)
    case uuid.from_string(chat_id) {
      Ok(chat_id) -> zero.success(Message(event,sender,uuid.v4(),contnent,chat_id))
-     Error(_) -> zero.failure(NonValid(event,sender),"not a valid uuid")
+     Error(_) -> {
+       io.debug("test")
+       zero.failure(NonValid(event,sender),"not a valid uuid")
+     }
    }
 }
 fn leave_chat_decoder() {
