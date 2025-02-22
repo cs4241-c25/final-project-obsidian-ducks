@@ -1,5 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+/home/nickl/Desktop/wpi/webware/final-project-obsidian-ducks/chat_server/build
 # dependencies
 /node_modules
 /.pnp
