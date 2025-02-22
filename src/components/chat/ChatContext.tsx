@@ -9,16 +9,23 @@ import { createContext, ReactNode, useContext } from "react"
 
   //   webSocket.send(`{"event":"ping"}`);
   // }, 29000);
-const webSocketContext = createContext<WebSocket | undefined>(undefined)
+  //
+export type tmpMsgContext = {
+  userName:string,
+  websocket:WebSocket
+}
+
+
+const webSocketContext = createContext<tmpMsgContext | undefined>(undefined)
 
 export function ChatContextProvider(props: {children:ReactNode}) {
-  let webSocket: WebSocket | undefined = undefined;
-  if (typeof window !== "undefined") {
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    webSocket = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
-  }
+  const  websocket = new WebSocket(`${protocol}//localhost:3001/api/ws`);
   return(
-    <webSocketContext.Provider value={webSocket}>
+    <webSocketContext.Provider value={{
+      userName:"",
+      websocket,
+    }}>
       {props.children}
     </webSocketContext.Provider>
   )
