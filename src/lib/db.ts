@@ -19,3 +19,5 @@ connectToDatabase()
         console.log("Failed to connect to MongoDB D:");
         console.error(e);
 });
+
+export default connectToDatabase;
