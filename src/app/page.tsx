@@ -5,6 +5,7 @@ import SearchBar from "@/components/SearchBar";
 import FilterCategory from "@/components/FilterCategory";
 import { ITEM_CATEGORIES } from "@/lib/types";
 import React, {useEffect, useState} from "react";
+import TextInput from "@/components/inputs/TextInput";
 
 
 export default function Home() {
@@ -74,6 +75,17 @@ export default function Home() {
                             <FilterCategory key={category} type={"checkbox"} name={category} onChange={handleFiltered}/>
                         ))}
                     </div>
+                    <div className="flex flex-col mr-8">
+                    <label className="font-bold text-xl pt-4">Price Range</label>
+                        <div className="flex gap-x-5 pt-2">
+                            <TextInput className="w-20" type={"number"} name={"lowInput"} placeholder={"$ Min"}
+                                       ></TextInput>
+                            <h1 className="content-center">-</h1>
+                            <TextInput className="w-20" type={"number"} name={"highInput"} placeholder={"$ Max"}
+                                       ></TextInput>
+                        </div>
+                    </div>
+
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 col-span-3 gap-10 mt-10">
                     {posts.map((post) => (
