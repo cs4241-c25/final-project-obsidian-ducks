@@ -29,7 +29,11 @@ const ItemSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+    },
+    likes: {
+        type: Number
     }
+
 });
 
 const Item =  mongoose.models.Item || mongoose.model('Item', ItemSchema);
