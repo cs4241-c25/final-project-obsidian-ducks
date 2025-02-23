@@ -1,73 +1,26 @@
-"use client";
-import Button from "@/components/inputs/Button";
 import Link from "next/link";
-import Image from "next/image";
-import {useState} from "react";
+
+import Button from "@/components/inputs/Button";
 
 export default function NavBar(){
-    const [isOpen, setIsOpen] = useState(false);
-    function handleHamburgerClick() {
-        setIsOpen(!isOpen);
-    }
-
-    function handleMenu() {
-        let classes = [];
-        if(isOpen) {
-            classes = [
-                "flex",
-                "absolute",
-                "top-[90px]",
-                "bg-auburn-500",
-                "w-full",
-                "items-center",
-                "justify-between",
-                "p-4",
-                "border-auburn-600",
-                "border-t-2",
-                "left-0",
-                "z-20",
-            ]
-        }
-        else {
-            classes = ["hidden", "md:flex", "justify-end", "items-center", "w-full", "h-fit"]
-        }
-        return classes.join(" ");
-    }
-
     return (
-        <nav className="bg-auburn-500 flex justify-between items-center mx-auto h-[7vh]">
-            <Link href="../">
-                <Button>
-                    <Image src="/WPIBuysLogo.png" alt="WPIBuys Logo" width={100} height={10}/>
-                </Button>
+        <nav className="w-screen h-[10vh] flex justify-between items-center border">
+            <div className="flex h-full justify-between items-center gap-8 text-lg font-semibold ml-10">
+                <Link href="/profile">
+                    <p>Login</p>
+                </Link>
+                <Link href="/profile">
+                    <p>Sign Up</p>
+                </Link>
+            </div>
+            <Link href="/">
+                <svg width={85} height="100%" viewBox="0 0 100 100">
+                    <image href="/WPIBuys.png" />
+                </svg>
             </Link>
-
-            <div className={handleMenu()}>
-                <Link href="../favorites">
-                    <Button>
-                        <Image src="/heart.svg" alt="Heart Image" width={50} height={50}/>
-                    </Button>
-                </Link>
-                <Link href="../sell">
-                    <Button className="w-[50px] h-[50px] text-lg">Sell</Button>
-                </Link>
-                <Link href="../mail">
-                    <Button>
-                        <Image src="/mail.svg" alt="Mail Image" width={50} height={50}/>
-                    </Button>
-                </Link>
-                <Link href="../profile">
-                    <Button>
-                        <Image src="/profile.svg" alt="Profile Image" width={50} height={50}/>
-                    </Button>
-                </Link>
-            </div>
-
-            <div className="md:hidden">
-                <Button onClick={handleHamburgerClick}>
-                    <Image src="/hamburger.svg" alt="Mobile Menu" width={50} height={50}/>
-                </Button>
-            </div>
+            <Link href="/sell">
+                <Button className="mr-10" type="button">Sell an Item</Button>
+            </Link>
         </nav>
     );
 }
