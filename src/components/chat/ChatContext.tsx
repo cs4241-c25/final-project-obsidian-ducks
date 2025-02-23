@@ -70,7 +70,7 @@ export function ChatContextProvider(props: {children:ReactNode}) {
   },[])
   return(
     <webSocketContext.Provider value={{
-      userName:"",
+      userName:name,
       websocket:socket,
       onMessageSubs:onMessageSubsRef.current,
       addOnMessageSub:(sub) => {

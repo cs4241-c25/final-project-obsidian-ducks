@@ -12,6 +12,8 @@ import gleam/erlang/process.{type Subject}
 import gleam/dict
 import youid/uuid
 import messages
+import gleam/function
+
 
 pub fn main() {
   io.println("Hello from chat_server!")
@@ -25,20 +27,25 @@ pub fn main() {
   process.sleep_forever()
 }
 
+type ClientState {
+  ClientState(id:uuid.Uuid,sub:Subject(InternalMessages),server:Subject(ChatServerMessage))
+}
+type InternalMessages {
+  BroadCast(message:messages.Message)
+}
+
+
 type ChatServer {
   ChatServer(
-    chatters:dict.Dict(String,Subject(InternalMessages)),
-    chat_rooms:dict.Dict(messages.Id(uuid.Uuid),List(String))
+    connections:dict.Dict(uuid.Uuid,Subject(InternalMessages)),
+    chatters:dict.Dict(String,uuid.Uuid),
+    chat_rooms:dict.Dict(messages.Id(uuid.Uuid),List(String)) //todo just have this be a list of uuids
   )
 }
 
 type ChatServerMessage {
   GetCurrentServer(reply_to:Subject(ChatServer))
   SetCurrentServer(chat_server:ChatServer)
-}
-
-type InternalMessages {
-  BroadCast(message:messages.Message)
 }
 
 fn handle_chat_server_message(msg:ChatServerMessage,chat_server) {
@@ -54,7 +61,15 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server) {
 }
 
 fn create_chat_server() {
-  ChatServer(dict.new(),dict.new())
+  ChatServer(dict.new(),dict.new(),dict.new())
+}
+
+fn update_chat_server(chat_server_actor:Subject(ChatServerMessage),update:fn(ChatServer) -> ChatServer) {
+  process.call(chat_server_actor,GetCurrentServer,10)
+  |> update
+  |> fn (updated) { SetCurrentServer(updated) }
+  |> process.send(chat_server_actor,_)
+  chat_server_actor
 }
 
 fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
@@ -68,11 +83,33 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
             request: req,
             on_init: fn(_conn) {
               io.debug("got a connection")
-              let selector = process.new_selector()
+              let id = uuid.v4()
 
-              #(chat_server, option.Some(selector))
+              let subject = process.new_subject()
+              let selector = process.new_selector()
+              |> process.selecting(subject, function.identity)
+
+              let chat_server ={ // im block scoping this of so we can contiane the use callback
+                //this is using use to update the chat server with a callback
+                use chat_server <- update_chat_server(chat_server,)
+                let connections = chat_server.connections |> dict.insert(id,subject)
+                ChatServer(..chat_server,connections:connections)
+              }
+
+
+              #(ClientState(id,subject,chat_server), option.Some(selector))
             },
-            on_close: fn(_chat_server) { io.println("goodbye!") },
+            on_close: fn(state) {
+              io.println("goodbye!")
+              let chat_server ={ // im block scoping this of so we can contiane the use callback
+                //this is using use to update the chat server with a callback
+                use chat_server <- update_chat_server(state.server,)
+                let connections = chat_server.connections 
+                |> dict.delete(state.id)
+                ChatServer(..chat_server,connections:connections)
+              }
+              Nil
+            },
             handler: handle_websocket_message,
         )
       _ ->  not_found
@@ -81,7 +118,7 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
 }
 
 
-fn handle_websocket_message(chat_server:Subject(ChatServerMessage), conn, message) {
+fn handle_websocket_message(client_state:ClientState, conn, message) {
   case message {
     mist.Shutdown | mist.Closed -> {
       //todo remove the chatter from the list of connections
@@ -92,129 +129,155 @@ fn handle_websocket_message(chat_server:Subject(ChatServerMessage), conn, messag
       let msg_result = {
           use decoded_msg <- result.try(result.replace_error(messages.decode_message(msg),"failed to parse message"))
           case decoded_msg {
-            messages.Connect(_event,sender) -> handle_connect(chat_server,conn,sender)
-            messages.CreateChat(_event,sender, chatters) -> handle_create_chat_room(chat_server,sender,chatters)
-            messages.ChatEvent("LEAVE_CHAT",sender, chat_id) -> handle_leave_chat(chat_server,sender,chat_id)
+            messages.Connect(_event,sender) -> handle_connect(client_state,conn,sender)
+            messages.CreateChat(_event,sender, chatters) -> handle_create_chat_room(client_state,conn,sender,chatters)
+            messages.ChatEvent("LEAVE_CHAT",sender, chat_id) -> handle_leave_chat(client_state,conn,sender,chat_id)
             messages.ChatEvent(event,sender, chat_id) -> todo
-            messages.Message(_event,sender,id,content,chat_id) -> handle_rcved_message(chat_server,sender,id,content,chat_id)
-            messages.Read(_event,sender,msg_id) -> handle_read(chat_server,sender,msg_id)
-            messages.InspectChats(_event, _sender, _chat_ids) ->  handle_inspect_chats(chat_server,conn)
+            messages.Message(_event,sender,id,content,chat_id) -> handle_rcved_message(client_state,conn,sender,id,content,chat_id)
+            messages.Read(_event,sender,msg_id) -> handle_read(client_state,conn,sender,msg_id)
+            messages.InspectChats(_event, _sender, _chat_ids) ->  handle_inspect_chats(client_state,conn)
             messages.NonValid(_event,_) -> Error("failed to parse message")
           }
         }
         case msg_result |> io.debug {
           Ok(chat_server) ->  actor.continue(chat_server) // continue the web sockets with the chat_server
           Error(_) ->  {
-            actor.continue(chat_server) //re use old chat_server but still continue
+            actor.continue(client_state) //re use old chat_server but still continue
           }
         }
       }
     mist.Custom(BroadCast(message)) -> {
       //todo send messages here
-      case message {
-        messages.Message(_event,sender,id,content,chat_id) -> todo
-        messages.Read(_event,sender,msg_id) ->  todo
-        messages.CreateChat(_event,sender, chatters) -> todo
-        messages.ChatEvent("LEAVE_CHAT",sender, chat_id) -> todo
-        _ -> todo
+      io.debug("we got a message! from a subject")
+      case message |> io.debug {
+        messages.Message(_event,_sender,_id,_content,_chat_id) -> {
+          let _res = message
+          |> messages.encode_message_json
+          |> json.to_string
+          |> mist.send_text_frame(conn,_)
+          actor.continue(client_state)
+        }
+        messages.Read(_event,sender,msg_id) -> actor.continue(client_state)
+        messages.CreateChat(_event,sender, chatters) ->  actor.continue(client_state)
+        messages.ChatEvent(_event,_sender, _chat_id) ->  {
+          let _res = message
+          |> messages.encode_message_json
+          |> json.to_string
+          |> mist.send_text_frame(conn,_)
+          actor.continue(client_state)
+        }
+        _ -> actor.continue(client_state)
+
       }
-      actor.continue(chat_server)
     }
-    mist.Binary(_) ->  actor.continue(chat_server)
+    mist.Binary(_) ->  actor.continue(client_state)
   }
 }
 
 //send list of chats
-fn handle_inspect_chats(chat_server:Subject(ChatServerMessage),conn:mist.WebsocketConnection) {
-  let chat_server_state = process.call(chat_server,GetCurrentServer,10)
+fn handle_inspect_chats(client_state:ClientState,conn:mist.WebsocketConnection) {
+  let chat_server_state = process.call(client_state.server,GetCurrentServer,10)
 
   let chats = dict.keys(chat_server_state.chat_rooms)
   let _sent = mist.send_text_frame(conn,json.to_string(messages.encode_message_json(messages.InspectChats("","SERVER",chats))))
-  Ok(chat_server)
+  Ok(client_state)
 }
 
-fn handle_connect(chat_server:Subject(ChatServerMessage),conn:mist.WebsocketConnection,sender:String) {
+fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:String) {
   //todo send the user all messages that they got while offline
   //check the db for waht chat rooms the chatter is part of
   io.debug("new connection")
   io.debug(sender)
-  let chat_server_state = process.call(chat_server,GetCurrentServer,10)
+  let chat_server_state = process.call(client_state.server,GetCurrentServer,10)
   let new_chats = chat_server_state.chatters
-  |> dict.insert(sender,process.new_subject()) |> io.debug
+  |> dict.insert(sender,client_state.id) |> io.debug
 
   //send the list of chats back
   let chats = dict.keys(chat_server_state.chat_rooms)
+
   let _sent = messages.InspectChats("","SERVER",chats)
   |> messages.encode_message_json()
   |> json.to_string()
   |> mist.send_text_frame(conn,_) |> io.debug
 
   //this should send back updates for all chats that they are part of
-  process.send(chat_server,SetCurrentServer(ChatServer(..chat_server_state,chatters:new_chats)))
-  Ok(chat_server)
+  process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chatters:new_chats)))
+  Ok(client_state)
 }
 
-fn handle_read(chat_server:Subject(ChatServerMessage),sender,msg_id) {
-  todo
+fn handle_read(client_state:ClientState,conn,sender,msg_id) {
   //show other users in the chat that the message has been read
-  Ok(chat_server)
+  Ok(client_state)
 }
 
-fn handle_create_chat_room(chat_server:Subject(ChatServerMessage),sender, chatters) {
+fn handle_create_chat_room(client_state:ClientState,conn,sender, chatters) {
   io.debug("got conn")
   let chat_id = uuid.v4()
-  let chat_server_state = process.call(chat_server,GetCurrentServer,10) //todo handle crash
+  let chat_server_state = process.call(client_state.server,GetCurrentServer,10) //todo handle crash
 
   let chat_rooms = chat_server_state.chat_rooms
   |> dict.insert(chat_id,[sender,..chatters])
+  |> io.debug
+
   let new_chat_room = ChatServer(..chat_server_state,chat_rooms:chat_rooms)
-  process.send(chat_server,SetCurrentServer(new_chat_room))
+  process.send(client_state.server,SetCurrentServer(new_chat_room))
 
+  let message = messages.ChatEvent("JOINED_CHAT",sender,chat_id)
 
-  let _chat_to_room_res = messages.ChatEvent("JOINED_CHAT",sender,chat_id)
-    |> messages.encode_message_json()
-    |> json.to_string()
+  //show that the server has created a chat for everyone!
+  let _res = message
+  |> messages.encode_message_json
+  |> json.to_string
+  |> mist.send_text_frame(conn,_)
+
+  //tell the room that the chat has been created
+  let _chat_to_room_res = message
     |> chat_to_room(new_chat_room,chat_id,_)
 
   //create a new chat
-  Ok(chat_server)
+  Ok(client_state)
 }
 
-fn handle_leave_chat(chat_server:Subject(ChatServerMessage),sender,chat_id) {
-  let chat_server_state = process.call(chat_server,GetCurrentServer,10)  //todo handle crash
+fn handle_leave_chat(client_state:ClientState,_conn,sender,chat_id) {
+  let chat_server_state = process.call(client_state.server,GetCurrentServer,10)  //todo handle crash
+
   use chat_room_users <- result.try(result.replace_error(dict.get(chat_server_state.chat_rooms,chat_id),"Failed to find chat room were the chatters at"))
   let chat_room_users = chat_room_users
   |> list.filter(fn(chatter) { chatter == sender }) // remove chatter
   let chat_rooms = dict.insert(chat_server_state.chat_rooms,chat_id,chat_room_users)
-  process.send(chat_server,SetCurrentServer(ChatServer(..chat_server_state,chat_rooms:chat_rooms)))
+
+  process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chat_rooms:chat_rooms)))
 
   //leave a chat
-  Ok(chat_server)
+  Ok(client_state)
 }
 
 
-fn handle_rcved_message(chat_server:Subject(ChatServerMessage),sender,msg_id,content,chat_id) {
-  let chat_server_state = process.call(chat_server,GetCurrentServer,10)  //todo handle crash
+fn handle_rcved_message(client_state:ClientState,_conn,sender,msg_id,content,chat_id) {
+  let chat_server_state = process.call(client_state.server,GetCurrentServer,10)  //todo handle crash
 
   let _chat_to_room_res = messages.Message("",sender,msg_id,content,chat_id)
-  |> messages.encode_message_json()
-  |> json.to_string()
   |> chat_to_room(chat_server_state,chat_id,_)
   // send a message in a chat
-  Ok(chat_server)
+  Ok(client_state)
 }
 
 fn chat_to_room(chat_server:ChatServer,chat_id,msg:messages.Message) {
-  io.debug(chat_server)
   dict.get(chat_server.chat_rooms,chat_id)
   |> result.replace_error("Failed to find chat room were the chatters at")
   |> result.map(fn (chat_room_users) {
     chat_room_users
     |> list.map(fn(chatter) {
-      dict.get(chat_server.chatters,chatter)
+    case chatter == msg.sender{
+        True -> Error(Nil)
+        False -> {
+          use chat_id <- result.try(dict.get(chat_server.chatters,chatter))
+          dict.get(chat_server.connections,chat_id)
+        }
+      }
     }) |> list.map(fn(conn) {
-      use conn <- result.try(result.replace_error(conn,"No active conn for chatter"))
-      Ok(process.send(conn,BroadCast(msg)))
+      use sub <- result.try(result.replace_error(conn,"No active process for chatter"))
+      Ok(process.send(sub,BroadCast(msg)))
     })
   })
 }

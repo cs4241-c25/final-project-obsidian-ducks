@@ -46,7 +46,7 @@ export type ChatEvent = {
 export type InspectChats  = {
   event:Event, // used in type narrowing
   sender:string,
-  chat_ids:string[] // must be a uuid4
+  chats:string[] // must be a uuid4
 }
 
 export type ChatMessage = {

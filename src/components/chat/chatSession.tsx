@@ -25,14 +25,16 @@ export default function ChatSession() {
           case "CONNECT":
             break;
           case "INSPECT_CHATS":
-            setChats((msg as InspectChats).chat_ids)
-            console.log(msg);
+            const chats = (msg as InspectChats).chats
+            console.log(chats)
+            setChats(chats)
             break;
           case "CREATE_CHAT":
             break;
           case "LEAVE_CHAT":
             break;
           case "JOINED_CHAT":
+            console.log("we should be doung somthong")
             setChatIds((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
             break;
           case "MESSAGE":
@@ -61,6 +63,7 @@ export default function ChatSession() {
       chat_id: chatIds[0]
     }
     chatHandler.websocket.send(JSON.stringify(msg));
+    setMessages((prevMessages) => [...prevMessages, msg]);
     setNewMessage('');
   };
 
@@ -81,7 +84,8 @@ export default function ChatSession() {
   }
   return (
     <div className='w-full'>
-      <h1>chats {chats} </h1>
+      <h1>name:{chatHandler.userName} </h1>
+      <h1>chats {chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)} </h1>
       <h1>Real-Time Chat</h1>
       <div className='flex flex-col gap-10'>
         {messages.map((message, index) => (
