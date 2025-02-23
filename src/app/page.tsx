@@ -1,4 +1,7 @@
 import Post from "@/components/Post";
+import SearchBar from "@/components/SearchBar";
+import FilterCategory from "@/components/FilterCategory";
+import { ITEM_CATEGORIES } from "@/lib/types";
 
 async function getPosts() {
     try {
@@ -13,13 +16,27 @@ async function getPosts() {
     }
 }
 
+function handleSearch(){
+
+}
+
+function handleCategory(){
+    console.log("Test");
+}
+
 export default async function Home() {
     const posts = await getPosts();
     return (
         <main>
             <div className="grid grid-cols-1 md:grid-cols-4 w-full">
-                <div className="w-full md:w-80 bg-onyx-100 h-auto">
-                    <h1>Test</h1>
+                <div className="w-full md:w-70 h-auto pl-4 pt-4 border-r-2">
+                    <SearchBar onChange={handleSearch}/>
+                    <div className="flex flex-col mr-8 gap-y-2">
+                        <label className="font-bold text-xl pt-4">Categories</label>
+                        {ITEM_CATEGORIES.map((category) => (
+                            <FilterCategory key={category} type={"checkbox"} name={category}/>
+                        ))}
+                    </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 col-span-3 gap-10 mt-10">
                     {posts.map((post) => (
