@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-import FileInput from "@/components/FileInput";
+import FileDropzone from "@/components/FileDropzone";
 import TextArea from "@/components/TextArea";
 import TextInput from "@/components/TextInput";
 import SelectInput from "@/components/SelectInput";
@@ -24,7 +24,7 @@ export default function ListingForm() {
         <form action={postItem}>
             <h1 className="font-bold text-lg text-center mb-6">Sell an Item</h1>
             <div className="flex gap-4">
-                <FileInput />
+                <FileDropzone />
                 <div className="flex flex-col gap-3">
                     <TextInput className="w-100" type="text" name="title" placeholder="What are you selling?">Title</TextInput>
                     <TextArea className="w-100 h-60" name="description" placeholder="E.g., Recently bought new. ">Description</TextArea>
