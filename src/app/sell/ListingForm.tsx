@@ -1,8 +1,8 @@
-import Button from "@/components/Button";
-import FileInput from "@/components/FileInput";
-import TextArea from "@/components/TextArea";
-import TextInput from "@/components/TextInput";
-import SelectInput from "@/components/SelectInput";
+import Button from "@/components/inputs/Button";
+import FileDropzone from "@/components/inputs/FileDropzone";
+import TextArea from "@/components/inputs/TextArea";
+import TextInput from "@/components/inputs/TextInput";
+import SelectInput from "@/components/inputs/SelectInput";
 
 import { ITEM_CATEGORIES } from "@/lib/types";
 
@@ -24,7 +24,7 @@ export default function ListingForm() {
         <form action={postItem}>
             <h1 className="font-bold text-lg text-center mb-6">Sell an Item</h1>
             <div className="flex gap-4">
-                <FileInput />
+                <FileDropzone />
                 <div className="flex flex-col gap-3">
                     <TextInput className="w-100" type="text" name="title" placeholder="What are you selling?">Title</TextInput>
                     <TextArea className="w-100 h-60" name="description" placeholder="E.g., Recently bought new. ">Description</TextArea>

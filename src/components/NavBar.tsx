@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Button";
+import Button from "@/components/inputs/Button";
 import Link from "next/link";
 import Image from "next/image";
 import {useState} from "react";
@@ -29,7 +29,7 @@ export default function NavBar(){
             ]
         }
         else {
-            classes = ["hidden", "md:flex", "justify-end", "items-center", "w-full", "h-fill"]
+            classes = ["hidden", "md:flex", "justify-end", "items-center", "w-full", "h-fit"]
         }
         return classes.join(" ");
     }

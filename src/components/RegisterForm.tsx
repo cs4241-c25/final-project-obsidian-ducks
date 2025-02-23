@@ -2,6 +2,13 @@
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { postRegister } from '../app/actions/actions'
+import Button from "@/components/inputs/Button";
+import TextInput from "@/components/inputs/TextInput";
+
+async function postRegister(formData: FormData) {
+    "use server";
+    try {
+        const email = formData.get("username") as string;
 
 
 export default function RegisterForm({ error }: { error?: string }) {
