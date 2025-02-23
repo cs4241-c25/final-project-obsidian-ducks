@@ -4,6 +4,7 @@ import uploadFile from "@/lib/uploadFile";
 import Item from "@/models/Item";
 
 import {S3Client} from "@aws-sdk/client-s3";
+import Like from "@/models/Like";
 
 /**
  * Fetches all the items being sold
@@ -60,7 +61,10 @@ export async function POST(request: Request) {
             Object.fromEntries(formData.entries()) // Converts it to a JS object
         );
         item.image = result.url;
+        item.likes = 0;
+        const like = new Like({itemID: item._id})
         await item.save();
+        await like.save()
     } catch (e) {
         console.error(e);
         return new Response(
