@@ -14,6 +14,7 @@ export const authOptions = {
             },
             // @ts-ignore
             async authorize(credentials) {
+                console.log("getting called")
                 if (credentials === undefined) {
                     return;
                 }

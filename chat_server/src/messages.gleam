@@ -12,7 +12,7 @@ pub type Message {
   Connect(event:String, sender:String)
   InspectChats(event:String,sender:String,List(Id(uuid.Uuid))) // this sends back a list of chats
   CreateChat(event:String,sender:String,chatters:List(String))
-  LeaveChat(event:String,sender:String,chat_id:Id(uuid.Uuid))
+  ChatEvent(event:String,sender:String,chat_id:Id(uuid.Uuid))
   Message(event:String,sender:String,msg_id:Id(uuid.Uuid),content:String,chat_id:Id(uuid.Uuid))
   Read(event:String,sender:String,msg_id:Id(uuid.Uuid))
   NonValid(event:String,sender:String)
@@ -25,7 +25,7 @@ pub fn decode_message(payload:String) {
       connect_decoder()
       ,send_chats_decoder()
       ,create_chat_decoder()
-      ,leave_chat_decoder()]
+      ,chat_event_decoder()]
     )
     zero.run(dynamic,decoder) |> io.debug()
   })
@@ -34,7 +34,10 @@ pub fn decode_message(payload:String) {
 fn connect_decoder() {
   use event <- zero.field("event", zero.string)
   use sender <- zero.field("sender", zero.string)
-  zero.success(Connect(event,sender))
+  case event {
+    "CONNECT" ->  zero.success(Connect(event,sender))
+    _ -> zero.failure(NonValid(event,sender),"not correct event")
+  }
 }
 fn create_chat_decoder() {
   use event <- zero.field("event", zero.string)
@@ -55,12 +58,12 @@ fn message_decoder() {
      }
    }
 }
-fn leave_chat_decoder() {
+fn chat_event_decoder() {
   use event <- zero.field("event", zero.string)
    use sender <- zero.field("sender", zero.string)
    use chat_id <- zero.field("chat_id",zero.string)
    case uuid.from_string(chat_id) {
-     Ok(chat_id) -> zero.success(LeaveChat(event,sender,chat_id))
+     Ok(chat_id) -> zero.success(ChatEvent(event,sender,chat_id))
      Error(_) -> zero.failure(NonValid(event,sender),"not a valid uuid")
    }
 }
@@ -83,8 +86,14 @@ pub fn encode_message_json(message:Message) {
   case message {
     Connect(_,_) -> todo
     CreateChat(_,_, _) -> todo
-    LeaveChat(_,_, _) -> todo
-    Message(event,sender, msg_id, content, chat_id) -> {
+    ChatEvent(event,sender, chat_id) -> {
+      json.object([
+        #("event",json.string(event)),
+        #("sender",json.string(sender)),
+        #("chat_id",json.string(uuid.to_string(chat_id))),
+      ])
+    }
+    Message(_event,sender, msg_id, content, chat_id) -> {
       json.object([
         #("event",json.string("MESSAGE")),
         #("sender",json.string(sender)),

@@ -2,14 +2,16 @@
 import { useState, useEffect } from 'react';
 import MessageDisplay from '@/components/chat/MessageDisplay';
 import { useWebSocket } from '@/components/chat/ChatContext';
-import { ChatMessage, InspectChats, Message} from "@/lib/types"
+import { ChatEvent, ChatMessage, CreateChat, InspectChats, Message} from "@/lib/types"
 
 export default function ChatSession() {
   const chatHandler = useWebSocket()
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chats, setChats] = useState<string[]>([]);
+  const [chatIds,setChatIds] = useState<string[]>([])
   const [newMessage, setNewMessage] = useState('');
+  const [otherChatters,setOtherChatters] = useState<string[]>([])
 
   useEffect(() => {
     chatHandler.addOnMessageSub((msgEvent) => {
@@ -30,6 +32,9 @@ export default function ChatSession() {
             break;
           case "LEAVE_CHAT":
             break;
+          case "JOINED_CHAT":
+            setChatIds((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
+            break;
           case "MESSAGE":
             setMessages((prevMessages) => [...prevMessages, (msg as ChatMessage)]);
             break;
@@ -46,15 +51,31 @@ export default function ChatSession() {
     if(chatHandler.websocket === undefined) {
       return
     }
+    if(chatIds.length <= 0) {
+      return
+    }
     const msg:ChatMessage = {
       event:"MESSAGE",
       sender: chatHandler.userName, // subing this for a
       content:  newMessage,
-      chat_id: ''
+      chat_id: chatIds[0]
     }
     chatHandler.websocket.send(JSON.stringify(msg));
     setNewMessage('');
   };
+
+  function createChat() {
+    if(chatHandler.websocket === undefined) {
+      return
+    }
+    const createChat:CreateChat = {
+        event: 'CREATE_CHAT',
+        sender: chatHandler.userName,
+        chatters: otherChatters
+    }
+    chatHandler.websocket.send(JSON.stringify(createChat));
+  }
+
   if(chatHandler === undefined) {
     return
   }
@@ -77,6 +98,14 @@ export default function ChatSession() {
         />
 
         <button onClick={sendMessage}>Send</button>
+        <div>
+          <h1></h1>
+          <input onChange={(event) => {
+            const chattersStr = event.target.value
+            setOtherChatters(chattersStr.split(","))
+          }}></input>
+          <button onClick={createChat}>Create chat</button>
+        </div>
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ export type Event =
 "MESSAGE" |  //message within a chat room
 "CREATE_CHAT" |  //create new chatr room
 "LEAVE_CHAT" | //leave chat room
+"JOINED_CHAT" |
 "INSPECT_CHATS" | //find all chat rooms that client is in
 "READ_MESSAGE" // send read message
 
@@ -37,7 +38,7 @@ export type CreateChat = {
   chatters:string[]
 }
 
-export type LeaveChat = {
+export type ChatEvent = {
   event:Event, // used in type narrowing
   sender:string,
   chat_id:string // must be a uuid4
@@ -62,4 +63,4 @@ export type ReadMesage = {
   msg_id:string // must be a uuid4
 }
 
-export type Message = Connect | CreateChat | LeaveChat | InspectChats | ChatMessage | ReadMesage
+export type Message = Connect | CreateChat | ChatEvent | InspectChats | ChatMessage | ReadMesage
