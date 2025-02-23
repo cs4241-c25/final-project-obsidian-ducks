@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Button from "@/components/Button";
+import Button from "@/components/inputs/Button";
 import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
 

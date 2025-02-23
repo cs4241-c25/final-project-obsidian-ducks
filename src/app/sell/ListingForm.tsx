@@ -1,8 +1,8 @@
-import Button from "@/components/Button";
-import FileDropzone from "@/components/FileDropzone";
-import TextArea from "@/components/TextArea";
-import TextInput from "@/components/TextInput";
-import SelectInput from "@/components/SelectInput";
+import Button from "@/components/inputs/Button";
+import FileDropzone from "@/components/inputs/FileDropzone";
+import TextArea from "@/components/inputs/TextArea";
+import TextInput from "@/components/inputs/TextInput";
+import SelectInput from "@/components/inputs/SelectInput";
 
 import { ITEM_CATEGORIES } from "@/lib/types";
 

@@ -1,4 +1,4 @@
-import Button from "@/components/Button";
+import Button from "@/components/inputs/Button";
 import Image from "next/image";
 import Link from "next/link";
 interface PostInput {

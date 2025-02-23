@@ -16,7 +16,7 @@ export default function FileDropzone() {
 
     return (
         <div className="flex items-center justify-center size-140">
-            <label className="flex flex-col items-center justify-center w-full h-full relative border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+            <label className="flex flex-col items-center justify-center w-full h-full relative border-2 border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                 <input className="w-full h-full absolute border opacity-0" type="file" accept="image/jpeg, image/jpg, image/png" name="image" multiple={true} required={true} onChange={handleChange}/>
                 <div className="flex flex-col items-center justify-center pt-5 pb-4">
                     <svg className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" aria-hidden="true"

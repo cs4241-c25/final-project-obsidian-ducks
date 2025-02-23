@@ -1,5 +1,5 @@
-import Button from "@/components/Button";
-import TextInput from "@/components/TextInput";
+import Button from "@/components/inputs/Button";
+import TextInput from "@/components/inputs/TextInput";
 
 async function postRegister(formData: FormData) {
     "use server";
