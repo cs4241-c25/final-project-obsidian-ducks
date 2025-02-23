@@ -15,8 +15,9 @@ export default function Home() {
                 method: "GET",
             });
             if (!response.ok) throw new Error(response.statusText);
-            const data = await response.json()
-            if(filteredList.length > 0){
+            const data = await response.json();
+            console.log(filteredCategory);
+            if(filteredCategory.length > 0){
                 setPosts(filteredList);
             } else {
                 setPosts(data);
@@ -27,11 +28,15 @@ export default function Home() {
         }
     }
     const [filteredList, setFilteredList] = useState([]);
+    const [filteredCategory, setFilteredCategory] = useState([]);
+
     async function handleFiltered(e: React.ChangeEvent<HTMLInputElement>) {
         try {
             if(!e.target.checked){
                 let filteredWords = filteredList.filter((words) => words.category !== e.target.name);
+                let filteredCategories = filteredCategory.filter((category) => category !== e.target.name);
                 setFilteredList(filteredWords);
+                setFilteredCategory(filteredCategories)
             } else {
                 const response = await fetch("http://localhost:3000/api/filter", {
                     method: "POST",
@@ -43,6 +48,8 @@ export default function Home() {
                 if (!response.ok) throw new Error(response.statusText);
                 const data = await response.json();
                 setFilteredList(prevList => [...prevList, ...data]);
+                setFilteredCategory(prevList => [...prevList, e.target.name]);
+
             }
         } catch (e) {
             console.error(e);
