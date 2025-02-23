@@ -3,10 +3,9 @@
 import Post from "@/components/Post";
 import SearchBar from "@/components/SearchBar";
 import FilterCategory from "@/components/FilterCategory";
-import { ITEM_CATEGORIES } from "@/lib/types";
+import {ITEM_CATEGORIES} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import TextInput from "@/components/inputs/TextInput";
-
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
@@ -17,9 +16,9 @@ export default function Home() {
             });
             if (!response.ok) throw new Error(response.statusText);
             const data = await response.json();
-            console.log(filteredCategory);
             if(filteredCategory.length > 0){
-                setPosts(filteredList);
+                let newData = filteredList.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
+                setPosts(newData);
             } else {
                 setPosts(data);
             }
@@ -30,10 +29,19 @@ export default function Home() {
     }
     const [filteredList, setFilteredList] = useState([]);
     const [filteredCategory, setFilteredCategory] = useState([]);
+    const [filteredPrice, setFilteredPrice] = useState({
+        min: 0,
+        max: 500,
+    });
 
     async function handleFiltered(e: React.ChangeEvent<HTMLInputElement>) {
         try {
-            if(!e.target.checked){
+            if (e.target.name === "min"){
+                setFilteredPrice(prevVal => ({...prevVal, min: Number(e.target.value)}));
+            } else if (e.target.name === "max"){
+                setFilteredPrice(prevVal => ({...prevVal, max: Number(e.target.value)}));
+            }
+            if(!e.target.checked && isNaN(Number(e.target.value))){
                 let filteredWords = filteredList.filter((words) => words.category !== e.target.name);
                 let filteredCategories = filteredCategory.filter((category) => category !== e.target.name);
                 setFilteredList(filteredWords);
@@ -44,13 +52,14 @@ export default function Home() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(e.target.name),
+                    body: JSON.stringify({name: e.target.name, value: e.target.value}),
                 });
                 if (!response.ok) throw new Error(response.statusText);
                 const data = await response.json();
-                setFilteredList(prevList => [...prevList, ...data]);
+                let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
+                console.log(filteredPrice.min, filteredPrice.max);
+                setFilteredList(prevList => [...prevList, ...newData]);
                 setFilteredCategory(prevList => [...prevList, e.target.name]);
-
             }
         } catch (e) {
             console.error(e);
@@ -60,7 +69,7 @@ export default function Home() {
 
     useEffect(() => {
         getPosts().then();
-    }, [filteredList])
+    }, [filteredList, filteredPrice])
     function handleSearch(){
     }
 
@@ -77,12 +86,16 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col mr-8">
                     <label className="font-bold text-xl pt-4">Price Range</label>
-                        <div className="flex gap-x-5 pt-2">
-                            <TextInput className="w-20" type={"number"} name={"lowInput"} placeholder={"$ Min"}
-                                       ></TextInput>
-                            <h1 className="content-center">-</h1>
-                            <TextInput className="w-20" type={"number"} name={"highInput"} placeholder={"$ Max"}
-                                       ></TextInput>
+                        <div className="flex pt-2 gap-x-1">
+                            <h1 className="place-self-center">$</h1>
+                            <span>
+                            <TextInput className="w-17" type={"number"} name={"min"} placeholder={"Min"} onChange={handleFiltered}></TextInput>
+                            </span>
+                            <h1 className="content-center px-2">-</h1>
+                            <h1 className="place-self-center">$</h1>
+                            <span>
+                            <TextInput className="w-17" type={"number"} name={"max"} placeholder={"Max"} onChange={handleFiltered}></TextInput>
+                                </span>
                         </div>
                     </div>
 
