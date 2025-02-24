@@ -27,8 +27,8 @@ const ItemSchema = new mongoose.Schema({
         required: true,
     },
     username: {
-        type: String,
-        required: true,
+      type: String,
+        required: true
     },
     likes: {
         type: Number
