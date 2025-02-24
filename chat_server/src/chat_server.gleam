@@ -168,6 +168,21 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
         }
         messages.Read(_event,sender,msg_id) -> actor.continue(client_state)
         messages.CreateChat(_event,sender, chatters) ->  actor.continue(client_state)
+        messages.ChatEvent("LEAVE_CHAT",sender, chat_id) ->  {
+          case dict.get(client_state.chat_rooms,chat_id) {
+            Ok(chat_room) ->  {
+              let chat_rooms = chat_room
+              |> list.filter(fn(chatter) {chatter != sender })
+              |> dict.insert(client_state.chat_rooms,chat_id,_)
+
+              send_message(message,conn)
+              actor.continue(ClientState(..client_state,chat_rooms:chat_rooms))
+            }
+            Error(_) -> {
+              actor.continue(client_state)
+            }
+          }
+        }
         messages.ChatEvent(_event,_sender, _chat_id) ->  {
           send_message(message,conn)
           actor.continue(client_state)
@@ -247,18 +262,17 @@ fn handle_create_chat_room(client_state:ClientState,conn,sender:String, chatters
 }
 
 fn handle_leave_chat(client_state:ClientState,_conn,sender,chat_id) {
-  todo as "finish me"
-  // let chat_server_state = process.call(client_state.server,GetCurrentServer,10)  //todo handle crash
+  //tell all other chats ur leaving
+  let _res = client_state.chat_rooms
+  |> dict.get(chat_id)
+  |> result.map(
+    chat_to_room(client_state,client_state.id,_,messages.ChatEvent("LEAVE_CHAT",sender,chat_id))
+  )
+  //delete the room from your memory
+  let chats = client_state.chat_rooms
+  |> dict.delete(chat_id)
 
-  // use chat_room_users <- result.try(result.replace_error(dict.get(chat_server_state.chat_rooms,chat_id),"Failed to find chat room were the chatters at"))
-  // let chat_room_users = chat_room_users
-  // |> list.filter(fn(chatter) { chatter == sender }) // remove chatter
-  // let chat_rooms = dict.insert(chat_server_state.chat_rooms,chat_id,chat_room_users)
-
-  // process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chat_rooms:chat_rooms)))
-
-  //leave a chat
-  Ok(client_state)
+  Ok(ClientState(..client_state,chat_rooms:chats))
 }
 
 

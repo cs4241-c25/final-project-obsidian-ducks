@@ -34,8 +34,7 @@ export default function ChatSession() {
           case "LEAVE_CHAT":
             break;
           case "ADDED_TO_CHAT":
-            console.log("we should be doung somthong")
-            setChatIds((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
+              setChatIds((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
             break;
           case "MESSAGE":
             setMessages((prevMessages) => [...prevMessages, (msg as ChatMessage)]);
