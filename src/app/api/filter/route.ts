@@ -3,9 +3,13 @@ import Item from "@/models/Item";
 export async function POST(req: Request) {
     try {
         const data = await req.json();
-        console.log(data);
-        if(Number(data) && data.name === "min"){
-            const items = await Item.find({price: { $gte: data }}).exec();
+        if(Number(data)) {
+            let items;
+            if (data.name === "min") {
+                items = await Item.find({price: {$gte: data}}).exec();
+            } else if (data.name === "max") {
+                items = await Item.find({price: {$lte: data}}).exec();
+            }
             return new Response(
                 JSON.stringify(items),
                 {

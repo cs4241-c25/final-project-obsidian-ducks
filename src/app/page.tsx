@@ -9,6 +9,12 @@ import TextInput from "@/components/inputs/TextInput";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
+    const [filteredList, setFilteredList] = useState([]);
+    const [filteredCategory, setFilteredCategory] = useState([]);
+    const [filteredPrice, setFilteredPrice] = useState({
+        min: 0,
+        max: 500,
+    });
     async function getPosts() {
         try {
             const response = await fetch("http://localhost:3000/api/items", {
@@ -28,19 +34,21 @@ export default function Home() {
             throw e;
         }
     }
-    const [filteredList, setFilteredList] = useState([]);
-    const [filteredCategory, setFilteredCategory] = useState([]);
-    const [filteredPrice, setFilteredPrice] = useState({
-        min: 0,
-        max: 500,
-    });
 
     async function handleFiltered(e: React.ChangeEvent<HTMLInputElement>) {
         try {
-            if (e.target.name === "min"){
-                setFilteredPrice(prevVal => ({...prevVal, min: Number(e.target.value)}));
-            } else if (e.target.name === "max"){
-                setFilteredPrice(prevVal => ({...prevVal, max: Number(e.target.value)}));
+            if (e.target.name === "min") {
+                if (e.target.value === "") {
+                    setFilteredPrice(prevVal => ({...prevVal, min: 0}));
+                } else {
+                    setFilteredPrice(prevVal => ({...prevVal, min: Number(e.target.value)}));
+                }
+            } else if (e.target.name === "max") {
+                if (e.target.value === "") {
+                    setFilteredPrice(prevVal => ({...prevVal, max: 500}));
+                } else {
+                    setFilteredPrice(prevVal => ({...prevVal, max: Number(e.target.value)}));
+                }
             }
             if(!e.target.checked && isNaN(Number(e.target.value))){
                 let filteredWords = filteredList.filter((words) => words.category !== e.target.name);
@@ -58,9 +66,10 @@ export default function Home() {
                 if (!response.ok) throw new Error(response.statusText);
                 const data = await response.json();
                 let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
-                console.log(filteredPrice.min, filteredPrice.max);
                 setFilteredList(prevList => [...prevList, ...newData]);
-                setFilteredCategory(prevList => [...prevList, e.target.name]);
+                if(e.target.name !== "min" && e.target.name !== "max"){
+                    setFilteredCategory(prevList => [...prevList, e.target.name]);
+                }
             }
         } catch (e) {
             console.error(e);
@@ -69,7 +78,8 @@ export default function Home() {
     }
 
     useEffect(() => {
-        getPosts().then();
+        getPosts().then(() => {
+        });
     }, [filteredList, filteredPrice])
     function handleSearch(){
     }
