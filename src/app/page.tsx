@@ -7,15 +7,24 @@ import {ITEM_CATEGORIES} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import TextInput from "@/components/inputs/TextInput";
 
+interface Post {
+    _id: string;
+    title: string;
+    description: string;
+    category: string;
+    price: number;
+    image: string;
+}
+
 export default function Home() {
-    const [posts, setPosts] = useState([]);
-    const [prevState, setPrevState] = useState([]);
-    const [filteredList, setFilteredList] = useState([]);
-    const [filteredCategory, setFilteredCategory] = useState([]);
-    const [filteredPrice, setFilteredPrice] = useState({
-        min: 0,
-        max: 500,
-    });
+    const [posts, setPosts] = useState<Post[]>([]);
+    // const [prevState, setPrevState] = useState([]);
+    // const [filteredList, setFilteredList] = useState([]);
+    // const [filteredCategory, setFilteredCategory] = useState([]);
+    // const [filteredPrice, setFilteredPrice] = useState({
+    //     min: 0,
+    //     max: 500,
+    // });
     async function getPosts() {
         try {
             const response = await fetch("http://localhost:3000/api/items", {
@@ -23,13 +32,7 @@ export default function Home() {
             });
             if (!response.ok) throw new Error(response.statusText);
             const data = await response.json();
-            if(filteredCategory.length > 0){
-                let newData = filteredList.filter((item) => item.price >= filteredPrice.min && item.price <= filteredPrice.max);
-                setPosts(newData);
-            } else {
-                let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
-                setPosts(newData);
-            }
+            setPosts(data);
         } catch (e) {
             console.error(e);
             throw e;
@@ -37,91 +40,20 @@ export default function Home() {
     }
 
     async function handleFiltered(e: React.ChangeEvent<HTMLInputElement>) {
-        try {
-            if (e.target.name === "min") {
-                if (e.target.value === "") {
-                    setFilteredPrice(prevVal => ({...prevVal, min: 0}));
-                } else {
-                    setFilteredPrice(prevVal => ({...prevVal, min: Number(e.target.value)}));
-                }
-            } else if (e.target.name === "max") {
-                if (e.target.value === "") {
-                    setFilteredPrice(prevVal => ({...prevVal, max: 500}));
-                } else {
-                    setFilteredPrice(prevVal => ({...prevVal, max: Number(e.target.value)}));
-                }
-            }
-            if(!e.target.checked && isNaN(Number(e.target.value))){
-                let filteredWords = filteredList.filter((words) => words.category !== e.target.name);
-                let filteredCategories = filteredCategory.filter((category) => category !== e.target.name);
-                setFilteredList(filteredWords);
-                setFilteredCategory(filteredCategories)
-            } else {
-                const response = await fetch("http://localhost:3000/api/filter", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({name: e.target.name, value: e.target.value}),
-                });
-                if (!response.ok) throw new Error(response.statusText);
-                const data = await response.json();
-                let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
-                setFilteredList(prevList => [...prevList, ...newData]);
-                setPrevState(filteredList);
-                if(e.target.name !== "min" && e.target.name !== "max"){
-                    setFilteredCategory(prevList => [...prevList, e.target.name]);
-                }
-            }
-        } catch (e) {
-            console.error(e);
-            throw e;
-        }
+        const filtered = posts.filter((post) => post.category === e.target.value);
+        setPosts(filtered);
     }
 
     async function handleSearch(e: React.ChangeEvent<HTMLInputElement>){
-        try {
-            if(e.target.value === ""){
-                setPosts(filteredList);
-            } else {
-                const response = await fetch("http://localhost:3000/api/search", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(e.target.value),
-                });
-                if (!response.ok) throw new Error(response.statusText);
-                const data = await response.json();
-                const titles = data.map((item) => item.title);
-                console.log("This is filteredList ", filteredList);
-                let newData= filteredList.filter((x) => titles.includes(x.title));
-                console.log("This is newData ", newData);
-                if (newData.length > 0) {
-                    setPrevState(filteredList);
-                    setFilteredList(newData);
-                    return newData;
-                    console.log("This is list when it matches ", filteredList);
-                } else {
-                    console.log("This is prev  if no matches", prevState);
-                    if (prevState.length > 0) {
-                        setFilteredList(prevState);
-                        console.log("This is filtered after it matches ", filteredList);
-                    }
-                }
-            }
-        } catch (e) {
-            console.error(e);
-            throw e;
-        }
+        const filtered = posts.filter((post) => post.title.toLowerCase().includes(e.target.value.toLowerCase()));
+        setPosts(filtered);
+
+        if (e.target.value === "") await getPosts();
     }
 
     useEffect(() => {
-        getPosts().then(() => {
-            console.log("This is effect post ", posts);
-            console.log("This is filteredList ", filteredList);
-        });
-    }, [filteredList, filteredPrice]);
+        getPosts().then();
+    }, []);
 
 
     return (
