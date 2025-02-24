@@ -9,6 +9,7 @@ import TextInput from "@/components/inputs/TextInput";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
+    const [prevState, setPrevState] = useState([]);
     const [filteredList, setFilteredList] = useState([]);
     const [filteredCategory, setFilteredCategory] = useState([]);
     const [filteredPrice, setFilteredPrice] = useState({
@@ -23,7 +24,7 @@ export default function Home() {
             if (!response.ok) throw new Error(response.statusText);
             const data = await response.json();
             if(filteredCategory.length > 0){
-                let newData = filteredList.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
+                let newData = filteredList.filter((item) => item.price >= filteredPrice.min && item.price <= filteredPrice.max);
                 setPosts(newData);
             } else {
                 let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
@@ -67,6 +68,7 @@ export default function Home() {
                 const data = await response.json();
                 let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
                 setFilteredList(prevList => [...prevList, ...newData]);
+                setPrevState(filteredList);
                 if(e.target.name !== "min" && e.target.name !== "max"){
                     setFilteredCategory(prevList => [...prevList, e.target.name]);
                 }
@@ -79,22 +81,35 @@ export default function Home() {
 
     async function handleSearch(e: React.ChangeEvent<HTMLInputElement>){
         try {
-            console.log(e.target.value);
-            const response = await fetch("http://localhost:3000/api/search", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(e.target.value),
-            });
-            if (!response.ok) throw new Error(response.statusText);
-            const data = await response.json();
-            console.log("This is filteredList ", filteredList);
-            console.log("This is data ", data);
-            setFilteredList(prevList => [...prevList, ...data]);
-            let newData = filteredList.filter((x) => x.title === data[0].title);
-            console.log("This is newData ", newData);
-            setFilteredList(newData);
+            if(e.target.value === ""){
+                setPosts(filteredList);
+            } else {
+                const response = await fetch("http://localhost:3000/api/search", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(e.target.value),
+                });
+                if (!response.ok) throw new Error(response.statusText);
+                const data = await response.json();
+                const titles = data.map((item) => item.title);
+                console.log("This is filteredList ", filteredList);
+                let newData= filteredList.filter((x) => titles.includes(x.title));
+                console.log("This is newData ", newData);
+                if (newData.length > 0) {
+                    setPrevState(filteredList);
+                    setFilteredList(newData);
+                    return newData;
+                    console.log("This is list when it matches ", filteredList);
+                } else {
+                    console.log("This is prev  if no matches", prevState);
+                    if (prevState.length > 0) {
+                        setFilteredList(prevState);
+                        console.log("This is filtered after it matches ", filteredList);
+                    }
+                }
+            }
         } catch (e) {
             console.error(e);
             throw e;
@@ -103,6 +118,8 @@ export default function Home() {
 
     useEffect(() => {
         getPosts().then(() => {
+            console.log("This is effect post ", posts);
+            console.log("This is filteredList ", filteredList);
         });
     }, [filteredList, filteredPrice]);
 
