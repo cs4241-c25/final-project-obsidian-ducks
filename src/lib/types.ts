@@ -1,18 +1,18 @@
 export enum ItemCategory {
-    Furniture = "Furniture",
-    Electronics = "Electronics",
     Clothes = "Clothes",
-    Stationary = "Stationary",
+    Electronics = "Electronics",
     HomeEssentials = "Home Essentials",
-    HandMade = "Handmade"
+    HandMade = "Handmade",
+    Furniture = "Furniture",
+    Stationary = "Stationary"
 }
 
 export const ITEM_CATEGORIES = [
-    ItemCategory.Furniture,
-    ItemCategory.Electronics,
     ItemCategory.Clothes,
-    ItemCategory.Stationary,
+    ItemCategory.Electronics,
+    ItemCategory.Furniture,
     ItemCategory.HomeEssentials,
-    ItemCategory.HandMade
+    ItemCategory.HandMade,
+    ItemCategory.Stationary,
 ];
 

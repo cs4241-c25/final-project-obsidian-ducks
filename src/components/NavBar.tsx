@@ -4,8 +4,8 @@ import Button from "@/components/Button";
 
 export default function NavBar(){
     return (
-        <nav className="w-screen h-[10vh] flex justify-between items-center border">
-            <div className="flex h-full justify-between items-center gap-8 md:text-md lg:text-lg font-semibold ml-10">
+        <nav className="w-screen h-[10vh] flex justify-between items-center border relative z-10">
+            <div className="flex h-full justify-between items-center gap-8 md:text-sm lg:text-base font-semibold ml-10">
                 <Link href="/profile">
                     <p>Login</p>
                 </Link>
@@ -19,7 +19,7 @@ export default function NavBar(){
                 </svg>
             </Link>
             <Link href="/sell">
-                <Button className="mr-10 md:text-md lg:text-lg" type="button">Sell an Item</Button>
+                <Button className="mr-10 md:text-sm lg:text-base" type="button">Sell an Item</Button>
             </Link>
         </nav>
     );
