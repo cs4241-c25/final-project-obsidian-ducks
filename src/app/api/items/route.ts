@@ -4,7 +4,6 @@ import uploadFile from "@/lib/uploadFile";
 import Item from "@/models/Item";
 
 import {S3Client} from "@aws-sdk/client-s3";
-import Like from "@/models/Like";
 
 /**
  * Fetches all the items being sold
@@ -37,6 +36,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
 
     // Upload image to S3 bucket
+    const sessionUser = formData.get("username") as String
     const S3 = new S3Client();
     const file = formData.get("image") as File;
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -62,9 +62,11 @@ export async function POST(request: Request) {
         );
         item.image = result.url;
         item.likes = 0;
-        const like = new Like({itemID: item._id})
+        // user that sold the item
+        item.username = sessionUser
+
         await item.save();
-        await like.save()
+
     } catch (e) {
         console.error(e);
         return new Response(
