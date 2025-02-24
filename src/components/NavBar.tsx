@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import Button from "@/components/inputs/Button";
+import Button from "@/components/Button";
 
 export default function NavBar(){
     return (
