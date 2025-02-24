@@ -1,10 +1,8 @@
 'use client'
 import Button from "@/components/inputs/Button";
-import Button from "@/components/Button";
 import Image from "next/image";
 import Link from "next/link";
-import {getSession} from "next-auth/react";
-import {useState} from "react";
+import {useSession} from "next-auth/react";
 interface PostInput {
     _id: string;
     title: string;
@@ -13,22 +11,32 @@ interface PostInput {
     price: number;
     image: string;
 }
-/*async function handleLikes(itemID) {
+
+
+export default function Post(props: PostInput) {
+    const {data: session} = useSession()
+    const usernameSession = session?.user?.name
+    async function handleLikes(itemID : string) {
+     let data = {
+         _id: itemID,
+         username: usernameSession
+
+     }
     try {
         const response = await fetch("http://localhost:3000/api/likes", {
             method: "POST",
-            body: itemID
+            body: JSON.stringify(data),
+            headers: {'Content-type' : 'application/json'}
+
         });
-        console.log("here")
-        if (!response.ok) throw new Error(response.statusText);
+        const test = await response.json()
+        console.log(test)
     } catch (e) {
         console.error(e);
     }
 
-}*/
+}
 
-export default function Post(props: PostInput) {
-    const [like, setLikeCount] = useState(0)
     return (
         <div>
             <div className="w-full sm:w-[280px] md:w-[300px] h-auto rounded-b-xl shadow-lg">
@@ -43,14 +51,13 @@ export default function Post(props: PostInput) {
                         </Button>
                     </Link>
                     <Button  type="button" className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md bg-white hover:bg-auburn-300">
-                        <Image onClick={() => setLikeCount(like+ 1)} src="/like.svg" alt="Heart Image" width={15} height={15}/>
+                        <Image onClick={() => handleLikes(props._id)} src="/like.svg" alt="Heart Image" width={15} height={15}/>
                     </Button>
                 </div>
                 <div className="border-t onyx-700 p-2">
                     <h1 className="font-bold text-lg truncate">{props.title}</h1>
                     <h2 className="text-onyx-700">{props.category}</h2>
                     <h2 className="text-onyx-700">${props.price}</h2>
-                    <p>{like}</p>
                 </div>
             </div>
         </div>
