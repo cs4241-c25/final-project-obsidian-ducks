@@ -5,13 +5,20 @@ import TextInput from "@/components/inputs/TextInput";
 import SelectInput from "@/components/inputs/SelectInput";
 
 import { ITEM_CATEGORIES } from "@/lib/types";
+import {getServerSession} from "next-auth";
 
 async function postItem(formData: FormData) {
     "use server";
+    const session = await getServerSession()
+    const sessionUser = JSON.parse(JSON.stringify(session)).user.name
+    const sellForm = formData
+    sellForm.append("username", sessionUser)
+
     try {
         const response = await fetch("http://localhost:3000/api/items", {
             method: "POST",
-            body: formData
+            body: sellForm
+
         });
         if (!response.ok) throw new Error(response.statusText);
     } catch (e) {
