@@ -20,7 +20,8 @@ export default function Home() {
                 let newData = filteredList.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
                 setPosts(newData);
             } else {
-                setPosts(data);
+                let newData = data.filter((price) => price.price >= filteredPrice.min && price.price <= filteredPrice.max);
+                setPosts(newData);
             }
         } catch (e) {
             console.error(e);
