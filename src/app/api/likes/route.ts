@@ -1,5 +1,3 @@
-import {S3Client} from "@aws-sdk/client-s3";
-import uploadFile from "@/lib/uploadFile";
 import Item from "@/models/Item";
 import Like from "@/models/Like";
 import {getServerSession} from "next-auth";
