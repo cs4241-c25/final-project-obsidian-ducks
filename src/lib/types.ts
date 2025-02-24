@@ -21,7 +21,7 @@ export type Event =
 "MESSAGE" |  //message within a chat room
 "CREATE_CHAT" |  //create new chatr room
 "LEAVE_CHAT" | //leave chat room
-"JOINED_CHAT" |
+"ADDED_TO_CHAT" |
 "INSPECT_CHATS" | //find all chat rooms that client is in
 "READ_MESSAGE" // send read message
 

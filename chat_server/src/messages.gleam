@@ -12,6 +12,7 @@ pub type Message {
   Connect(event:String, sender:String)
   InspectChats(event:String,sender:String,List(Id(uuid.Uuid))) // this sends back a list of chats
   CreateChat(event:String,sender:String,chatters:List(String))
+  AddedToChat(event:String,sender:String,chat_id:Id(uuid.Uuid),chatters:List(String))
   ChatEvent(event:String,sender:String,chat_id:Id(uuid.Uuid))
   Message(event:String,sender:String,msg_id:Id(uuid.Uuid),content:String,chat_id:Id(uuid.Uuid))
   Read(event:String,sender:String,msg_id:Id(uuid.Uuid))
@@ -110,6 +111,14 @@ pub fn encode_message_json(message:Message) {
         #("event",json.string("INSPECT_CHATS")),
         #("sender",json.string(sender)),
         #("chats",json.array(chats ,json.string)),
+      ])
+    }
+    AddedToChat(_, sender, chat_id, chatters) -> {
+      json.object([
+        #("event",json.string("ADDED_TO_CHAT")),
+        #("sender",json.string(sender)),
+        #("chatters",json.array(chatters,json.string)),
+        #("chat_id",json.string(uuid.to_string(chat_id))),
       ])
     }
   }
