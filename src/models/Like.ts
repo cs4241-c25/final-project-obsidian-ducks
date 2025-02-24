@@ -1,4 +1,4 @@
-import mongoose, {mongo, Schema} from 'mongoose'
+import mongoose from 'mongoose'
 
 const LikeSchema = new mongoose.Schema({
     itemID: {type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true},
