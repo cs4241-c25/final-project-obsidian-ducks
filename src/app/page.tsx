@@ -77,12 +77,35 @@ export default function Home() {
         }
     }
 
+    async function handleSearch(e: React.ChangeEvent<HTMLInputElement>){
+        try {
+            console.log(e.target.value);
+            const response = await fetch("http://localhost:3000/api/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(e.target.value),
+            });
+            if (!response.ok) throw new Error(response.statusText);
+            const data = await response.json();
+            console.log("This is filteredList ", filteredList);
+            console.log("This is data ", data);
+            setFilteredList(prevList => [...prevList, ...data]);
+            let newData = filteredList.filter((x) => x.title === data[0].title);
+            console.log("This is newData ", newData);
+            setFilteredList(newData);
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+    }
+
     useEffect(() => {
         getPosts().then(() => {
         });
-    }, [filteredList, filteredPrice])
-    function handleSearch(){
-    }
+    }, [filteredList, filteredPrice]);
+
 
     return (
         <main>

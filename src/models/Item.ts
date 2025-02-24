@@ -31,6 +31,7 @@ const ItemSchema = new mongoose.Schema({
         required: true,
     }
 });
+ItemSchema.index({"title": "text"});
 
 const Item =  mongoose.models.Item || mongoose.model('Item', ItemSchema);
 
