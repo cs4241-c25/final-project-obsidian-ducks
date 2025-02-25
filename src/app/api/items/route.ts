@@ -4,6 +4,8 @@ import uploadFile from "@/lib/uploadFile";
 import Item from "@/models/Item";
 
 import {S3Client} from "@aws-sdk/client-s3";
+import User from "@/models/User";
+import Like from "@/models/Like";
 
 /**
  * Fetches all the items being sold
@@ -60,12 +62,14 @@ export async function POST(request: Request) {
         const item = new Item(
             Object.fromEntries(formData.entries()) // Converts it to a JS object
         );
+        const like = new Like({itemID: item._id})
+        const updateUserItems = await User.updateOne({'username': sessionUser} ,{$push : {'items': item._id}})
         item.image = result.url;
-        item.likes = 0;
         // user that sold the item
         item.username = sessionUser
 
         await item.save();
+        await like.save()
 
     } catch (e) {
         console.error(e);
