@@ -26,15 +26,18 @@ pub type Message {
 }
 
 pub fn decode_message(payload:String) {
-  json.decode(payload,fn(dynamic) {
-    let decoder = zero.one_of(message_decoder(),[
+  json.decode(payload,message_decoder())
+}
+pub fn message_decoder() {
+  fn(dynamic) {
+    let decoder = zero.one_of(chat_message_decoder(),[
       connect_decoder()
       ,send_chats_decoder()
       ,create_chat_decoder()
       ,chat_event_decoder()]
     )
     zero.run(dynamic,decoder) |> io.debug()
-  })
+  }
 }
 
 fn connect_decoder() {
@@ -51,7 +54,7 @@ fn create_chat_decoder() {
   use chatters <- zero.field("chatters", zero.list(zero.string))
   zero.success(CreateChat(event,sender,chatters))
 }
-fn message_decoder() {
+fn chat_message_decoder() {
   use event <- zero.field("event", zero.string)
    use sender <- zero.field("sender", zero.string)
    use contnent <- zero.field("content",zero.string)
@@ -182,6 +185,8 @@ pub fn encode_user_chat(username:String,ids:List(uuid.Uuid)) {
     #("chat_ids",bson.Array(list.map(ids,fn(id) {bson.String(uuid.to_string(id))}))),
   ]
 }
+
+
 
 // fn disconect_decoder() {
 //   use sender <- zero.field("sender", zero.string)
