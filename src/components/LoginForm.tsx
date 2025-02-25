@@ -38,10 +38,10 @@ export default function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1>Login:</h1>
-            <TextInput type="text" name="username" placeholder="Enter your username">Username</TextInput>
-            <TextInput type="password" name="password" placeholder="Enter your password">Password</TextInput>
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
+            <TextInput type="text" name="username" placeholder="Enter your school email">Username:</TextInput>
+            <TextInput type="password" name="password" placeholder="Enter your password">Password:</TextInput>
             <Button type="submit">Login</Button>
         </form>
     );

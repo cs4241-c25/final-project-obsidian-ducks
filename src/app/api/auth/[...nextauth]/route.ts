@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '@/models/User';
 import connectToDatabase from '@/lib/db';
+import bcrypt from 'bcrypt';
 
 // @ts-ignore
 export const authOptions = {
@@ -15,25 +16,36 @@ export const authOptions = {
             // @ts-ignore
             async authorize(credentials) {
 
-                if (credentials === undefined) {
-                    return;
+                if (!credentials) {
+                    console.error('No credentials provided');
+                    return null;
                 }
-                await connectToDatabase();
+
+                try {
+                    await connectToDatabase();
 
 
-                const user = await User.findOne({
-                    username: credentials.username,
-                    password: credentials.password,
-                });
+                    const user = await User.findOne({ username: credentials.username });
+                    if (!user) {
 
-                if (user) {
+                        return null;
+                    }
+
+                    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+                    if (!isPasswordValid) {
+                        console.error('Invalid password for user:', credentials.username);
+                        return null;
+                    }
+
                     return { id: user._id.toString(), name: user.username };
-                } else {
+                } catch (error) {
+                    console.error('Error during authorization:', error);
                     return null;
                 }
             },
         }),
     ],
+
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         // @ts-ignore

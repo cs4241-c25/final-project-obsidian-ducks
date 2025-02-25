@@ -12,6 +12,7 @@ export default function RegisterForm({ error }: { error?: string }) {
         const username = formData.get("username") as string;
 
 
+
         if (!username.endsWith(".edu")) {
             alert("Only .edu emails are allowed.");
             return;
@@ -27,9 +28,9 @@ export default function RegisterForm({ error }: { error?: string }) {
     return (
 
         // @ts-ignore
-        <form onSubmit={handleSubmit}>
-            <h1>Need to Register?</h1>
-            <TextInput type="text" name="username" placeholder="Choose a username">Username</TextInput>
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold text-center mb-6">Need to Register?</h1>
+            <TextInput type="text" name="username" placeholder="Enter your school email">Username:</TextInput>
             <TextInput type="password" name="password" placeholder="Choose a password">Password</TextInput>
             <Button type="submit">Register</Button>
             {error && <p>User already exists.</p>}
