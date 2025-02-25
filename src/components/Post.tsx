@@ -17,6 +17,9 @@ export default function Post(props: PostInput) {
     const {data: session} = useSession()
     const usernameSession = session?.user?.name
     async function handleLikes(itemID : string) {
+      if(window.location.pathname === "/favorites"){
+          window.location.reload()
+      }
      let data = {
          _id: itemID,
          username: usernameSession
