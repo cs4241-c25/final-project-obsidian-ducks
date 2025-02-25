@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.className}`}>
+      <body className={`${openSans.className} overflow-x-hidden`}>
       <Providers>
         <NavBar/>
           {children}

@@ -1,5 +1,5 @@
 import Item from "@/models/Item";
-import PostInput from "@/components/Post"
+import PostInput from "@/components/ItemPost"
 
 /*Get single item for listing page*/
 export async function GET(req: Request) {

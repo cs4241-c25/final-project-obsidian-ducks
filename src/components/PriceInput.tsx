@@ -11,7 +11,7 @@ interface TextInput {
 
 export default function TextInput(props: TextInput) {
     return (
-            <input className={twMerge("w-full h-10 border rounded-sm px-2 py-1 border-gray-400", props.className)}
+            <input className={twMerge("w-full h-10 bg-gray-100 rounded-lg px-2 py-1 hover:bg-alice-blue-700", props.className)}
                    type={props.type}
                    name={props.name}
                    placeholder={props.placeholder}

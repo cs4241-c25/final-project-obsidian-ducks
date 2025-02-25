@@ -17,11 +17,11 @@ export default function Post(props: PostInput) {
                 <div className="relative w-full aspect-[5/4]">
                     <Link href={`/listing/${props._id}`}>
                         <Button type="button">
-                    <Image priority={false}
-                           src={props.image}
-                           fill
-                           alt={`${props.title}` + " Image"}
-                           className="object-cover rounded-t-xl hover:skew-x-3 duration-150 ease-in-out"/>
+                            <Image priority={false}
+                                   src={props.image}
+                                   fill
+                                   alt={`${props.title}` + " Image"}
+                                   className="object-cover rounded-t-xl hover:skew-x-3 duration-150 ease-in-out"/>
                         </Button>
                     </Link>
                     <Button type="button" className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md bg-white hover:bg-auburn-300">
