@@ -17,7 +17,7 @@ export default function ItemPosts(props: ItemPosts) {
         <section className="flex justify-center">
             <div className="w-3/4 flex flex-wrap gap-9.5">
                 {props.items.map((item) =>
-                    <ItemPost key={item._id} id={item._id} title={item.title} category={item.category} price={item.price} image={item.image}/>)}
+                    <ItemPost key={item.id} id={item.id} title={item.title} category={item.category} price={item.price} image={item.image}/>)}
             </div>
         </section>
     );

@@ -17,7 +17,7 @@ export const ITEM_CATEGORIES = [
 ];
 
 export type Item = {
-    _id: string;
+    id: string;
     title: string;
     price: number;
     category: string;

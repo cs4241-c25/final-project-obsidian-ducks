@@ -22,7 +22,6 @@ export default async function Home() {
         image: item.image
     }));
 
-
     return (
         <main className="overflow-x-hidden">
             <section className="w-screen relative mb-8">
