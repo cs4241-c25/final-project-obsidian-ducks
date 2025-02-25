@@ -17,28 +17,41 @@ export default function ItemsSection(props: ItemPosts) {
     const [items, setItems] = useState(props.items);
     const filters = useRef<string[]>([]);
     const query = useRef<string>("");
+
     const [search, setSearch] = useState<string>("");
-    const [filteredPrice, setFilteredPrice] = useState({
-        min: 0,
-        max: 500,
-    });
+    const min = useRef<number>(0);
+    const max = useRef<number>(1000);
+
 
     function filterBySearch(e: ChangeEvent<HTMLInputElement>) {
         setSearch(e.target.value);
+        query.current = e.target.value.toLowerCase();
         if(e.target.value === "" && filters.current.length === 0) {
-            setItems(props.items);
+            const searchedItems = props.items.filter((item) => {
+                const title = item.title.toLowerCase();
+                return title.includes(e.target.value) && (min.current <= item.price && max.current >= item.price)
+            });
+            setItems(searchedItems);
         } else if (filters.current.length !== 0) {
             if(e.target.value === "") {
                 const searchedItems = props.items.filter(item => {
-                    return filters.current.includes(item.category);
+                    return filters.current.includes(item.category) && (min.current <= item.price && max.current >= item.price);
                 });
                 setItems(searchedItems);
             } else {
                 const searchedItems = props.items.filter(item => {
-                    return item.title.includes(e.target.value) && filters.current.includes(item.category);
+                    const title = item.title.toLowerCase();
+                    return title.includes(query.current) && filters.current.includes(item.category) && (min.current <= item.price && max.current >= item.price);
                 });
                 setItems(searchedItems);
             }
+        } else {
+            const searchedItems = props.items.filter(item => {
+                const title = item.title.toLowerCase();
+                return title.includes(query.current) && (min.current <= item.price && max.current >= item.price);
+            });
+            console.log(searchedItems);
+            setItems(searchedItems);
         }
     }
 
@@ -46,33 +59,41 @@ export default function ItemsSection(props: ItemPosts) {
         setSearch("");
         if (e.target.checked) {
             filters.current.push(e.target.value); // Update filters list
-            const filteredItems = props.items.filter(item => filters.current.includes(item.category)); // Apply filter categories
+            const filteredItems = props.items.filter(item => filters.current.includes(item.category) && (min.current <= item.price && max.current >= item.price)); // Apply filter categories
             setItems(filteredItems);
         } else if (!e.target.checked){
                 filters.current = filters.current.filter(filter => filter !== e.target.value);
                 if(filters.current.length === 0) {
-                    setItems(props.items);
+                    const filteredItems = props.items.filter(item => min.current <= item.price && max.current >= item.price); // Apply filter categories
+                    setItems(filteredItems);
                 } else {
-                const filteredItems = props.items.filter(item => filters.current.includes(item.category)); // Apply filter categories
+                const filteredItems = props.items.filter(item => filters.current.includes(item.category) && (min.current <= item.price && max.current >= item.price)); // Apply filter categories
                 setItems(filteredItems);
             }
         }
     }
 
-    function handlePrice(e: React.ChangeEvent<HTMLInputElement>) {
+    function handlePrice(e: ChangeEvent<HTMLInputElement>) {
         setSearch("");
         if (e.target.name === "min") {
             if(e.target.value === ""){
-                setFilteredPrice(prevVal => ({...prevVal, min: 0}));
+                min.current = 0;
             } else {
-                setFilteredPrice(prevVal => ({...prevVal, min: Number(e.target.value)}));
+                min.current = Number(e.target.value);
             }
         } else if (e.target.name === "max"){
             if(e.target.value === ""){
-                setFilteredPrice(prevVal => ({...prevVal, max: 500}));
+                max.current = 500;
             } else {
-                setFilteredPrice(prevVal => ({...prevVal, max: Number(e.target.value)}));
+                max.current = Number(e.target.value);
             }
+        }
+        if(filters.current.length > 0 ){
+            const filteredItems = props.items.filter(item => filters.current.includes(item.category) && (min.current <= item.price && max.current >= item.price));
+            setItems(filteredItems);
+        } else {
+            const filteredItems = props.items.filter(item => (min.current <= item.price && max.current >= item.price));
+            setItems(filteredItems);
         }
     }
 
