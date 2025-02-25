@@ -24,3 +24,4 @@ export type Item = {
     description: string;
     image: string;
 }
+
