@@ -13,42 +13,53 @@ interface ItemPosts {
 
 export default function ItemsSection(props: ItemPosts) {
     const [items, setItems] = useState(props.items);
-    const filters = useRef<string[]>([]);
+    const filters = useRef<string[]>(ITEM_CATEGORIES);
     const query = useRef<string>("");
 
-    function filterBySearch(e: ChangeEvent<HTMLInputElement>) {
-        query.current = e.target.value;
-        const searchedItems = props.items.filter(item => {
-            if (filters.current.length != 0)
-                return item.title.includes(e.target.value) && filters.current.includes(item.category);
-            else
-                return item.title.includes(e.target.value);
-        });
-        setItems(searchedItems);
+    function filterItems() {
+        const filteredItems = props.items.filter(item =>
+            item.title.includes(query.current) && filters.current.includes(item.category)
+        );
+        setItems(filteredItems);
     }
 
-    function filterByCategory(e: ChangeEvent<HTMLInputElement>) {
-        if (e.target.checked) {
-            if (!filters.current.includes(e.target.value)) {
-                filters.current.push(e.target.value); // Update filters list
-            }
-            const filteredItems = props.items.filter(item => filters.current.includes(item.category) && item.title.includes(query.current)); // Apply filter categories
-            setItems(filteredItems);
+    function setFilters(e: ChangeEvent<HTMLInputElement>) {
+        const { checked, value } = e.target;
+
+        if (checked && filters.current.length === ITEM_CATEGORIES.length) {
+            // Remove initial filters, keeping the selected one
+            filters.current = [value];
+        } else if (checked) {
+            // Apply filter to existing list of filters
+            filters.current.push(value);
         } else {
-            filters.current = filters.current.filter(filter => filter === e.target.value);
-            setItems(props.items);
+            // Remove a previously selected filter
+            filters.current = filters.current.filter(filter =>
+                filter !== e.target.value // Removes a previously applied filter
+            );
         }
+
+        // If no selected filters, show all items
+        if (!filters.current.length) {
+            filters.current = ITEM_CATEGORIES;
+        }
+
+        filterItems();
     }
 
     return (
         <section>
             <div className="flex justify-center">
-                <SearchBar onChange={filterBySearch} />
+                <SearchBar onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    query.current = e.target.value;
+                    filterItems();
+                }}/>
             </div>
             <div className="flex justify-center">
                 <div className="flex mr-8 gap-x-2">
                     {ITEM_CATEGORIES.map((category) => (
-                        <FilterCategory key={category} type={"checkbox"} name={category} onChange={filterByCategory}/>
+                        <FilterCategory key={category} type={"checkbox"} name={category}
+                                        onChange={setFilters}/>
                     ))}
                 </div>
             </div>
