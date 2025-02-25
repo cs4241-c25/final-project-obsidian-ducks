@@ -9,7 +9,6 @@ export default function ChatSession() {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chats, setChats] = useState<string[]>([]);
-  const [chatIds,setChatIds] = useState<string[]>([])
   const [newMessage, setNewMessage] = useState('');
   const [otherChatters,setOtherChatters] = useState<string[]>([])
 
@@ -34,7 +33,7 @@ export default function ChatSession() {
           case "LEAVE_CHAT":
             break;
           case "ADDED_TO_CHAT":
-              setChatIds((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
+              setChats((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
             break;
           case "MESSAGE":
             setMessages((prevMessages) => [...prevMessages, (msg as ChatMessage)]);
@@ -52,14 +51,14 @@ export default function ChatSession() {
     if(chatHandler.websocket === undefined) {
       return
     }
-    if(chatIds.length <= 0) {
+    if(chats.length <= 0) {
       return
     }
     const msg:ChatMessage = {
       event:"MESSAGE",
       sender: chatHandler.userName, // subing this for a
       content:  newMessage,
-      chat_id: chatIds[0]
+      chat_id: chats[0]
     }
     chatHandler.websocket.send(JSON.stringify(msg));
     setMessages((prevMessages) => [...prevMessages, msg]);

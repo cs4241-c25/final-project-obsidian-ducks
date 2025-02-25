@@ -1,3 +1,4 @@
+import bath
 import gleam/json
 import gleam/list
 import gleam/otp/actor
@@ -18,9 +19,10 @@ import gleam/function
 
 pub fn main() {
   io.println("Hello from chat_server!")
+  let pool = database.create_db_manager("mongodb://root:example@localhost:27017/mydatabase?authSource=admin")
   let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
 
-  let assert Ok(_server) = create_request_handler(chat_server)
+  let assert Ok(_server) = create_request_handler(chat_server,pool)
   |> mist.new
   |> mist.port(3001)
   |> mist.bind("0.0.0.0")
@@ -34,7 +36,8 @@ type ClientState {
     name:String,
     sub:Subject(InternalMessages),
     server:Subject(ChatServerMessage),
-    chat_rooms:messages.ChatRooms //todo just have this be a list of uuids
+    chat_rooms:messages.ChatRooms, //todo just have this be a list of uuids
+    pool:bath.Pool(database.MongoCon,actor.StartError)
   )
 }
 type InternalMessages {
@@ -96,7 +99,7 @@ fn create_chat_server() {
 }
 
 
-fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
+fn create_request_handler(chat_server:Subject(ChatServerMessage),pool) {
   fn (req:Request(Connection)) { // this returns a setup handler function
     let not_found =
       response.new(404)
@@ -115,7 +118,7 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
 
               process.send(chat_server,RegisterConnection(id,subject))
 
-              #(ClientState(id,"",subject,chat_server,dict.new()), option.Some(selector))
+              #(ClientState(id,"",subject,chat_server,dict.new(),pool), option.Some(selector))
             },
             on_close: fn(state) {
               io.println("goodbye!")
@@ -223,17 +226,20 @@ fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:
   io.debug(sender)
   process.send(client_state.server,AddChatter(sender,client_state.id))
 
+  use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> result.replace_error(""))
+  io.debug(chats)
   //send the list of chats back
-  let chats = dict.keys(client_state.chat_rooms)
+  let chat_ids = dict.keys(chats)
 
-  let _sent = messages.InspectChats("","SERVER",chats)
+  let _sent = messages.InspectChats("","SERVER",chat_ids)
   |> messages.encode_message_json()
   |> json.to_string()
-  |> mist.send_text_frame(conn,_) |> io.debug
+  |> mist.send_text_frame(conn,_)
+  |> io.debug
 
   //this should send back updates for all chats that they are part of
   // process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chatters:new_chats)))
-  Ok(ClientState(..client_state,name:sender))
+  Ok(ClientState(..client_state,chat_rooms:chats,name:sender))
 }
 
 fn handle_read(client_state:ClientState,conn,sender,msg_id) {
@@ -257,6 +263,8 @@ fn handle_create_chat_room(client_state:ClientState,conn,sender:String, chatters
     |> chat_to_room(client_state,client_state.id,chatters,_)
   //tell the room that the chat has been created
 
+  let _db_res = database.insert_chat(client_state.pool,chat_id,[sender,..chatters])
+
   //create a new chat
   Ok(ClientState(..client_state,chat_rooms:chat_rooms))
 }
@@ -277,13 +285,15 @@ fn handle_leave_chat(client_state:ClientState,_conn,sender,chat_id) {
 
 
 fn handle_sent_message(client_state:ClientState,_conn,sender,msg_id,content,chat_id) {
+ let message = messages.Message("MESSAGE",sender,msg_id,content,chat_id)
   let _res = {
     //this is to silence the failyers
     use chatters <- result.try(dict.get(client_state.chat_rooms,chat_id))
-    let _chat_to_room_res = messages.Message("",sender,msg_id,content,chat_id)
+    let _chat_to_room_res = message
     |> chat_to_room(client_state,client_state.id,chatters,_)
     |> result.all()
   }
+  let _insert_res = database.insert_message(client_state.pool,message)
   // send a message in a chat
   Ok(client_state)
 }

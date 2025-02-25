@@ -144,7 +144,7 @@ pub fn encode_message_bson(message:Message) {
     }
     Message(_event,sender, msg_id, content, chat_id) -> {
       [
-        #("event",bson.String("MESSAGE")),
+        #("event",bson.String("")),
         #("sender",bson.String(sender)),
         #("msg_id",bson.String(uuid.to_string(msg_id))),
         #("content",bson.String(content)),
@@ -174,7 +174,7 @@ pub fn encode_message_bson(message:Message) {
 
 pub fn encode_chat(id,chatters) {
   [
-    #("id",bson.String(uuid.to_string(id))),
+    #("chat_id",bson.String(uuid.to_string(id))),
     #("chatters",bson.Array(list.map(chatters,bson.String))),
   ]
 }
