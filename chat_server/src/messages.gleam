@@ -5,7 +5,12 @@ import gleam/dynamic.{type Dynamic}
 import gleam/json
 import gleam/list
 import gleam/io
+import bison/bson
+import gleam/dict
+
 pub type Id(a) = a
+
+pub type ChatRooms = dict.Dict(Id(uuid.Uuid),List(String))
 
 
 pub type Message {
@@ -123,6 +128,61 @@ pub fn encode_message_json(message:Message) {
     }
   }
 }
+pub fn encode_message_bson(message:Message) {
+  case message {
+    Connect(_,_) -> todo
+    CreateChat(_,_, _) -> todo
+    ChatEvent(event,sender, chat_id) -> {
+      [
+        #("event",bson.String(event)),
+        #("sender",bson.String(sender)),
+        #("chat_id",bson.String(uuid.to_string(chat_id))),
+      ]
+    }
+    Message(_event,sender, msg_id, content, chat_id) -> {
+      [
+        #("event",bson.String("MESSAGE")),
+        #("sender",bson.String(sender)),
+        #("msg_id",bson.String(uuid.to_string(msg_id))),
+        #("content",bson.String(content)),
+        #("chat_id",bson.String(uuid.to_string(chat_id))),
+      ]
+    }
+    NonValid(_,_) -> todo
+    Read(_,_, _) -> todo
+    InspectChats(_event,sender, chats) -> {
+      let chats = list.map(chats,uuid.to_string(_))
+      [
+        #("event",bson.String("INSPECT_CHATS")),
+        #("sender",bson.String(sender)),
+        #("chats",bson.Array(list.map(chats ,bson.String))),
+      ]
+    }
+    AddedToChat(_, sender, chat_id, chatters) -> {
+      [
+        #("event",bson.String("ADDED_TO_CHAT")),
+        #("sender",bson.String(sender)),
+        #("chatters",bson.Array(list.map(chatters,bson.String))),
+        #("chat_id",bson.String(uuid.to_string(chat_id))),
+      ]
+    }
+  }
+}
+
+pub fn encode_chat(id,chatters) {
+  [
+    #("id",bson.String(uuid.to_string(id))),
+    #("chatters",bson.Array(list.map(chatters,bson.String))),
+  ]
+}
+
+pub fn encode_user_chat(username:String,ids:List(uuid.Uuid)) {
+  [
+    #("username",bson.String(username)),
+    #("chat_ids",bson.Array(list.map(ids,fn(id) {bson.String(uuid.to_string(id))}))),
+  ]
+}
+
 // fn disconect_decoder() {
 //   use sender <- zero.field("sender", zero.string)
 //   zero.success(Disconnect(sender))

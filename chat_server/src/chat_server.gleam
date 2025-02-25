@@ -12,6 +12,7 @@ import gleam/erlang/process.{type Subject}
 import gleam/dict
 import youid/uuid
 import messages
+import database
 import gleam/function
 
 
@@ -33,14 +34,13 @@ type ClientState {
     name:String,
     sub:Subject(InternalMessages),
     server:Subject(ChatServerMessage),
-    chat_rooms:ChatRooms //todo just have this be a list of uuids
+    chat_rooms:messages.ChatRooms //todo just have this be a list of uuids
   )
 }
 type InternalMessages {
   BroadCast(message:messages.Message)
 }
 
-type ChatRooms = dict.Dict(messages.Id(uuid.Uuid),List(String))
 
 type ChatServer {
   ChatServer(
@@ -83,7 +83,8 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
           actor.continue(ChatServer(connections,chatters,id_to_name))
         }
         Error(_) -> {
-          panic as "somthing went wrong have all clients re register"
+          let connections = chat_server.connections |> dict.delete(id)
+          actor.continue(ChatServer(..chat_server,connections:connections))
         }
       }
     }
@@ -194,7 +195,6 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
           actor.continue(ClientState(..client_state, chat_rooms:chat_rooms))
         }
         _ -> actor.continue(client_state)
-
       }
     }
     mist.Binary(_) ->  actor.continue(client_state)
