@@ -23,10 +23,25 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
         }
 
+        const response = NextResponse.json(
+            { success: true, user: { id: user._id, username: user.username } },
+            { status: 200 }
+        );
 
-        return NextResponse.json({ success: true }, { status: 200 });
+        response.cookies.set('auth_token', user._id.toString(), {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+            sameSite: 'strict',
+        });
+
+        return response;
     } catch (e) {
-        console.error("Login API Error:", e);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.error('Login API Error:', e);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
     }
 }
