@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link";
-import Button from "@/components/inputs/Button";
+import Button from "@/components/Button";
 import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
 import { useSession, signOut } from 'next-auth/react';
