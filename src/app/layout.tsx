@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import "./globals.css";
-import { ChatContextProvider } from "@/components/chat/ChatContext";
 import Providers from "@/components/Providers";
-import NavBar from "./nav/NavBar";
+
+import "./globals.css";
+import {ChatContextProvider} from "@/components/chat/ChatContext";
+import NavBar from "@/components/NavBar";
 
 const openSans = Open_Sans({
     subsets: ["latin"]
@@ -21,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.className}`}>
+      <body className={`${openSans.className} overflow-x-hidden`}>
       <Providers>
         <ChatContextProvider>
           <NavBar/>

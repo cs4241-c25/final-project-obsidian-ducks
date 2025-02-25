@@ -1,0 +1,26 @@
+import Link from "next/link";
+
+import Button from "@/components/Button";
+
+export default function NavBar(){
+    return (
+        <nav className="w-screen h-[10vh] flex justify-between items-center border relative z-10">
+            <div className="flex h-full justify-between items-center gap-8 md:text-sm lg:text-base font-semibold ml-10">
+                <Link href="/profile">
+                    <p>Login</p>
+                </Link>
+                <Link href="/profile">
+                    <p>Sign Up</p>
+                </Link>
+            </div>
+            <Link href="/">
+                <svg className="xl:w-[75px] 2xl:w-[85px]" width={70} height="100%" viewBox="0 0 100 100">
+                    <image href="/WPIBuys.png" />
+                </svg>
+            </Link>
+            <Link href="/sell">
+                <Button className="mr-10 md:text-sm lg:text-base" type="button">Sell an Item</Button>
+            </Link>
+        </nav>
+    );
+}

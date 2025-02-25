@@ -14,14 +14,18 @@ export const authOptions = {
             },
             // @ts-ignore
             async authorize(credentials) {
-                console.log("getting called")
+
                 if (credentials === undefined) {
                     return;
                 }
                 await connectToDatabase();
 
 
-                const user = await User.findOne({ username: credentials.username, password: credentials.password });
+                const user = await User.findOne({
+                    username: credentials.username,
+                    password: credentials.password,
+                });
+
                 if (user) {
                     return { id: user._id.toString(), name: user.username };
                 } else {
@@ -31,8 +35,24 @@ export const authOptions = {
         }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
-    session: {
-      strategy: "jwt", // Ensure JWT strategy is used
+    callbacks: {
+        // @ts-ignore
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.name = user.name;
+            }
+            return token;
+        },
+        // @ts-ignore
+        async session({ session, token }) {
+            session.user.id = token.id;
+            session.user.name = token.name;
+            return session;
+        },
+    },
+    pages: {
+        signIn: '/login',
     },
 };
 
