@@ -4,8 +4,8 @@ import {useEffect, useState} from "react";
 import FilterCategory from "@/components/FilterCategory";
 import SearchBar from "@/components/SearchBar";
 import {ITEM_CATEGORIES} from "@/lib/types";
-import TextInput from "@/components/TextInput";
 import Post from "@/components/Post";
+import PriceInput from "@/components/PriceInput"
 
 
 const oswald = Oswald({
@@ -19,6 +19,7 @@ interface Post {
     price: number;
     image: string;
 }
+
 export default function Home() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [originalPosts, setOriginalPosts] = useState<Post[]>([]);
@@ -119,14 +120,14 @@ export default function Home() {
                 <div className="flex pt-2 gap-x-1">
                     <h1 className="place-self-center">$</h1>
                     <span>
-                        <TextInput className="w-17" type={"number"} name={"min"} placeholder={"Min"}
-                                   onChange={handlePrice}></TextInput>
+                        <PriceInput className="w-17" type={"number"} name={"min"} placeholder={"Min"}
+                                   onChange={handlePrice}></PriceInput>
                     </span>
                     <h1 className="content-center px-2">-</h1>
                     <h1 className="place-self-center">$</h1>
                     <span>
-                        <TextInput className="w-17" type={"number"} name={"max"} placeholder={"Max"}
-                                   onChange={handlePrice}></TextInput>
+                        <PriceInput className="w-17" type={"number"} name={"max"} placeholder={"Max"}
+                                   onChange={handlePrice}></PriceInput>
                     </span>
                 </div>
                 <div className="flex mr-8 gap-x-2">
