@@ -4,9 +4,18 @@ import { models,model, Schema} from "mongoose";
 const MessageSchema = new Schema({
   event: {
     type:String,
-    enum: ["Register","Message"]
+    enum: ["MESSAGE"]
   },
-  message: {
+  chat_id: {
+    type:String,
+    required:true,
+    index:true
+  },
+  content: {
+    type:String,
+    required:true,
+  },
+  message_id: {
     type:String,
     required:true,
   },
@@ -15,11 +24,8 @@ const MessageSchema = new Schema({
     required:true,
     index:true
   },
-  recver: {
-    type:String,
-    required:true,
-    index:true
-  }
+
+
 });
 
 const Message = models.Message || model("Message",MessageSchema)
