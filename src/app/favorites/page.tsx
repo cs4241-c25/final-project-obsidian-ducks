@@ -1,6 +1,6 @@
 'use client'
 import React, {useEffect, useState} from "react";
-import Post from "@/components/Post";
+import ItemPost from "../ItemPost";
 
 export default function Favorites() {
     const [likes, setLikes] = useState([]);
@@ -27,7 +27,7 @@ export default function Favorites() {
     return (
         <div className={"flex"}>
             {likes.map(item => (
-                <Post key={item._id} _id={item._id} title={item.title} description={item.description} category={item.category}
+                <ItemPost key={item._id} id={item._id} title={item.title} description={item.description} category={item.category}
                       price={item.price} image={item.image}/>
                 ))
 
