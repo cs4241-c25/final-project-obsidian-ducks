@@ -145,5 +145,5 @@ fn unwrap_user_chats(user_chats) {
 pub fn insert_message(pool,msg:messages.Message) {
     use conn <- bath.apply(pool, 1000)
     mungo.collection(conn,"messages")
-    |> mungo.insert_one(messages.encode_message_bson(msg),1000g)
+    |> mungo.insert_one(messages.encode_message_bson(msg),1000)
 }
