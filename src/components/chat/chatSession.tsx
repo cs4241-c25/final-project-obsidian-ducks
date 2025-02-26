@@ -2,21 +2,45 @@
 import { useState, useEffect } from 'react';
 import MessageDisplay from '@/components/chat/MessageDisplay';
 import { useWebSocket } from '@/components/chat/ChatContext';
-import { ChatEvent, ChatMessage, CreateChat, InspectChats, Message} from "@/lib/types"
+import { ChatMessage, Message} from "@/lib/types"
 
-export default function ChatSession() {
+export default function ChatSession(props: {chat_id:string}) {
   const chatHandler = useWebSocket()
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [chats, setChats] = useState<string[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [otherChatters,setOtherChatters] = useState<string[]>([])
-  const [createChatShown,setcreateChatShown] = useState(false)
+  // const [createChatShown,setcreateChatShown] = useState(false)
 
   useEffect(() => {
     chatHandler.addOnMessageSub((msgEvent) => {
       console.log(msgEvent)
-
+      try {
+        const msg: Message = JSON.parse(msgEvent)
+        console.log(msg)
+        //yes I am using casting which may not be considered fully type safe
+        //but because we have the events tag its type safe I love javscrips type system so much... :)
+        switch (msg.event) {
+          case "CONNECT":
+            break;
+          case "CREATE_CHAT":
+            break;
+          case "LEAVE_CHAT":
+            break;
+          case "ADDED_TO_CHAT":
+              // setChats((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
+            break;
+          case "MESSAGE":
+            const chat_msg = (msg as ChatMessage)
+            if(chat_msg.chat_id === props.chat_id) {
+              setMessages((prevMessages) => [...prevMessages,chat_msg]);
+            }
+            break;
+          case "READ_MESSAGE":
+            break;
+        }
+      } catch(error) {
+        console.log(error)
+      }
     });
   }, []);
 
@@ -24,31 +48,16 @@ export default function ChatSession() {
     if(chatHandler.websocket === undefined) {
       return
     }
-    if(chats.length <= 0) {
-      return
-    }
     const msg:ChatMessage = {
       event:"MESSAGE",
       sender: chatHandler.userName, // subing this for a
       content:  newMessage,
-      chat_id: chats[0]
+      chat_id: props.chat_id
     }
     chatHandler.websocket.send(JSON.stringify(msg));
     setMessages((prevMessages) => [...prevMessages, msg]);
     setNewMessage('');
   };
-
-  function createChat() {
-    if(chatHandler.websocket === undefined) {
-      return
-    }
-    const createChat:CreateChat = {
-        event: 'CREATE_CHAT',
-        sender: chatHandler.userName,
-        chatters: otherChatters
-    }
-    chatHandler.websocket.send(JSON.stringify(createChat));
-  }
 
   if(chatHandler === undefined) {
     return
@@ -56,17 +65,6 @@ export default function ChatSession() {
   return (
     <div className='flex flex-col px-10 h-full'>
       <h1>name:{chatHandler.userName} </h1>
-      <div className='flex flex-row gap-5 overflow-hidden'>
-        <h1>chats:</h1>{chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)}
-        <button onClick={() => setcreateChatShown(!createChatShown)} >Create new chat</button>
-      </div>
-      <div className={createChatShown ? "py-5" : "hidden"}>
-        <input className="w-full px-5" placeholder="enter users comma seperated" onChange={(event) => {
-          const chattersStr = event.target.value
-          setOtherChatters(chattersStr.split(","))
-        }}></input>
-        <button onClick={createChat}>Create chat</button>
-      </div>
       <div className='flex flex-col grow gap-10'>
         {messages.map((message, index) => (
           <MessageDisplay key={index} message={message}/>

@@ -33,7 +33,7 @@ const webSocketContext = createContext<tmpMsgContext>({
 export function ChatContextProvider(props: {children:ReactNode}) {
   const [socket, setSocket] = useState<undefined | WebSocket>();
   const onMessageSubsRef = useRef<((msg:string) =>void)[]>([]);//we use ref here becasue we dont want re renders
-  const [chats,setChats] = useState([])
+  const [chats,setChats] = useState<string[]>([])
   const { data: session } = useSession()
   // const { data: session, status } = useSession()
   function send_conn() {
@@ -111,8 +111,6 @@ export function ChatContextProvider(props: {children:ReactNode}) {
       chats:chats
     }}>
       <div>{session.user.name }</div>
-      {/* <input className="border-2 border-black" onChange={(event) => setName(event.target.value)}></input>
-      <button onClick={send_conn}>Connect to chat server</button> */}
       {props.children}
     </webSocketContext.Provider>
   )
