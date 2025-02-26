@@ -122,7 +122,7 @@ export default function ItemsSection(props: ItemPosts) {
                     </div>
             </div>
             <div className="flex justify-center">
-                <div className="w-3/4 flex flex-wrap gap-9.5">
+                <div className="w-3/4 flex flex-wrap gap-9.5 min-h-[700px]">
                     {items.map((item) =>
                         <ItemPost key={item.id} id={item.id} title={item.title} category={item.category}
                                   price={item.price} image={item.image}/>)}
