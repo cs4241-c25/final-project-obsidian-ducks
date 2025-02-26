@@ -7,7 +7,7 @@ import { CreateChat } from "@/lib/types"
 export default function ChatRoom() {
   const [chats,setChats] = useState<string[]>([])
 
-
+  //todo load from db
 
   if(chats.length <= 0) {
     return <div>
@@ -18,10 +18,10 @@ export default function ChatRoom() {
   return (
     <div>
       <div className='flex flex-row gap-5 overflow-scroll'>
-        <h1>chats:</h1>{props.chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)}
+        <h1>chats:</h1>{chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)}
         <CreateChatButton/>
       </div>
-      <ChatSession chat_id={props.chats[0]} />
+      <ChatSession chat_id={chats[0]} />
     </div>
   )
 }
