@@ -1,3 +1,4 @@
+import simplifile
 import bath
 import gleam/json
 import gleam/list
@@ -15,12 +16,13 @@ import youid/uuid
 import messages
 import database
 import gleam/function
-import dotenv_gleam
+import gleam/string
 import envoy
+
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  dotenv_gleam.config_with("./.env") // this should load .env file
+  load_env("../.env") // this should load .env file
   let assert Ok(db_uri) = envoy.get("MONGODB_URI")
   let pool = database.create_db_manager(db_uri)
   let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
@@ -318,4 +320,29 @@ fn chat_to_room(state:ClientState,self:uuid.Uuid,users:List(String),msg:messages
   |> list.map(fn(sub) {
     Ok(process.send(sub,BroadCast(msg)))
   })
+}
+
+
+pub fn load_env(file: String) {
+  use env_file <- result.try(simplifile.read(file))
+  string.split(env_file, "\n")
+  |> list.filter(fn(line) { line != "" })
+  |> list.each(fn(line) {
+    // sometimes can be more than one = in the line
+    let splited_line = string.split(line, "=")
+    let key =
+      list.first(splited_line)
+      |> result.unwrap("")
+      |> string.trim()
+
+    // so for those cases we need to join the rest of the line
+    // and split again
+    let value =
+      list.drop(splited_line, 1)
+      |> string.join("=")
+      |> string.trim()
+
+    envoy.set(key, value)
+  })
+  Ok(Nil)
 }
