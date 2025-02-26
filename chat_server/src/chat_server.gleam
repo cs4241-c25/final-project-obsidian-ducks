@@ -78,14 +78,17 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
       actor.continue(chat_server)
     }
     LogoffUser(id) -> {
+      io.debug("logging off user")
       case dict.get(chat_server.id_to_name ,id) {
         Ok(name) -> {
+           io.debug(name)
           let chatters = chat_server.online_chatters |> dict.delete(name)
           let id_to_name = chat_server.id_to_name |> dict.delete(id)
           let connections = chat_server.connections |> dict.delete(id)
           actor.continue(ChatServer(connections,chatters,id_to_name))
         }
-        Error(_) -> {
+        Error(err) -> {
+          io.debug(err)
           let connections = chat_server.connections |> dict.delete(id)
           actor.continue(ChatServer(..chat_server,connections:connections))
         }
@@ -109,7 +112,7 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage),pool) {
           mist.websocket(
             request: req,
             on_init: fn(_conn) {
-              io.debug("got a connection")
+              // io.debug("got a connection")
               let id = uuid.v4()
 
               let subject = process.new_subject()
@@ -140,7 +143,7 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
       actor.Stop(process.Normal)
     }
     mist.Text(msg) -> {
-      io.debug(msg)
+      // io.debug(msg)
       let msg_result = {
           use decoded_msg <- result.try(result.replace_error(messages.decode_message(msg),"failed to parse message"))
           case decoded_msg {
@@ -155,7 +158,7 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
             _ -> Ok(client_state) // ignore all other messages
           }
         }
-        case msg_result |> io.debug {
+        case msg_result {
           Ok(chat_server) ->  actor.continue(chat_server) // continue the web sockets with the chat_server
           Error(_) ->  {
             actor.continue(client_state) //re use old chat_server but still continue
@@ -164,8 +167,8 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
       }
     mist.Custom(BroadCast(message)) -> {
       //todo send messages here
-      io.debug("we got a message! from a subject")
-      case message |> io.debug {
+      // io.debug("we got a message! from a subject")
+      case message {
         messages.Message(_event,_sender,_id,_content,_chat_id) -> {
           send_message(message,conn)
           actor.continue(client_state)
@@ -222,12 +225,12 @@ fn handle_inspect_chats(client_state:ClientState,conn:mist.WebsocketConnection) 
 fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:String) {
   //todo send the user all messages that they got while offline
   //check the db for waht chat rooms the chatter is part of
-  io.debug("new connection")
-  io.debug(sender)
+  // io.debug("new connection")
+  // io.debug(sender)
   process.send(client_state.server,AddChatter(sender,client_state.id))
 
   use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> result.replace_error(""))
-  io.debug(chats)
+  // io.debug(chats)
   //send the list of chats back
   let chat_ids = dict.keys(chats)
 
@@ -235,7 +238,7 @@ fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:
   |> messages.encode_message_json()
   |> json.to_string()
   |> mist.send_text_frame(conn,_)
-  |> io.debug
+  // |> io.debug
 
   //this should send back updates for all chats that they are part of
   // process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chatters:new_chats)))
@@ -248,7 +251,7 @@ fn handle_read(client_state:ClientState,conn,sender,msg_id) {
 }
 
 fn handle_create_chat_room(client_state:ClientState,conn,sender:String, chatters:List(String)) {
-  io.debug("got conn")
+  // io.debug("got conn")
   let chat_id = uuid.v4()
 
   let chat_rooms = client_state.chat_rooms

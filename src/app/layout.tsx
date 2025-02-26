@@ -22,11 +22,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.className} overflow-x-hidden`}>
+      <body className={`${openSans.className} flex flex-col h-dvh overflow-x-hidden`}>
       <Providers>
         <ChatContextProvider>
           <NavBar/>
-          {children}
+          <div className="grow">
+            {children}
+          </div>
         </ChatContextProvider>
       </Providers>
       </body>

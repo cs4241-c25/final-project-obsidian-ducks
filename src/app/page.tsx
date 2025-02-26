@@ -29,7 +29,6 @@ export default async function Home() {
 
     return (
         <main className="overflow-x-hidden">
-            <ChatSession/>
             <HeroSection/>
             <ItemsSection items={items}/>
         </main>

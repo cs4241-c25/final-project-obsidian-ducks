@@ -19,7 +19,6 @@
     "npm": "^11.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.1",
     "ws": "^8.18.0"
   },
@@ -27,6 +26,7 @@
     "@eslint/eslintrc": "^3",
     "@flydotio/dockerfile": "^0.7.8",
     "@tailwindcss/postcss": "^4.0.0",
+    "@types/k6": "^0.57.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

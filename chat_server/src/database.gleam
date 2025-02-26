@@ -64,10 +64,10 @@ fn find_chat_rooms_from_db(conn,user_name) {
   ],[],500)
     |> result.replace_error("")
   )
-  io.debug(user_chats)
+  // io.debug(user_chats)
   use user_chats <- result.try(option.to_result(user_chats,""))
   let chat_ids = unwrap_user_chats(user_chats)
-  |> io.debug
+  // |> io.debug
   |> list.filter_map(fn(chat_id) {
     use chat_id <- result.try(chat_id)
     Ok(bson.String(chat_id))
@@ -80,7 +80,7 @@ fn find_chat_rooms_from_db(conn,user_name) {
   ],[],500)
   |> result.replace_error("cant find chats"))
 
-  io.debug(chats)
+  // io.debug(chats)
 
   mungo.to_list(chats,500)
   |> list.map(unwrap_chat_rooms)
@@ -98,7 +98,8 @@ fn unwrap_chat_rooms(chat_room:bson.Value) {
           #("chat_id",bson.String(chat_id)),
           #("chatters",bson.Array(chatters))
         ] -> {
-          let chatters = chatters |> io.debug
+          let chatters = chatters
+          // |> io.debug
           |> list.filter_map(fn(chatter) {
             case chatter {
               bson.String(chatter) -> {

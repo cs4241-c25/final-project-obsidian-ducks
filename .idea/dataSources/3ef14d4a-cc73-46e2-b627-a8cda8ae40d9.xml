@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="mydatabase@localhost">
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.53">
+    <root id="1">
+      <ServerVersion>8.0.4</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="a3"/>
+    <schema id="3" parent="1" name="admin"/>
+    <schema id="4" parent="1" name="config"/>
+    <schema id="5" parent="1" name="local"/>
+    <schema id="6" parent="1" name="mydatabase">
+      <Current>1</Current>
+      <LastIntrospectionLocalTimestamp>2025-02-25.20:44:15</LastIntrospectionLocalTimestamp>
+    </schema>
+    <table id="7" parent="6" name="chats"/>
+    <table id="8" parent="6" name="messages"/>
+    <column id="9" parent="7" name="_id">
+      <Position>1</Position>
+      <StoredType>ObjectId|12s</StoredType>
+    </column>
+    <column id="10" parent="7" name="chat_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="11" parent="7" name="username">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="12" parent="7" name="chatters">
+      <Position>2</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="13" parent="8" name="_id">
+      <Position>1</Position>
+      <StoredType>ObjectId|12s</StoredType>
+    </column>
+    <column id="14" parent="8" name="content">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="15" parent="8" name="chat_id">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="16" parent="8" name="event">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="17" parent="8" name="msg_id">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="18" parent="8" name="sender">
+      <Position>4</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+  </database-model>
+</dataSource>

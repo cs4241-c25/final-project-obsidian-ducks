@@ -36,7 +36,8 @@ pub fn message_decoder() {
       ,create_chat_decoder()
       ,chat_event_decoder()]
     )
-    zero.run(dynamic,decoder) |> io.debug()
+    zero.run(dynamic,decoder)
+    // |> io.debug()
   }
 }
 
@@ -62,7 +63,7 @@ fn chat_message_decoder() {
    case uuid.from_string(chat_id) {
      Ok(chat_id) -> zero.success(Message(event,sender,uuid.v4(),contnent,chat_id))
      Error(_) -> {
-       io.debug("test")
+       // io.debug("test")
        zero.failure(NonValid(event,sender),"not a valid uuid")
      }
    }

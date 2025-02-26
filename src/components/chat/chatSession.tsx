@@ -11,39 +11,12 @@ export default function ChatSession() {
   const [chats, setChats] = useState<string[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [otherChatters,setOtherChatters] = useState<string[]>([])
+  const [createChatShown,setcreateChatShown] = useState(false)
 
   useEffect(() => {
     chatHandler.addOnMessageSub((msgEvent) => {
       console.log(msgEvent)
-      try {
-        const msg: Message = JSON.parse(msgEvent)
-        console.log(msg)
-        //yes I am using casting which may not be considered fully type safe
-        //but because we have the events tag its type safe I love javscrips type system so much... :)
-        switch (msg.event) {
-          case "CONNECT":
-            break;
-          case "INSPECT_CHATS":
-            const chats = (msg as InspectChats).chats
-            console.log(chats)
-            setChats(chats)
-            break;
-          case "CREATE_CHAT":
-            break;
-          case "LEAVE_CHAT":
-            break;
-          case "ADDED_TO_CHAT":
-              setChats((prvChatIds) => [...prvChatIds,(msg as ChatEvent).chat_id])
-            break;
-          case "MESSAGE":
-            setMessages((prevMessages) => [...prevMessages, (msg as ChatMessage)]);
-            break;
-          case "READ_MESSAGE":
-            break;
-        }
-      } catch(error) {
-        console.log(error)
-      }
+
     });
   }, []);
 
@@ -81,16 +54,25 @@ export default function ChatSession() {
     return
   }
   return (
-    <div className='w-full'>
+    <div className='flex flex-col px-10 h-full'>
       <h1>name:{chatHandler.userName} </h1>
-      <h1>chats {chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)} </h1>
-      <h1>Real-Time Chat</h1>
-      <div className='flex flex-col gap-10'>
+      <div className='flex flex-row gap-5 overflow-hidden'>
+        <h1>chats:</h1>{chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)}
+        <button onClick={() => setcreateChatShown(!createChatShown)} >Create new chat</button>
+      </div>
+      <div className={createChatShown ? "py-5" : "hidden"}>
+        <input className="w-full px-5" placeholder="enter users comma seperated" onChange={(event) => {
+          const chattersStr = event.target.value
+          setOtherChatters(chattersStr.split(","))
+        }}></input>
+        <button onClick={createChat}>Create chat</button>
+      </div>
+      <div className='flex flex-col grow gap-10'>
         {messages.map((message, index) => (
           <MessageDisplay key={index} message={message}/>
         ))}
       </div >
-      <div className='flex flex-row gap-10 px-10'>
+      <div className='flex flex-row gap-10  pb-10'>
         <input
           type="text"
           className="border border-gray-400 grow rounded p-2"
@@ -100,14 +82,6 @@ export default function ChatSession() {
         />
 
         <button onClick={sendMessage}>Send</button>
-        <div>
-          <h1></h1>
-          <input onChange={(event) => {
-            const chattersStr = event.target.value
-            setOtherChatters(chattersStr.split(","))
-          }}></input>
-          <button onClick={createChat}>Create chat</button>
-        </div>
       </div>
     </div>
   );
