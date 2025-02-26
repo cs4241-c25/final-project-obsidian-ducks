@@ -1,7 +1,7 @@
-import Image from "next/image";
+import Link from "next/link";
 import Button from "@/components/Button";
 import {useSession} from "next-auth/react";
-import React, {use, useRef, useState} from "react";
+import React from "react";
 
 interface ItemPost {
     id: string;
@@ -39,22 +39,22 @@ export default function ItemPost(props: ItemPost) {
             console.error(e);
         }
     }
-        return (
-            <figure className="relative">
-                <img className="w-[250px] h-[250px] rounded-sm object-cover" src={props.image} alt={props.title}/>
-                <figcaption>
-                    <p className="font-semibold tracking-wider">${props.price}.00</p>
-                    <p className="opacity-75">{props.category}</p>
-                </figcaption>
-                <div>
-
-                <Button onClick={() => handleLikes(props.id)} type="button"
-                        className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md bg-white hover:bg-auburn-300">
-                    <Image   src="/like.svg" alt="Heart Image" width={15}
-                           height={15}/>
+    return (
+        <figure className="">
+            <div className="relative">
+                <Link href={`/listing/${props.id}`}>
+                <img className="w-[250px] h-[250px] rounded-sm object-cover hover:scale-105 duration-150 ease-in-out" src={props.image} alt={props.title} />
+                </Link>
+                <Button type="button" className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md bg-white hover:bg-auburn-300" onClick={() => handleLikes(props.id)}>
+                    <img src="/like.svg" alt="Heart Image" width={15} height={15}/>
                 </Button>
-                </div>
-            </figure>
-        );
+            </div>
+            <figcaption>
+                <p className="font-semibold tracking-wider">${props.price}.00</p>
+                <p className="opacity-75">{props.title}</p>
+                <p className="opacity-75">{props.category}</p>
+            </figcaption>
+        </figure>
+    );
 
 }
