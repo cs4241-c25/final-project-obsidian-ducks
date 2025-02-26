@@ -234,7 +234,7 @@ fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:
   // io.debug(sender)
   process.send(client_state.server,AddChatter(sender,client_state.id))
 
-  use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> result.replace_error(""))
+  use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> io.debug |> result.replace_error("failed to connect"))
   io.debug(chats)
   //send the list of chats back
   let chat_ids = dict.keys(chats)

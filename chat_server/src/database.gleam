@@ -22,12 +22,12 @@ pub fn create_db_manager(url:String) {
       io.debug("connected to db")
       mungo.start(
             url,
-            512,
+            10000,
           )
     })
     |> bath.with_size(5)
     |> bath.with_shutdown(fn(conn) { process.send(conn,client.Shutdown) })
-    |> bath.start(1000)
+    |> bath.start(10000)
     pool
 }
 
@@ -61,7 +61,7 @@ fn find_chat_rooms_from_db(conn,user_name) {
   use user_chats <- result.try(
     mungo.find_one(chat_room_collection,[
     #("username",bson.String(user_name))
-  ],[],500)
+  ],[],1000)
     |> result.replace_error("")
   )
   // io.debug(user_chats)
@@ -82,7 +82,7 @@ fn find_chat_rooms_from_db(conn,user_name) {
 
   // io.debug(chats)
 
-  mungo.to_list(chats,500)
+  mungo.to_list(chats,1000)
   |> list.map(unwrap_chat_rooms)
   |> list.filter_map(function.identity) // this is dumb
   |> dict.from_list
@@ -145,5 +145,5 @@ fn unwrap_user_chats(user_chats) {
 pub fn insert_message(pool,msg:messages.Message) {
     use conn <- bath.apply(pool, 1000)
     mungo.collection(conn,"messages")
-    |> mungo.insert_one(messages.encode_message_bson(msg),500)
+    |> mungo.insert_one(messages.encode_message_bson(msg),1000g)
 }
