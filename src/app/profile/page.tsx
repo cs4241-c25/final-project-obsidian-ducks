@@ -1,8 +1,6 @@
 'use client';
 import Link from "next/link";
 import Button from "@/components/Button";
-import LoginForm from "@/components/LoginForm";
-import RegisterForm from "@/components/RegisterForm";
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -11,12 +9,12 @@ export default function ProfilePage() {
     const { data: session, status } = useSession();
     const router = useRouter();
 
-
+    //this could be moved to navbar!
     const handleLogout = async () => {
         try {
 
             await signOut({ redirect: false });
-            router.push('/profile');
+            router.push('/login');
 
         } catch (error) {
             console.error("Logout failed:", error); // Debugging
@@ -30,27 +28,29 @@ export default function ProfilePage() {
                 <div>
                     <h1>Welcome, {session.user?.name}</h1>
                     <div style={{ marginTop: '20px' }}>
-                        <Link href="/shop">
-                            <Button type={"button"}>My Shop</Button>
-                        </Link>
+                        <h2>My shop will go here</h2>
                         <Link href="/edit-profile">
-                            <Button type={"button"}>Edit Profile</Button>
+                            <Button type={"button"}>Edit Profile???</Button>
                         </Link>
 
                         <Button type={"button"} onClick={handleLogout}>Logout</Button>
                     </div>
                 </div>
             ) : (
-                <>
 
-                <LoginForm/>
-                <br/>
-                <RegisterForm/>
-                </>
+                <div>
+                    <p>Please log in to view your profile.</p>
+                    <Link href="/login">
+                        <Button type={"button"}>Login</Button>
+                    </Link>
+                </div>
+
                 )}
 
 
+                </main>
+            );
+            }
 
-        </main>
-    );
-}
+
+
