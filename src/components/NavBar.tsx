@@ -7,10 +7,10 @@ export default function NavBar(){
     return (
         <nav className="w-screen h-[10vh] flex justify-between items-center border relative z-10">
             <div className="flex h-full justify-between items-center gap-8 md:text-sm lg:text-base font-semibold ml-10">
-                <Link href="/profile">
+                <Link href="/login">
                     <p>Login</p>
                 </Link>
-                <Link href="/profile">
+                <Link href="/register">
                     <p>Sign Up</p>
                 </Link>
                 <Link href="/favorites">
