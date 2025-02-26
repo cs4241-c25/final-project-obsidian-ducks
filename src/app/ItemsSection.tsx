@@ -103,18 +103,18 @@ export default function ItemsSection(props: ItemPosts) {
             <div className="flex justify-center">
                 <SearchBar value={search} onChange={filterBySearch}/>
             </div>
-            <div className="flex justify-center gap-x-2 py-4">
+            <div className="flex lg:justify-center gap-x-3 py-4 overflow-visible overflow-x-auto">
                     {ITEM_CATEGORIES.map((category) => (
                         <FilterCategory key={category} type={"checkbox"} name={category} onChange={filterByCategory}/>
                     ))}
-                    <div className="flex gap-x-1">
-                        <h1 className="place-self-center">$</h1>
+                    <div className="flex gap-x-1 items-center">
+                        <h1>$</h1>
                         <span>
                         <PriceInput className="w-17" type={"number"} name={"min"} placeholder={"Min"}
                                     onChange={handlePrice}></PriceInput>
                     </span>
                         <h1 className="content-center px-2">-</h1>
-                        <h1 className="place-self-center">$</h1>
+                        <h1>$</h1>
                         <span>
                         <PriceInput className="w-17" type={"number"} name={"max"} placeholder={"Max"}
                                     onChange={handlePrice}></PriceInput>
@@ -122,7 +122,7 @@ export default function ItemsSection(props: ItemPosts) {
                     </div>
             </div>
             <div className="flex justify-center">
-                <div className="w-3/4 flex flex-wrap gap-9.5">
+                <div className="w-3/4 flex flex-wrap gap-9.5 min-h-[700px]">
                     {items.map((item) =>
                         <ItemPost key={item.id} id={item.id} title={item.title} category={item.category}
                                   price={item.price} image={item.image}/>)}
