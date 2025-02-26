@@ -10,6 +10,7 @@ import ReactQueryProvider from "@/components/reactQueryProvider";
 const openSans = Open_Sans({
     subsets: ["latin"]
 });
+const chat_url = process.env.CHAT_URL;
 
 export const metadata: Metadata = {
   title: "WPIBuys",
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body className={`${openSans.className} flex flex-col h-dvh overflow-x-hidden`}>
         <ReactQueryProvider>
           <Providers>
-            <ChatContextProvider>
+            <ChatContextProvider url={chat_url}>
               <NavBar/>
               <div className="grow">
                 {children}

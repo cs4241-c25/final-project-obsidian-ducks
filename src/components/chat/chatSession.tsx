@@ -71,6 +71,7 @@ export default function ChatSession(props: {chat_id:string}) {
     }
     chatHandler.websocket.send(JSON.stringify(msg));
     setMessages((prevMessages) => [...prevMessages,msg]);
+    setNewMessage("")
   };
 
   if(chatHandler === undefined) {
@@ -89,7 +90,7 @@ export default function ChatSession(props: {chat_id:string}) {
   return (
     <div className='flex flex-col px-10 h-full'>
       <h1>name:{chatHandler.userName} </h1>
-      <div className='flex flex-col grow gap-10'>
+      <div className='flex flex-col grow gap-2'>
         {old_msgs.map((message, index) => (
           <MessageDisplay key={index} message={message}/>
         ))}

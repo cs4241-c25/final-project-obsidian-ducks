@@ -26,6 +26,8 @@ bath = ">= 2.0.0 and < 3.0.0"
 mungo = ">= 0.27.0 and < 1.0.0"
 dot_env = ">= 1.2.0 and < 2.0.0"
 bison = ">= 1.7.0 and < 2.0.0"
+envoy = ">= 1.0.2 and < 2.0.0"
+dotenv_gleam = ">= 1.0.7 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

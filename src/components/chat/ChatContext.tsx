@@ -14,6 +14,7 @@ export type tmpMsgContext = {
 }
 
 
+
 const webSocketContext = createContext<tmpMsgContext>({
   userName:"",
   websocket:undefined,
@@ -22,11 +23,13 @@ const webSocketContext = createContext<tmpMsgContext>({
   addOnMessageSub:() => {}
 })
 
-export function ChatContextProvider(props: {children:ReactNode}) {
+export function ChatContextProvider(props: { url: string |undefined,children:ReactNode}) {
   const [socket, setSocket] = useState<undefined | WebSocket>();
   const onMessageSubsRef = useRef<((msg:string) =>void)[]>([]);//we use ref here becasue we dont want re renders
   const [chats,setChats] = useState<string[]>([])
+  const [socketOpen, setSocketOpen] = useState(false);
   const { data: session } = useSession()
+
   // const { data: session, status } = useSession()
   function send_conn(session:Session | null) {
     if(socket === undefined) {
@@ -44,15 +47,24 @@ export function ChatContextProvider(props: {children:ReactNode}) {
   }
 
   useEffect(() => {
+    if(socketOpen === false) {
+      return
+    }
     send_conn(session)
-  },[session])
+  },[session,socketOpen])
 
   useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const webSocket =new WebSocket(`${protocol}//localhost:3001/api/ws`)
+    if(props.url === undefined) {
+      console.log("undefined websocket url")
+      return
+    }
+    const webSocket =new WebSocket(`${protocol}${props.url}/api/ws`)
+    console.log(webSocket)
     try {
       webSocket.onopen = () => {
-
+        console.log("gaming")
+        setSocketOpen(true)
       }
       webSocket.onmessage = (event) => {
         try {

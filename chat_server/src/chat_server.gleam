@@ -15,11 +15,14 @@ import youid/uuid
 import messages
 import database
 import gleam/function
-
+import dotenv_gleam
+import envoy
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  let pool = database.create_db_manager("mongodb://root:example@localhost:27017/mydatabase?authSource=admin")
+  dotenv_gleam.config_with("./.env") // this should load .env file
+  let assert Ok(db_uri) = envoy.get("MONGODB_URI")
+  let pool = database.create_db_manager(db_uri)
   let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
 
   let assert Ok(_server) = create_request_handler(chat_server,pool)
@@ -307,7 +310,7 @@ fn chat_to_room(state:ClientState,self:uuid.Uuid,users:List(String),msg:messages
   users
   |> list.filter_map(dict.get(chat_server.online_chatters,_))
   |> list.filter_map(fn(id) {
-    case id == self {
+    case id == self  {
       True -> Error(Nil)
       False -> dict.get(chat_server.connections,id)
     }
