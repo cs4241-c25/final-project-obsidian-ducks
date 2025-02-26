@@ -25,7 +25,13 @@ const ItemSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true,
-    }
+    },
+    username: {
+      type: String,
+        required: true
+    },
+
+
 });
 
 const Item =  mongoose.models.Item || mongoose.model('Item', ItemSchema);
