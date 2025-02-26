@@ -4,22 +4,19 @@ import Button from "@/components/Button";
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
+const handleLogout = async (router: string[]) => {
+    try {
+        await signOut({ redirect: false });
+        router.push('/profile');
+    } catch (error) {
+        console.error("Logout failed:", error); // Debugging
+    }
+};
 
 export default function ProfilePage() {
     const { data: session, status } = useSession();
     const router = useRouter();
 
-
-    const handleLogout = async () => {
-        try {
-
-            await signOut({ redirect: false });
-            router.push('/profile');
-
-        } catch (error) {
-            console.error("Logout failed:", error); // Debugging
-        }
-    };
 
     return (
         <main>
@@ -53,3 +50,5 @@ export default function ProfilePage() {
         </main>
     );
 }
+
+export { handleLogout };

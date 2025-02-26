@@ -3,8 +3,10 @@ import Link from "next/link";
 
 import Button from "@/components/Button";
 import Image from "next/image";
-import { handleLogout } from '../app/api/logout/route';
-import { useSession } from 'next-auth/react';
+import { handleLogout } from '../app/profile/page';
+
+import {signOut, useSession} from 'next-auth/react';
+
 
 export default function NavBar(){
     const { data: session, status } = useSession();
