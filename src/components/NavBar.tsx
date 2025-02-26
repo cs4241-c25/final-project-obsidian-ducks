@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import Button from "@/components/Button";
+import Image from "next/image";
 
 export default function NavBar(){
     return (
@@ -12,6 +13,10 @@ export default function NavBar(){
                 <Link href="/profile">
                     <p>Sign Up</p>
                 </Link>
+                <Link href="/favorites">
+                    <Image src={"/like.svg"} alt={"heart icon"} width={20} height={20}/>
+                </Link>
+
             </div>
             <Link href="/">
                 <svg className="xl:w-[75px] 2xl:w-[85px]" width={70} height="100%" viewBox="0 0 100 100">
