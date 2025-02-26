@@ -230,7 +230,7 @@ fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:
   process.send(client_state.server,AddChatter(sender,client_state.id))
 
   use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> result.replace_error(""))
-  // io.debug(chats)
+  io.debug(chats)
   //send the list of chats back
   let chat_ids = dict.keys(chats)
 
@@ -238,7 +238,7 @@ fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:
   |> messages.encode_message_json()
   |> json.to_string()
   |> mist.send_text_frame(conn,_)
-  // |> io.debug
+  |> io.debug
 
   //this should send back updates for all chats that they are part of
   // process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chatters:new_chats)))

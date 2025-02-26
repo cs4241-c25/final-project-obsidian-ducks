@@ -4,7 +4,6 @@ import { models,model, Schema} from "mongoose";
 const MessageSchema = new Schema({
   event: {
     type:String,
-    enum: ["MESSAGE"]
   },
   chat_id: {
     type:String,
@@ -28,6 +27,6 @@ const MessageSchema = new Schema({
 
 });
 
-const Message = models.Message || model("Message",MessageSchema)
+const Message = models.Messages || model("Messages",MessageSchema)
 
 export default Message;

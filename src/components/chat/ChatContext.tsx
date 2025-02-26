@@ -1,18 +1,10 @@
 "use client"
 import { Connect, InspectChats, Message } from "@/lib/types"
+import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 // import { useSession } from "next-auth/react"
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react"
 
-  // setInterval(() => {
-  //   if (webSocket.readyState !== webSocket.OPEN) {
-  //     webSocket = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
-  //     return;
-  //   }
-
-  //   webSocket.send(`{"event":"ping"}`);
-  // }, 29000);
-  //
 export type tmpMsgContext = {
   userName:string,
   websocket:WebSocket | undefined,
@@ -36,10 +28,11 @@ export function ChatContextProvider(props: {children:ReactNode}) {
   const [chats,setChats] = useState<string[]>([])
   const { data: session } = useSession()
   // const { data: session, status } = useSession()
-  function send_conn() {
+  function send_conn(session:Session | null) {
     if(socket === undefined) {
       return
     }
+    console.log(session)
     if(session ===null|| session === undefined || session.user === undefined || session.user.name === undefined || session.user.name === null) {
       return
     }
@@ -51,10 +44,16 @@ export function ChatContextProvider(props: {children:ReactNode}) {
   }
 
   useEffect(() => {
+    send_conn(session)
+  },[session])
+
+  useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const webSocket =new WebSocket(`${protocol}//localhost:3001/api/ws`)
     try {
-      webSocket.onopen = () => send_conn()
+      webSocket.onopen = () => {
+
+      }
       webSocket.onmessage = (event) => {
         try {
           const msg: Message = JSON.parse(event.data)
@@ -66,7 +65,7 @@ export function ChatContextProvider(props: {children:ReactNode}) {
               break;
             case "INSPECT_CHATS":
               const chats = (msg as InspectChats).chats
-              // console.log(chats)
+              console.log(chats)
               setChats(chats)
               break;
             case "CREATE_CHAT":

@@ -10,7 +10,7 @@
     <schema id="5" parent="1" name="local"/>
     <schema id="6" parent="1" name="mydatabase">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2025-02-25.20:44:15</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-02-26.16:19:05</LastIntrospectionLocalTimestamp>
     </schema>
     <table id="7" parent="6" name="chats"/>
     <table id="8" parent="6" name="messages"/>

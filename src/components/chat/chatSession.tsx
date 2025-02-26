@@ -10,9 +10,14 @@ export default function ChatSession(props: {chat_id:string}) {
   const { isLoading, error, data:old_msgs } = useQuery<ChatMessage[]>({
     queryKey:["messages",props.chat_id],
     queryFn:async () => {
+      console.log(props.chat_id)
       const res = await fetch("/api/chats", {
+        method:"POST",
         body: JSON.stringify({chat_id:props.chat_id})
       })
+      if(res.status != 200) {
+        return []
+      }
       return await res.json()
     }
   })
@@ -65,6 +70,7 @@ export default function ChatSession(props: {chat_id:string}) {
       chat_id: props.chat_id
     }
     chatHandler.websocket.send(JSON.stringify(msg));
+    setMessages((prevMessages) => [...prevMessages,msg]);
   };
 
   if(chatHandler === undefined) {

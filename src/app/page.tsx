@@ -17,20 +17,20 @@ async function getPosts() {
 }
 
 export default async function Home() {
-    let items = await Item.find({}).exec();
-    items = items.map(item => ({
-        id: item._id.toString(),
-        title: item.title,
-        price: item.price,
-        category: item.category,
-        description: item.description,
-        image: item.image
-    }));
+    // let items = await Item.find({}).exec();
+    // items = items.map(item => ({
+    //     id: item._id.toString(),
+    //     title: item.title,
+    //     price: item.price,
+    //     category: item.category,
+    //     description: item.description,
+    //     image: item.image
+    // }));
 
     return (
         <main className="overflow-x-hidden">
             <HeroSection/>
-            <ItemsSection items={items}/>
+            <ItemsSection items={[]}/>
         </main>
     );
 }

@@ -5,11 +5,13 @@ import { useWebSocket } from "./ChatContext"
 import { CreateChat } from "@/lib/types"
 
 export default function ChatRoom() {
-  const [chats,setChats] = useState<string[]>([])
+  const websocket = useWebSocket()
+  const [currentChatIndex,setCurrentChatIndex] = useState(0)
 
   //todo load from db
+  
 
-  if(chats.length <= 0) {
+  if(websocket.chats.length <= 0) {
     return <div>
       <h1>Chats</h1>
       <CreateChatButton/>
@@ -18,10 +20,15 @@ export default function ChatRoom() {
   return (
     <div>
       <div className='flex flex-row gap-5 overflow-scroll'>
-        <h1>chats:</h1>{chats.map((chat_id) => <div key={chat_id}>{chat_id}</div>)}
+        <h1>chats:</h1>{
+          websocket.chats.map((chat_id,index) =>
+            <button onClick={()=> setCurrentChatIndex(index)}
+              key={chat_id}>{chat_id}
+            </button>
+          )}
         <CreateChatButton/>
       </div>
-      <ChatSession chat_id={chats[0]} />
+      <ChatSession chat_id={websocket.chats[currentChatIndex]} />
     </div>
   )
 }
