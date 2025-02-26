@@ -1,8 +1,6 @@
 'use client';
 import Link from "next/link";
 import Button from "@/components/Button";
-import LoginForm from "@/components/LoginForm";
-import RegisterForm from "@/components/RegisterForm";
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -41,13 +39,14 @@ export default function ProfilePage() {
                     </div>
                 </div>
             ) : (
-                <>
+                <div>
+                    <p>Please log in to view your profile.</p>
+                    <Link href="/login">
+                        <Button type={"button"}>Login</Button>
+                    </Link>
+                </div>
 
-                <LoginForm/>
-                <br/>
-                <RegisterForm/>
-                </>
-                )}
+            )}
 
 
 
