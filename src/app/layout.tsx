@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-
-import NavBar from "@/components/NavBar";
 import Providers from "@/components/Providers";
 
 import "./globals.css";
+import {ChatContextProvider} from "@/components/chat/ChatContext";
+import NavBar from "@/components/NavBar";
+import ReactQueryProvider from "@/components/reactQueryProvider";
 
 const openSans = Open_Sans({
     subsets: ["latin"]
 });
+const chat_url = process.env.CHAT_URL;
 
 export const metadata: Metadata = {
   title: "WPIBuys",
@@ -22,11 +24,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.className} overflow-x-hidden`}>
-      <Providers>
-        <NavBar/>
-          {children}
-      </Providers>
+      <body className={`${openSans.className} flex flex-col h-dvh overflow-x-hidden`}>
+        <ReactQueryProvider>
+          <Providers>
+            <ChatContextProvider url={chat_url}>
+              <NavBar/>
+                {children}
+            </ChatContextProvider>
+          </Providers>
+        </ReactQueryProvider>
       </body>
     </html>
   );

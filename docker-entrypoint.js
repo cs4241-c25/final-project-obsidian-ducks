@@ -1,6 +1,6 @@
 #!/usr/bin/.env node
 
-const { spawn } = require('node:child_process')
+const { spawn } = require('child_process')
 
 const env = { ...process.env }
 
