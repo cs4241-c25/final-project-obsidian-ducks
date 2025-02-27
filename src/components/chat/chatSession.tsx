@@ -28,16 +28,14 @@ export default function ChatSession(props: {chat:ChatRoom}) {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  // const [createChatShown,setcreateChatShown] = useState(false)
 
   useEffect(() => {
-    chatHandler.addOnMessageSub((msgEvent) => {
+    chatHandler.addOnMessageSub("chatSession",(msgEvent) => {
       console.log(msgEvent)
       try {
         const msg: Message = JSON.parse(msgEvent)
         console.log(msg)
-        //yes I am using casting which may not be considered fully type safe
-        //but because we have the events tag its type safe I love javscrips type system so much... :)
+      
         switch (msg.event) {
           case "CONNECT":
             break;
@@ -104,13 +102,12 @@ export default function ChatSession(props: {chat:ChatRoom}) {
 
   return (
     <div className='flex flex-col px-10 h-full'>
-      <h1>name:{chatHandler.userName} </h1>
       <div className='flex flex-col grow gap-2'>
         {old_msgs.map((message, index) => (
-          <MessageDisplay key={index} message={message}/>
+          <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
         ))}
         {messages.map((message, index) => (
-          <MessageDisplay key={index} message={message}/>
+          <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
         ))}
       </div >
       <div className='flex flex-row gap-10  pb-10'>
@@ -122,7 +119,8 @@ export default function ChatSession(props: {chat:ChatRoom}) {
           placeholder="Type your message..."
         />
 
-        <button onClick={sendMessage}>Send</button>
+        <button onClick={sendMessage}>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg></button>
       </div>
     </div>
   );

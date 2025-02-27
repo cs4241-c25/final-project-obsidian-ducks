@@ -9,10 +9,9 @@ import { createContext, ReactNode, useContext, useEffect, useRef, useState } fro
 export type MsgContext = {
   userName:string,
   websocket:WebSocket | undefined,
-  onMessageSubs: ((msg:string) =>void)[],
   chats:ChatRoom[],
   setChats:(chats:ChatRoom[]) => void,
-  addOnMessageSub:(sub:(msg:string) =>void)=>void
+  addOnMessageSub:(key:string,sub:(msg:string) =>void)=>void
 }
 
 
@@ -20,7 +19,6 @@ export type MsgContext = {
 const webSocketContext = createContext<MsgContext>({
   userName:"",
   websocket:undefined,
-  onMessageSubs:[],
   chats:[],
   setChats: () => {},
   addOnMessageSub:() => {}
@@ -29,7 +27,7 @@ const webSocketContext = createContext<MsgContext>({
 export function ChatContextProvider(props: { url: string |undefined,children:ReactNode}) {
   const [socket, setSocket] = useState<undefined | WebSocket>();
   const [chats,setChats] = useState<ChatRoom[]>([])
-  const onMessageSubsRef = useRef<((msg:string) =>void)[]>([]);//we use ref here becasue we dont want re renders
+  const onMessageSubsRef = useRef<Map<String,(msg:string) =>void>>(new Map());//we use ref here becasue we dont want re renders
   const [socketOpen, setSocketOpen] = useState(false);
   const { data: session } = useSession()
 
@@ -78,8 +76,7 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
         try {
           const msg: Message = JSON.parse(event.data)
           console.log(msg)
-          //yes I am using casting which may not be considered fully type safe
-          //but because we have the events tag its type safe I love javscrips type system so much... :)
+
           switch (msg.event) {
             case "CONNECT":
               break;
@@ -104,7 +101,8 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
         } catch(error) {
           console.log(error)
         }
-        for (const sub of onMessageSubsRef.current) {
+        console.log(onMessageSubsRef.current)
+        for (const sub of onMessageSubsRef.current.values()) {
           sub(event.data)
         }
       }
@@ -123,16 +121,15 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
     <webSocketContext.Provider value={{
       userName:session.user.name,
       websocket:socket,
-      onMessageSubs:onMessageSubsRef.current,
-      addOnMessageSub:(sub) => {
-        onMessageSubsRef.current.push(sub)
+      addOnMessageSub:(key,sub) => {
+        onMessageSubsRef.current.set(key,sub)
       },
       setChats:(chats:ChatRoom[]) => {
         setChats(chats)
       },
       chats:chats
     }}>
-      <div>{session.user.name }</div>
+      {/* <div>{session.user.name }</div> */}
       {props.children}
     </webSocketContext.Provider>
   )

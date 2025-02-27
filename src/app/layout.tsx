@@ -29,9 +29,7 @@ export default function RootLayout({
           <Providers>
             <ChatContextProvider url={chat_url}>
               <NavBar/>
-              <div className="grow">
                 {children}
-              </div>
             </ChatContextProvider>
           </Providers>
         </ReactQueryProvider>

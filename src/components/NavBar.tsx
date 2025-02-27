@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import Button from "@/components/Button";
+import MailIcon from "./chat/MailIcon";
 
 export default function NavBar(){
     return (
@@ -18,9 +19,14 @@ export default function NavBar(){
                     <image href="/WPIBuys.png" />
                 </svg>
             </Link>
-            <Link href="/sell">
-                <Button className="mr-10 md:text-sm lg:text-base" type="button">Sell an Item</Button>
-            </Link>
+            <div className="flex flex-row gap-5">
+              <Link href={"/chats"}>
+                <MailIcon height={50} width={50}/>
+              </Link>
+              <Link href="/sell">
+                  <Button className="mr-10 md:text-sm lg:text-base" type="button">Sell an Item</Button>
+              </Link>
+            </div>
         </nav>
     );
 }

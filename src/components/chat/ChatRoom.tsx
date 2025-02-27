@@ -2,7 +2,6 @@
 import { useState } from "react"
 import ChatSession from "./chatSession"
 import { useWebSocket } from "./ChatContext"
-import { CreateChat } from "@/lib/types"
 
 export default function ChatRoom() {
   const websocket = useWebSocket()
@@ -18,15 +17,14 @@ export default function ChatRoom() {
     </div>
   }
   return (
-    <div>
-      <div className='flex flex-row gap-5 overflow-scroll'>
+    <div className="flex flex-col grow">
+      <div className='flex flex-row gap-5 overflow-scroll py-10'>
         <h1>chats:</h1>{
           websocket.chats.map((chat_room,index) =>
-            <button onClick={() => {
-              console.log(index)
+            <button className="border px-5 rounded-xl" onClick={() => {
               setCurrentChatIndex(index);
             }}
-              key={chat_room.chat_id}>{chat_room.chat_id}
+              key={chat_room.chat_id}>{chat_room.chatters.join(", ")}
             </button>
           )}
         <CreateChatButton username={websocket.userName}/>
@@ -55,7 +53,7 @@ export function CreateChatButton(props: {username:string}) {
    console.log()
    setShow(false)
 
-   chatContext.setChats([...chatContext.chats,new_chat_room,])
+   chatContext.setChats([...chatContext.chats,new_chat_room])
   }
   if(show === false ) {
     return <button onClick={() => setShow(!show)}>Show create chats</button>

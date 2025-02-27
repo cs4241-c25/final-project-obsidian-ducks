@@ -167,7 +167,7 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
       // io.debug(msg)
       let msg_result = {
           use decoded_msg <- result.try(result.replace_error(messages.decode_message(msg),"failed to parse message"))
-          case decoded_msg {
+          case decoded_msg |> io.debug {
             messages.Connect(_event,sender) -> handle_connect(client_state,conn,sender)
             messages.CreateChat(_event,sender, chatters) -> handle_create_chat_room(client_state,conn,sender,chatters)
             messages.ChatEvent("LEAVE_CHAT",sender, chat_id) -> handle_leave_chat(client_state,conn,sender,chat_id)
@@ -217,6 +217,7 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
           actor.continue(client_state)
         }
         messages.AddedToChat(_event,sender,chat_id,chatters) -> {
+          io.debug("Huhh")
           let chat_rooms =  client_state.chat_rooms
           |> dict.insert(chat_id,[sender, ..chatters])
           send_message(message,conn)
@@ -312,6 +313,7 @@ fn handle_leave_chat(client_state:ClientState,_conn,sender,chat_id) {
 
 
 fn handle_sent_message(client_state:ClientState,_conn,sender,msg_id,content,chat_id,chatters) {
+  io.debug("message")
  let message = messages.Message("MESSAGE",sender,msg_id,content,chat_id,chatters)
   io.debug(message)
   let _res = {

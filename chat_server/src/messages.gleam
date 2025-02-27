@@ -58,7 +58,7 @@ fn create_chat_decoder() {
 fn chat_message_decoder() {
   use event <- zero.field("event", zero.string)
    use sender <- zero.field("sender", zero.string)
-   use message_id <- zero.field("message_id",zero.string)
+   use message_id <- zero.field("msg_id",zero.string)
    use contnent <- zero.field("content",zero.string)
    use chat_id <- zero.field("chat_id",zero.string)
    use chatters <- zero.field("chatters",zero.list(zero.string))
@@ -67,7 +67,7 @@ fn chat_message_decoder() {
    use message_id <- result.try(uuid.from_string(message_id))
     Ok(zero.success(Message(event,sender,message_id,contnent,chat_id,chatters)))
   }
-  case res {
+  case res |> io.debug {
     Ok(sucess) -> sucess
     Error(_) -> zero.failure(NonValid(event,sender),"not a valid uuid")
   }
