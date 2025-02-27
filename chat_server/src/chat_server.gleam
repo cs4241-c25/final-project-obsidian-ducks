@@ -14,7 +14,6 @@ import gleam/erlang/process.{type Subject}
 import gleam/dict
 import youid/uuid
 import messages
-import database
 import gleam/function
 import gleam/string
 import envoy
@@ -22,21 +21,20 @@ import envoy
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  load_env("../.env") // this should load .env file
-  let assert Ok(db_uri) = envoy.get("MONGODB_URI")
+  // load_env("../.env") // this should load .env file
+  // let assert Ok(db_uri) = envoy.get("MONGODB_URI")
   // io.debug(db_uri)
-  let pool = database.create_db_manager(db_uri)
-  // let assert Ok(chat_server) = actor.start(create_chat_server(process.self()), handle_chat_server_message)
+  let assert Ok(chat_server) = actor.start(create_chat_server(process.self()), handle_chat_server_message)
 
-  // let assert Ok(_server) = create_request_handler(chat_server,pool)
-  // |> mist.new
-  // |> mist.port(3001)
-  // |> mist.bind("0.0.0.0")
-  // |> mist.start_http
+  let assert Ok(_server) = create_request_handler(chat_server)
+  |> mist.new
+  |> mist.port(3001)
+  |> mist.bind("0.0.0.0")
+  |> mist.start_http
 
 
-  // //todo be able to shut down process
-  // process.sleep_forever()
+  //todo be able to shut down process
+  process.sleep_forever()
 }
 
 type ClientState {
@@ -46,7 +44,6 @@ type ClientState {
     sub:Subject(InternalMessages),
     server:Subject(ChatServerMessage),
     chat_rooms:messages.ChatRooms, //todo just have this be a list of uuids
-    pool:bath.Pool(database.MongoCon,actor.StartError)
   )
 }
 type InternalMessages {
@@ -95,25 +92,26 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
           let chatters = chat_server.online_chatters |> dict.delete(name)
           let id_to_name = chat_server.id_to_name |> dict.delete(id)
           let connections = chat_server.connections |> dict.delete(id)
-          case connections |> dict.size {
-            0 ->  {
-              io.debug("stopping server")
-              process.kill(chat_server.main_pid)
-              actor.Stop(process.Normal)
-            }
-            _ -> actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
-          }
+          // case connections |> dict.size {
+          //   0 ->  {
+          //     io.debug("stopping server")
+          //     process.kill(chat_server.main_pid)
+          //     actor.Stop(process.Normal)
+          //   }
+            // _ ->
+            actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
+            //}
         }
         Error(err) -> {
           io.debug(err)
           let connections = chat_server.connections |> dict.delete(id)
-          case connections |> dict.size {
-            0 -> actor.Stop(process.Normal)
-            _ -> {
-              process.kill(chat_server.main_pid)
-              actor.continue(ChatServer(..chat_server,connections:connections))
-            }
-          }
+          //case connections |> dict.size {
+            // 0 -> actor.Stop(process.Normal)
+            // _ -> {
+          //process.kill(chat_server.main_pid)
+          actor.continue(ChatServer(..chat_server,connections:connections))
+          //   }
+          // }
         }
       }
     }
@@ -125,7 +123,7 @@ fn create_chat_server(main_process) {
 }
 
 
-fn create_request_handler(chat_server:Subject(ChatServerMessage),pool) {
+fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
   fn (req:Request(Connection)) { // this returns a setup handler function
     let not_found =
       response.new(404)
@@ -144,7 +142,7 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage),pool) {
 
               process.send(chat_server,RegisterConnection(id,subject))
 
-              #(ClientState(id,"",subject,chat_server,dict.new(),pool), option.Some(selector))
+              #(ClientState(id,"",subject,chat_server,dict.new()), option.Some(selector))
             },
             on_close: fn(state) {
               io.println("goodbye!")
@@ -174,7 +172,7 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
             messages.CreateChat(_event,sender, chatters) -> handle_create_chat_room(client_state,conn,sender,chatters)
             messages.ChatEvent("LEAVE_CHAT",sender, chat_id) -> handle_leave_chat(client_state,conn,sender,chat_id)
             messages.ChatEvent(event,sender, chat_id) -> todo
-            messages.Message(_event,sender,id,content,chat_id) -> handle_sent_message(client_state,conn,sender,id,content,chat_id)
+            messages.Message(_event,sender,id,content,chat_id,chatters) -> handle_sent_message(client_state,conn,sender,id,content,chat_id,chatters)
             messages.Read(_event,sender,msg_id) -> handle_read(client_state,conn,sender,msg_id)
             messages.InspectChats(_event, _sender, _chat_ids) ->  handle_inspect_chats(client_state,conn)
             messages.NonValid(_event,_) -> Error("failed to parse message")
@@ -191,8 +189,9 @@ fn handle_websocket_message(client_state:ClientState, conn, message) {
     mist.Custom(BroadCast(message)) -> {
       //todo send messages here
       // io.debug("we got a message! from a subject")
+      io.debug(message)
       case message {
-        messages.Message(_event,_sender,_id,_content,_chat_id) -> {
+        messages.Message(_event,_sender,_id,_content,_chat_id,_chatters) -> {
           send_message(message,conn)
           actor.continue(client_state)
         }
@@ -245,27 +244,29 @@ fn handle_inspect_chats(client_state:ClientState,conn:mist.WebsocketConnection) 
   Ok(client_state)
 }
 
-fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:String) {
+fn handle_connect(client_state:ClientState,_conn:mist.WebsocketConnection,sender:String) {
   //todo send the user all messages that they got while offline
   //check the db for waht chat rooms the chatter is part of
   // io.debug("new connection")
   // io.debug(sender)
+  io.debug("just added a new client")
   process.send(client_state.server,AddChatter(sender,client_state.id))
 
   // use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> io.debug |> result.replace_error("failed to connect"))
   // io.debug(chats)
   // //send the list of chats back
-  let chat_ids = dict.keys(chats)
-
-  let _sent = messages.InspectChats("","SERVER",chat_ids)
-  |> messages.encode_message_json()
-  |> json.to_string()
-  |> mist.send_text_frame(conn,_)
-  |> io.debug
+  // let chat_ids = dict.keys(chats)
+  //
+  //todo I need to get chats but I cant access the databse
+  // let _sent = messages.InspectChats("","SERVER",[])
+  // |> messages.encode_message_json()
+  // |> json.to_string()
+  // |> mist.send_text_frame(conn,_)
+  // |> io.debug
 
   //this should send back updates for all chats that they are part of
   // process.send(client_state.server,SetCurrentServer(ChatServer(..chat_server_state,chatters:new_chats)))
-  Ok(ClientState(..client_state,chat_rooms:chats,name:sender))
+  Ok(ClientState(..client_state,chat_rooms:dict.new(),name:sender))
 }
 
 fn handle_read(client_state:ClientState,conn,sender,msg_id) {
@@ -310,16 +311,18 @@ fn handle_leave_chat(client_state:ClientState,_conn,sender,chat_id) {
 }
 
 
-fn handle_sent_message(client_state:ClientState,_conn,sender,msg_id,content,chat_id) {
- let message = messages.Message("MESSAGE",sender,msg_id,content,chat_id)
+fn handle_sent_message(client_state:ClientState,_conn,sender,msg_id,content,chat_id,chatters) {
+ let message = messages.Message("MESSAGE",sender,msg_id,content,chat_id,chatters)
+  io.debug(message)
   let _res = {
     //this is to silence the failyers
-    use chatters <- result.try(dict.get(client_state.chat_rooms,chat_id))
+    // use chatters <- result.try(dict.get(client_state.chat_rooms,chat_id))
     let _chat_to_room_res = message
     |> chat_to_room(client_state,client_state.id,chatters,_)
     |> result.all()
+    |> io.debug
   }
-  let _insert_res = database.insert_message(client_state.pool,message)
+  // let _insert_res = database.insert_message(client_state.pool,message)
   // send a message in a chat
   Ok(client_state)
 }
@@ -327,40 +330,17 @@ fn handle_sent_message(client_state:ClientState,_conn,sender,msg_id,content,chat
 //todo simplify this
 fn chat_to_room(state:ClientState,self:uuid.Uuid,users:List(String),msg:messages.Message) {
   let chat_server = process.call(state.server,GetCurrentServer,10)  //todo handle crash
+  io.debug(chat_server)
   users
   |> list.filter_map(dict.get(chat_server.online_chatters,_))
+  |> io.debug
   |> list.filter_map(fn(id) {
     case id == self  {
       True -> Error(Nil)
-      False -> dict.get(chat_server.connections,id)
+      False -> dict.get(chat_server.connections,id) |> io.debug
     }
   })
-  |> list.map(fn(sub) {
-    Ok(process.send(sub,BroadCast(msg)))
+  |> list.map(fn(socket) {
+    Ok(process.send(socket,BroadCast(msg)))
   })
-}
-
-
-pub fn load_env(file: String) {
-  use env_file <- result.try(simplifile.read(file))
-  string.split(env_file, "\n")
-  |> list.filter(fn(line) { line != "" })
-  |> list.each(fn(line) {
-    // sometimes can be more than one = in the line
-    let splited_line = string.split(line, "=")
-    let key =
-      list.first(splited_line)
-      |> result.unwrap("")
-      |> string.trim()
-
-    // so for those cases we need to join the rest of the line
-    // and split again
-    let value =
-      list.drop(splited_line, 1)
-      |> string.join("=")
-      |> string.trim()
-
-    envoy.set(key, value)
-  })
-  Ok(Nil)
 }

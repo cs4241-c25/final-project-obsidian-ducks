@@ -1,37 +1,41 @@
 "use client"
-import { Connect, InspectChats, Message } from "@/lib/types"
+import { ChatRoom, Connect, Message } from "@/lib/types"
+import { useQuery } from "@tanstack/react-query"
 import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 // import { useSession } from "next-auth/react"
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react"
 
-export type tmpMsgContext = {
+export type MsgContext = {
   userName:string,
   websocket:WebSocket | undefined,
   onMessageSubs: ((msg:string) =>void)[],
-  chats:string[],
+  chats:ChatRoom[],
+  setChats:(chats:ChatRoom[]) => void,
   addOnMessageSub:(sub:(msg:string) =>void)=>void
 }
 
 
 
-const webSocketContext = createContext<tmpMsgContext>({
+const webSocketContext = createContext<MsgContext>({
   userName:"",
   websocket:undefined,
   onMessageSubs:[],
   chats:[],
+  setChats: () => {},
   addOnMessageSub:() => {}
 })
 
 export function ChatContextProvider(props: { url: string |undefined,children:ReactNode}) {
   const [socket, setSocket] = useState<undefined | WebSocket>();
+  const [chats,setChats] = useState<ChatRoom[]>([])
   const onMessageSubsRef = useRef<((msg:string) =>void)[]>([]);//we use ref here becasue we dont want re renders
-  const [chats,setChats] = useState<string[]>([])
   const [socketOpen, setSocketOpen] = useState(false);
   const { data: session } = useSession()
 
+
   // const { data: session, status } = useSession()
-  function send_conn(session:Session | null) {
+  async function send_conn(session:Session | null) {
     if(socket === undefined) {
       return
     }
@@ -39,18 +43,22 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
     if(session ===null|| session === undefined || session.user === undefined || session.user.name === undefined || session.user.name === null) {
       return
     }
+
     const connect_msg:Connect = {
       event: 'CONNECT',
       sender:session.user.name
     }
     socket.send(JSON.stringify(connect_msg))
+    const res = await fetch(`/api/chats?username=${session.user.name}`)
+    const chats = await res.json()
+    setChats(chats)
   }
 
   useEffect(() => {
     if(socketOpen === false) {
       return
     }
-    send_conn(session)
+    send_conn(session).then()
   },[session,socketOpen])
 
   useEffect(() => {
@@ -76,9 +84,9 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
             case "CONNECT":
               break;
             case "INSPECT_CHATS":
-              const chats = (msg as InspectChats).chats
-              console.log(chats)
-              setChats(chats)
+              // const chats = (msg as InspectChats).chats
+              // console.log(chats)
+              // setChats(chats)
               break;
             case "CREATE_CHAT":
               break;
@@ -118,6 +126,9 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
       onMessageSubs:onMessageSubsRef.current,
       addOnMessageSub:(sub) => {
         onMessageSubsRef.current.push(sub)
+      },
+      setChats:(chats:ChatRoom[]) => {
+        setChats(chats)
       },
       chats:chats
     }}>

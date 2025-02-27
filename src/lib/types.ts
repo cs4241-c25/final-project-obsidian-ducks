@@ -34,6 +34,10 @@ export type Event =
 "INSPECT_CHATS" | //find all chat rooms that client is in
 "READ_MESSAGE" // send read message
 
+export type ChatRoom = {
+  chat_id:string
+  chatters:string[]
+}
 
 //the message type as a normal typescript type
 export type Connect  = {
@@ -61,9 +65,10 @@ export type InspectChats  = {
 export type ChatMessage = {
   event:Event, // used in type narrowing
   sender:string,
-  msg_id?:string, // must be a uuid4
+  msg_id:string, // must be a uuid4
   content:string,
   chat_id:string// must be a uuid 4
+  chatters:string[]// must be a uuid 4
 }
 
 export type ReadMesage = {

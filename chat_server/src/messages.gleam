@@ -19,7 +19,7 @@ pub type Message {
   CreateChat(event:String,sender:String,chatters:List(String))
   AddedToChat(event:String,sender:String,chat_id:Id(uuid.Uuid),chatters:List(String))
   ChatEvent(event:String,sender:String,chat_id:Id(uuid.Uuid))
-  Message(event:String,sender:String,msg_id:Id(uuid.Uuid),content:String,chat_id:Id(uuid.Uuid))
+  Message(event:String,sender:String,msg_id:Id(uuid.Uuid),content:String,chat_id:Id(uuid.Uuid),chatters:List(String))
   Read(event:String,sender:String,msg_id:Id(uuid.Uuid))
   NonValid(event:String,sender:String)
   // Disconnect(sender:String)
@@ -58,15 +58,19 @@ fn create_chat_decoder() {
 fn chat_message_decoder() {
   use event <- zero.field("event", zero.string)
    use sender <- zero.field("sender", zero.string)
+   use message_id <- zero.field("message_id",zero.string)
    use contnent <- zero.field("content",zero.string)
    use chat_id <- zero.field("chat_id",zero.string)
-   case uuid.from_string(chat_id) {
-     Ok(chat_id) -> zero.success(Message(event,sender,uuid.v4(),contnent,chat_id))
-     Error(_) -> {
-       // io.debug("test")
-       zero.failure(NonValid(event,sender),"not a valid uuid")
-     }
-   }
+   use chatters <- zero.field("chatters",zero.list(zero.string))
+   let res = {
+   use chat_id <- result.try(uuid.from_string(chat_id))
+   use message_id <- result.try(uuid.from_string(message_id))
+    Ok(zero.success(Message(event,sender,message_id,contnent,chat_id,chatters)))
+  }
+  case res {
+    Ok(sucess) -> sucess
+    Error(_) -> zero.failure(NonValid(event,sender),"not a valid uuid")
+  }
 }
 fn chat_event_decoder() {
   use event <- zero.field("event", zero.string)
@@ -103,13 +107,14 @@ pub fn encode_message_json(message:Message) {
         #("chat_id",json.string(uuid.to_string(chat_id))),
       ])
     }
-    Message(_event,sender, msg_id, content, chat_id) -> {
+    Message(_event,sender, msg_id, content, chat_id,chatters) -> {
       json.object([
         #("event",json.string("MESSAGE")),
         #("sender",json.string(sender)),
         #("msg_id",json.string(uuid.to_string(msg_id))),
         #("content",json.string(content)),
         #("chat_id",json.string(uuid.to_string(chat_id))),
+        #("chatters",json.array(chatters,json.string)),
       ])
     }
     NonValid(_,_) -> todo
@@ -132,60 +137,7 @@ pub fn encode_message_json(message:Message) {
     }
   }
 }
-pub fn encode_message_bson(message:Message) {
-  case message {
-    Connect(_,_) -> todo
-    CreateChat(_,_, _) -> todo
-    ChatEvent(event,sender, chat_id) -> {
-      [
-        #("event",bson.String(event)),
-        #("sender",bson.String(sender)),
-        #("chat_id",bson.String(uuid.to_string(chat_id))),
-      ]
-    }
-    Message(_event,sender, msg_id, content, chat_id) -> {
-      [
-        #("event",bson.String("")),
-        #("sender",bson.String(sender)),
-        #("msg_id",bson.String(uuid.to_string(msg_id))),
-        #("content",bson.String(content)),
-        #("chat_id",bson.String(uuid.to_string(chat_id))), //todo refactor so messages just 
-      ]
-    }
-    NonValid(_,_) -> todo
-    Read(_,_, _) -> todo
-    InspectChats(_event,sender, chats) -> {
-      let chats = list.map(chats,uuid.to_string(_))
-      [
-        #("event",bson.String("INSPECT_CHATS")),
-        #("sender",bson.String(sender)),
-        #("chats",bson.Array(list.map(chats ,bson.String))),
-      ]
-    }
-    AddedToChat(_, sender, chat_id, chatters) -> {
-      [
-        #("event",bson.String("ADDED_TO_CHAT")),
-        #("sender",bson.String(sender)),
-        #("chatters",bson.Array(list.map(chatters,bson.String))),
-        #("chat_id",bson.String(uuid.to_string(chat_id))),
-      ]
-    }
-  }
-}
 
-pub fn encode_chat(id,chatters) {
-  [
-    #("chat_id",bson.String(uuid.to_string(id))),
-    #("chatters",bson.Array(list.map(chatters,bson.String))),
-  ]
-}
-
-pub fn encode_user_chat(username:String,ids:List(uuid.Uuid)) {
-  [
-    #("username",bson.String(username)),
-    #("chat_ids",bson.Array(list.map(ids,fn(id) {bson.String(uuid.to_string(id))}))),
-  ]
-}
 
 
 

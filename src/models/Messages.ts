@@ -23,6 +23,10 @@ const MessageSchema = new Schema({
     required:true,
     index:true
   },
+  chatters: {
+    type:[String],
+    required:true,
+  },
 
 
 });

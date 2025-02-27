@@ -9,47 +9,53 @@ export default function ChatRoom() {
   const [currentChatIndex,setCurrentChatIndex] = useState(0)
 
   //todo load from db
-  
+
 
   if(websocket.chats.length <= 0) {
     return <div>
       <h1>Chats</h1>
-      <CreateChatButton/>
+      <CreateChatButton username={websocket.userName } />
     </div>
   }
   return (
     <div>
       <div className='flex flex-row gap-5 overflow-scroll'>
         <h1>chats:</h1>{
-          websocket.chats.map((chat_id,index) =>
-            <button onClick={()=> setCurrentChatIndex(index)}
-              key={chat_id}>{chat_id}
+          websocket.chats.map((chat_room,index) =>
+            <button onClick={() => {
+              console.log(index)
+              setCurrentChatIndex(index);
+            }}
+              key={chat_room.chat_id}>{chat_room.chat_id}
             </button>
           )}
-        <CreateChatButton/>
+        <CreateChatButton username={websocket.userName}/>
       </div>
-      <ChatSession chat_id={websocket.chats[currentChatIndex]} />
+      <ChatSession chat={websocket.chats[currentChatIndex]} />
     </div>
   )
 }
 
 
-export function CreateChatButton() {
+export function CreateChatButton(props: {username:string}) {
   const [otherChatters,setOtherChatters] = useState<string[]>([])
   const [show, setShow] = useState(false)
-  const chatHandler = useWebSocket()
+  const chatContext = useWebSocket()
 
 
-  function createChat() {
-    if(chatHandler.websocket === undefined) {
+  async function createChat() {
+    if(props.username.length === 0) {
       return
     }
-    const createChat:CreateChat = {
-        event: 'CREATE_CHAT',
-        sender: chatHandler.userName,
-        chatters: otherChatters
-    }
-    chatHandler.websocket.send(JSON.stringify(createChat));
+   const res = await fetch("/api/chats",{
+     method:"POST",
+     body:JSON.stringify({chatters:[props.username,...otherChatters]})
+   })
+   const new_chat_room = await res.json()
+   console.log()
+   setShow(false)
+
+   chatContext.setChats([...chatContext.chats,new_chat_room,])
   }
   if(show === false ) {
     return <button onClick={() => setShow(!show)}>Show create chats</button>

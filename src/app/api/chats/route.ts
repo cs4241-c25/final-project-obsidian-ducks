@@ -1,14 +1,58 @@
-import Message from "@/models/Messages";
+import ChatRoom from "@/models/ChatRoom";
+import { NextRequest } from "next/server";
+import { v4 as uuidv4 } from 'uuid';
+
+export async function GET(req:NextRequest) {
+  const searchParams = req.nextUrl.searchParams
+  const username:string | null = searchParams.get('username')
+  console.log(username)
+  if(username === null) {
+    return new Response(
+        JSON.stringify({message: "please enter a username"}),
+        {
+            status: 400,
+            statusText: "User Error"
+        }
+    )
+  }
+  try {
+    const chat_rooms = await ChatRoom.find({ chatters: username }).exec()
+    console.log(chat_rooms)
+    return new Response(
+      JSON.stringify(chat_rooms),
+      {
+        status: 200,
+        statusText: "OK",
+        headers: { "Content-type": "application/json" }
+      }
+    )
+  } catch(e) {
+    console.log(e)
+    return new Response(
+        JSON.stringify({message: "Failed to fetch messages"}),
+        {
+            status: 500,
+            statusText: "Internal Server Error"
+        }
+    )
+  }
+}
 
 export async function POST(req: Request) {
   try {
-    const { chat_id}:{chat_id:string} = await req.json();
-    console.log(chat_id)
+    const { chatters}:{chatters:string[]} = await req.json();
 
-    const messages = await Message.find({ chat_id: chat_id }).exec()
-    console.log(messages)
+    const chat_id = uuidv4();
+    const chat_room = new ChatRoom()
+    chat_room.chatters = chatters;
+    chat_room.chat_id = chat_id
+    console.log( await chat_room.save())
+
+
     return new Response(
-      JSON.stringify(messages),
+      JSON.stringify({
+        chat_id:chat_id
+      }),
       {
           status: 200,
           statusText: "OK",

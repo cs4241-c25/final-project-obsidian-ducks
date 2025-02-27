@@ -2,23 +2,27 @@
 import { useState, useEffect } from 'react';
 import MessageDisplay from '@/components/chat/MessageDisplay';
 import { useWebSocket } from '@/components/chat/ChatContext';
-import { ChatMessage, Message} from "@/lib/types"
+import { ChatMessage, ChatRoom, Message} from "@/lib/types"
 import { useQuery } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
-export default function ChatSession(props: {chat_id:string}) {
+export default function ChatSession(props: {chat:ChatRoom}) {
   const chatHandler = useWebSocket()
   const { isLoading, error, data:old_msgs } = useQuery<ChatMessage[]>({
-    queryKey:["messages",props.chat_id],
+    queryKey:["messages",props.chat.chat_id],
     queryFn:async () => {
-      console.log(props.chat_id)
-      const res = await fetch("/api/chats", {
-        method:"POST",
-        body: JSON.stringify({chat_id:props.chat_id})
+      console.log(props.chat.chat_id)
+      const res = await fetch(`/api/chats/msgs?chatid=${props.chat.chat_id}`, {
+        method:"GET",
       })
+      console.log(res)
+
       if(res.status != 200) {
         return []
       }
-      return await res.json()
+      const body = await res.json()
+      console.log(body)
+      return body
     }
   })
 
@@ -46,8 +50,12 @@ export default function ChatSession(props: {chat_id:string}) {
             break;
           case "MESSAGE":
             const chat_msg = (msg as ChatMessage)
-            if(chat_msg.chat_id === props.chat_id) {
+            console.log(chat_msg)
+            if(chat_msg.chat_id.toLowerCase() === props.chat.chat_id) {
               setMessages((prevMessages) => [...prevMessages,chat_msg]);
+            } else {
+              console.log(props.chat.chat_id)
+              console.log("huhhhh")
             }
             break;
           case "READ_MESSAGE":
@@ -59,7 +67,7 @@ export default function ChatSession(props: {chat_id:string}) {
     });
   }, []);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if(chatHandler.websocket === undefined) {
       return
     }
@@ -67,11 +75,18 @@ export default function ChatSession(props: {chat_id:string}) {
       event:"MESSAGE",
       sender: chatHandler.userName, // subing this for a
       content:  newMessage,
-      chat_id: props.chat_id
+      chat_id: props.chat.chat_id,
+      msg_id:uuidv4(),
+      chatters:props.chat.chatters
     }
     chatHandler.websocket.send(JSON.stringify(msg));
     setMessages((prevMessages) => [...prevMessages,msg]);
     setNewMessage("")
+    await fetch("/api/chats/msgs",{
+      method:"POST",
+      body:JSON.stringify(msg)
+    })
+    //todo save to db
   };
 
   if(chatHandler === undefined) {

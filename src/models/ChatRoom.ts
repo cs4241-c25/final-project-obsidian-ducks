@@ -2,14 +2,14 @@ import { models,model, Schema} from "mongoose";
 
 
 const ChatRoomSchema = new Schema({
- username: {
-   type:String
- },
  chat_id: {
-   type:[String], //todo in some cases this can just be a string but this is largly not used by our program
+   type:String, //todo in some cases this can just be a string but this is largly not used by our program
+ },
+ chatters: {
+   type:[String]
  }
 });
 
-const ChatRoom = models.ChatRoomSchema || model("Message",ChatRoomSchema)
+const ChatRoom = models.ChatRoomSchema || model("ChatRooms",ChatRoomSchema)
 
 export default ChatRoom;
