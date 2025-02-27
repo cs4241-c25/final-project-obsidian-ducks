@@ -7,6 +7,15 @@ import User from "@/models/User";
 //get likes for specific user
 export async function GET(request: Request){
     const session = await getServerSession()
+    if(!session){
+        return new Response(
+            JSON.stringify([]),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    }
     const sessionUser = JSON.parse(JSON.stringify(session)).user.name
     try {
 
