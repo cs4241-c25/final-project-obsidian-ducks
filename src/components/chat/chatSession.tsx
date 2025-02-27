@@ -11,7 +11,6 @@ export default function ChatSession(props: {chat:ChatRoom}) {
   const { isLoading, error, data:old_msgs } = useQuery<ChatMessage[]>({
     queryKey:["messages",props.chat.chat_id],
     queryFn:async () => {
-      console.log(props.chat.chat_id)
       const res = await fetch(`/api/chats/msgs?chatid=${props.chat.chat_id}`, {
         method:"GET",
       })
@@ -37,6 +36,9 @@ export default function ChatSession(props: {chat:ChatRoom}) {
         const msg: Message = JSON.parse(msgEvent)
         console.log(msg)
 
+          if(props.chat === undefined) {
+            return
+          }
         switch (msg.event) {
           case "CONNECT":
             break;
@@ -107,7 +109,9 @@ export default function ChatSession(props: {chat:ChatRoom}) {
         {old_msgs.map((message, index) => (
           <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
         ))}
-        {messages.filter((message) => { return message.chat_id === props.chat.chat_id }).map((message, index) => (
+        {messages.filter((message) => {
+          return message.chat_id === props.chat.chat_id
+        }).map((message, index) => (
           <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
         ))}
       </div >

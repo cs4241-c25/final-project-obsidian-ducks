@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
 import Image from 'next/image'
+import  "@/lib/db"
 async function getItem(params) {
 
     const {id} = await params

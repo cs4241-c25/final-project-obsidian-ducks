@@ -3,11 +3,9 @@ import { useState } from "react"
 import ChatSession from "./chatSession"
 import { useWebSocket } from "./ChatContext"
 
-export default function ChatRoom() {
+export default function ChatRoom(props: {chat_id:string}) {
   const websocket = useWebSocket()
-  const [currentChatIndex,setCurrentChatIndex] = useState(0)
-
-  //todo load from db
+  const [currentChatIndex,setCurrentChatIndex] = useState(websocket.chats.findIndex((chat) => { return chat.chat_id === props.chat_id }))
 
 
   if(websocket.chats.length <= 0) {
@@ -22,6 +20,7 @@ export default function ChatRoom() {
         <h1>chats:</h1>{
           websocket.chats.map((chat_room,index) =>
             <button className="border px-5 rounded-xl" onClick={() => {
+              console.log(index)
               setCurrentChatIndex(index);
             }}
               key={chat_room.chat_id}>{chat_room.chatters.join(", ")}
@@ -29,7 +28,10 @@ export default function ChatRoom() {
           )}
         <CreateChatButton username={websocket.userName}/>
       </div>
-      <ChatSession chat={websocket.chats[currentChatIndex]} />
+      {currentChatIndex !== -1  ?
+        <ChatSession chat={websocket.chats[currentChatIndex]} />:
+        <div>No chat exists with that id</div>
+      }
     </div>
   )
 }
