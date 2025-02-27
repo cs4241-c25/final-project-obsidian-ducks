@@ -17,7 +17,6 @@ export default function ItemPost(props: ItemPost) {
 
     async function handleLikes(itemID: string) {
 
-        alert("liked!")
         if (window.location.pathname === "/favorites") {
             window.location.reload()
         }
