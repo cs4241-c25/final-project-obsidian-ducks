@@ -38,11 +38,18 @@ export default function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1>Login:</h1>
-            <TextInput type="text" name="username" placeholder="Enter your username">Username</TextInput>
-            <TextInput type="password" name="password" placeholder="Enter your password">Password</TextInput>
-            <Button type="submit">Login</Button>
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg border-2 border-crimson-500 shadow-md">
+            <h1 className="text-3xl font-bold mb-6">Login</h1>
+            <div className="flex flex-col space-y-4">
+                <TextInput type="text" name="username" placeholder="Enter your school email">Username:</TextInput>
+                <TextInput type="password" name="password" placeholder="Enter your password">Password:</TextInput>
+                <a href="/register" className="text-crimson-500 hover:underline mb-0">Don't have an account?</a>
+                <div className="w-full flex justify-end">
+                    <Button type="submit">Login</Button>
+                </div>
+
+
+            </div>
         </form>
     );
 }
