@@ -37,7 +37,7 @@ export default async function ItemPage({params}) {
             <div
                 className={"flex flex-col w-screen items-center justify-evenly flex-wrap md:flex-nowrap md:flex md:flex-row"}>
 
-                <div className={"flex flex-row flex-wrap justify-center sm:flex-row sm:items-center sm:gap-10"}>
+                <div className={"flex flex-col  sm:flex-row sm:items-center sm:gap-10"}>
                     <div className={"relative"}>
                         <Image className={"w-[350] h-[350] drop-shadow-2xl rounded-3xl"} src={item[0].image} alt={item[0].title}
 
@@ -57,7 +57,7 @@ export default async function ItemPage({params}) {
                         <Button type={"submit"}>Message Seller</Button>
                         <div className={"flex items-center gap-5"}>
                             <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
-                            <p>Seller: {item[0].username}</p>
+                            <p >Seller: {item[0].username}</p>
                         </div>
 
                     </div>
