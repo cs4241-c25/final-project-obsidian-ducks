@@ -35,15 +35,13 @@ export default function Favorites() {
 
     return (
         <div className={"flex justify-center"}>
-        {/*    <p style={seeLess} onClick={() => handleSeeLess()}
-               className={"text-right m-5 cursor-pointer hover:font-bold"}>See Less</p>*/}
+
             <div className={"flex-col w-3/4 justify-center"}>
                 <div className={"flex-col justify-center text-left flex-wrap"}>
                     <h1 className={"text-4xl mt-5 font-bold text-center"}>Your Favorites</h1>
                     <h2 className={"font-bold ml-2 mb-5"}>Likes: {likeCount}</h2>
                 </div>
-        {/*        <p style={seeMore} onClick={() => handleSeeMore()}
-                   className={"text-right m-5 cursor-pointer hover:font-bold"}>See More</p>*/}
+
                 <div className={"flex justify-center flex-wrap  gap-9"}>
                     {likes.map(item => (
                         <FavoritePost key={item._id} id={item._id} title={item.title} description={item.description}
@@ -52,7 +50,6 @@ export default function Favorites() {
                     ))
                     }
                 </div>
-
             </div>
 
         </div>
