@@ -24,15 +24,19 @@ pub fn main() {
   io.println("Hello from chat_server!")
   load_env("../.env") // this should load .env file
   let assert Ok(db_uri) = envoy.get("MONGODB_URI")
+  // io.debug(db_uri)
   let pool = database.create_db_manager(db_uri)
-  let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
+  // let assert Ok(chat_server) = actor.start(create_chat_server(process.self()), handle_chat_server_message)
 
-  let assert Ok(_server) = create_request_handler(chat_server,pool)
-  |> mist.new
-  |> mist.port(3001)
-  |> mist.bind("0.0.0.0")
-  |> mist.start_http
-  process.sleep_forever()
+  // let assert Ok(_server) = create_request_handler(chat_server,pool)
+  // |> mist.new
+  // |> mist.port(3001)
+  // |> mist.bind("0.0.0.0")
+  // |> mist.start_http
+
+
+  // //todo be able to shut down process
+  // process.sleep_forever()
 }
 
 type ClientState {
@@ -56,6 +60,7 @@ type ChatServer {
     connections:dict.Dict(uuid.Uuid,Subject(InternalMessages)),
     online_chatters:dict.Dict(String,uuid.Uuid),
     id_to_name:dict.Dict(uuid.Uuid,String),
+    main_pid:process.Pid
   )
 }
 
@@ -90,20 +95,33 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
           let chatters = chat_server.online_chatters |> dict.delete(name)
           let id_to_name = chat_server.id_to_name |> dict.delete(id)
           let connections = chat_server.connections |> dict.delete(id)
-          actor.continue(ChatServer(connections,chatters,id_to_name))
+          case connections |> dict.size {
+            0 ->  {
+              io.debug("stopping server")
+              process.kill(chat_server.main_pid)
+              actor.Stop(process.Normal)
+            }
+            _ -> actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
+          }
         }
         Error(err) -> {
           io.debug(err)
           let connections = chat_server.connections |> dict.delete(id)
-          actor.continue(ChatServer(..chat_server,connections:connections))
+          case connections |> dict.size {
+            0 -> actor.Stop(process.Normal)
+            _ -> {
+              process.kill(chat_server.main_pid)
+              actor.continue(ChatServer(..chat_server,connections:connections))
+            }
+          }
         }
       }
     }
   }
 }
 
-fn create_chat_server() {
-  ChatServer(dict.new(),dict.new(),dict.new())
+fn create_chat_server(main_process) {
+  ChatServer(dict.new(),dict.new(),dict.new(),main_process)
 }
 
 
@@ -234,9 +252,9 @@ fn handle_connect(client_state:ClientState,conn:mist.WebsocketConnection,sender:
   // io.debug(sender)
   process.send(client_state.server,AddChatter(sender,client_state.id))
 
-  use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> io.debug |> result.replace_error("failed to connect"))
-  io.debug(chats)
-  //send the list of chats back
+  // use chats <- result.try(database.find_chat_rooms(client_state.pool,sender) |> io.debug |> result.replace_error("failed to connect"))
+  // io.debug(chats)
+  // //send the list of chats back
   let chat_ids = dict.keys(chats)
 
   let _sent = messages.InspectChats("","SERVER",chat_ids)
@@ -271,7 +289,7 @@ fn handle_create_chat_room(client_state:ClientState,conn,sender:String, chatters
     |> chat_to_room(client_state,client_state.id,chatters,_)
   //tell the room that the chat has been created
 
-  let _db_res = database.insert_chat(client_state.pool,chat_id,[sender,..chatters])
+  // let _db_res = database.insert_chat(client_state.pool,chat_id,[sender,..chatters])
 
   //create a new chat
   Ok(ClientState(..client_state,chat_rooms:chat_rooms))

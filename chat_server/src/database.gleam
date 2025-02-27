@@ -16,19 +16,33 @@ import gleam/option
 
 pub type MongoCon = process.Subject(client.Message)
 
+pub type DbCon
+
+@external(erlang,"Elixir.Database","connect")
+fn connect(url:string) -> Result(DbCon,Nil)
+
+@external(erlang,"Elixir.Database","find")
+fn find(connection:DbCon,collection:String) -> Result(DbCon,Nil)
+
 pub fn create_db_manager(url:String) {
-  let assert Ok(pool) =
-    bath.new(fn() {
-      io.debug("connected to db")
-      mungo.start(
-            url,
-            10000,
-          )
-    })
-    |> bath.with_size(5)
-    |> bath.with_shutdown(fn(conn) { process.send(conn,client.Shutdown) })
-    |> bath.start(10000)
-    pool
+  io.debug(url)
+  use conn <- result.try(connect(url))
+
+  conn
+  |> io.debug
+  |> find("messages")
+  // let assert Ok(pool) =
+  //   bath.new(fn() {
+  //     io.debug("connected to db")
+  //     mungo.start(
+  //           url,
+  //           100000,
+  //         ) |> io.debug
+  //   })
+  //   |> bath.with_size(5)
+  //   |> bath.with_shutdown(fn(conn) { process.send(conn,client.Shutdown) })
+  //   |> bath.start(10000)
+  //   pool
 }
 
 pub fn insert_chat(pool,chat_id,chatters:List(String)) {

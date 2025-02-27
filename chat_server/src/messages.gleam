@@ -149,7 +149,7 @@ pub fn encode_message_bson(message:Message) {
         #("sender",bson.String(sender)),
         #("msg_id",bson.String(uuid.to_string(msg_id))),
         #("content",bson.String(content)),
-        #("chat_id",bson.String(uuid.to_string(chat_id))),
+        #("chat_id",bson.String(uuid.to_string(chat_id))), //todo refactor so messages just 
       ]
     }
     NonValid(_,_) -> todo
