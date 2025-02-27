@@ -2,6 +2,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import {useSession} from "next-auth/react";
 import React, {use, useRef, useState} from "react";
+import Link from "next/link";
 
 interface ItemPost {
     id: string;
@@ -45,7 +46,9 @@ export default function FavoritePost(props: ItemPost) {
     }
     return (
         <figure className="relative">
-            <img className="w-[250px] h-[250px] rounded-sm object-cover" src={props.image} alt={props.title}/>
+            <Link href={`/listing/${props.id}`}>
+                <img className="w-[250px] h-[250px] rounded-sm object-cover hover:scale-105 duration-150 ease-in-out" src={props.image} alt={props.title} />
+            </Link>
             <figcaption>
                 <p className="font-semibold tracking-wider">${props.price}.00</p>
                 <p className="opacity-75">{props.category}</p>
