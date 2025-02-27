@@ -1,0 +1,18 @@
+FROM ghcr.io/gleam-lang/gleam:v1.8.1-erlang-alpine
+
+# Add project code
+COPY . /build/
+
+RUN touch .env
+
+# Compile the project
+RUN cd /build \
+  && gleam export erlang-shipment \
+  && mv build/erlang-shipment /app \
+  && rm -r /build
+
+# Run the server
+EXPOSE 3001
+WORKDIR /app
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["run"]
