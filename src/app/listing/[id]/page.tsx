@@ -32,14 +32,14 @@ export default async function ItemPage({params}) {
     return (
 
         <main
-            className={"flex items-center flex-wrap sm:mt-[0] sm:flex-nowrap sm:mx-auto md:w-full md:h-[calc(100vh-77px)] "}>
+            className={"flex items-center mt-5 drop-shadow-2xl flex-wrap sm:mt-[0] sm:flex-nowrap sm:mx-auto sm:w-full sm:h-[calc(100vh-77px)] "}>
 
             <div
-                className={"flex flex-col w-screen items-center justify-evenly flex-wrap md:flex-nowrap md:flex md:flex-row"}>
+                className={"flex flex-col  w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
 
-                <div className={"flex flex-col  sm:flex-row sm:items-center sm:gap-10"}>
-                    <div className={"relative"}>
-                        <Image className={"w-[350] h-[350] drop-shadow-2xl rounded-3xl"} src={item[0].image} alt={item[0].title}
+                <div className={"flex w-auto p-3 flex-col border-solid shadow-xl border-black border-2 border-r-10 border-l-10  items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
+                    <div className={"relative m-9"}>
+                        <Image className={"w-[350] h-[350] drop-shadow-xl rounded-3xl object-cover"} src={item[0].image} alt={item[0].title}
 
                                width={400} height={300}/>
                         <Button type="button"
@@ -49,7 +49,7 @@ export default async function ItemPage({params}) {
                     </div>
 
 
-                    <div className={"flex flex-col sm:w-[50%] gap-5"}>
+                    <div className={"flex w-[60%] flex-col flex-wrap sm:w-[50%] gap-5"}>
                         <p className={"text-5xl"}>{item[0].title}</p>
                         <p className={""}>{item[0].description}</p>
                         <p>${item[0].price}</p>
@@ -61,9 +61,9 @@ export default async function ItemPage({params}) {
                         </div>
 
                     </div>
-                    <span className={'flex self-end justify-end'}>
+                    <span className={'flex self-end justify-end whitespace-nowrap'}>
                             <Image src={'/tag.svg'} alt={"tag"} width={15} height={15}/>
-                            <p>{item[0].category}</p>
+                            <p className={"p-3"}>{item[0].category}</p>
                     </span>
 
 
