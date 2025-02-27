@@ -56,7 +56,7 @@ export function CreateChatButton(props: {username:string}) {
    chatContext.setChats([...chatContext.chats,new_chat_room])
   }
   if(show === false ) {
-    return <button onClick={() => setShow(!show)}>Show create chats</button>
+    return <button onClick={() => setShow(!show)}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
   }
   return (
     <div className={"py-5"}>
@@ -64,7 +64,7 @@ export function CreateChatButton(props: {username:string}) {
         const chattersStr = event.target.value
         setOtherChatters(chattersStr.split(","))
       }}></input>
-      <button onClick={createChat}>Create chat</button>
+      <button onClick={createChat}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
     </div>
   )
 }

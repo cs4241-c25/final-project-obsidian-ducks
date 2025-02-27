@@ -51,7 +51,8 @@ export async function POST(req: Request) {
 
     return new Response(
       JSON.stringify({
-        chat_id:chat_id
+        chat_id:chat_id,
+        chatters:chatters
       }),
       {
           status: 200,

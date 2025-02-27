@@ -6,6 +6,7 @@ import Image from "next/image";
 import { handleLogout } from '../app/profile/page';
 
 import {signOut, useSession} from 'next-auth/react';
+import MailIcon from "./chat/MailIcon";
 
 
 export default function NavBar(){
@@ -17,7 +18,7 @@ export default function NavBar(){
                 {status === 'authenticated' ? (
                     <><Link href="/profile">
                         <p>Profile</p>
-                    </Link><Button type={"button"} onClick={handleLogout}>Logout</Button></>
+                    </Link><Button type={"button"} onClick={() => handleLogout}>Logout</Button></>
 
                 ) : (
                     <>

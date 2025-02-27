@@ -22,6 +22,7 @@ export default function ChatSession(props: {chat:ChatRoom}) {
       }
       const body = await res.json()
       console.log(body)
+      setMessages([])
       return body
     }
   })
@@ -35,7 +36,7 @@ export default function ChatSession(props: {chat:ChatRoom}) {
       try {
         const msg: Message = JSON.parse(msgEvent)
         console.log(msg)
-      
+
         switch (msg.event) {
           case "CONNECT":
             break;
@@ -106,7 +107,7 @@ export default function ChatSession(props: {chat:ChatRoom}) {
         {old_msgs.map((message, index) => (
           <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
         ))}
-        {messages.map((message, index) => (
+        {messages.filter((message) => { return message.chat_id === props.chat.chat_id }).map((message, index) => (
           <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
         ))}
       </div >
