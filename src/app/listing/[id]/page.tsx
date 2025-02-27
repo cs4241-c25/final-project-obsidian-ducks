@@ -37,9 +37,9 @@ export default async function ItemPage({params}) {
             <div
                 className={"flex flex-col w-screen items-center justify-evenly flex-wrap md:flex-nowrap md:flex md:flex-row"}>
 
-                <div className={"block md:flex items-center gap-10"}>
-                    <div className={"relative  "}>
-                        <Image className={" drop-shadow-2xl rounded-3xl"} src={item[0].image} alt={item[0].title}
+                <div className={"flex flex-row flex-wrap justify-center sm:flex-row sm:items-center sm:gap-10"}>
+                    <div className={"relative"}>
+                        <Image className={"w-[350] h-[350] drop-shadow-2xl rounded-3xl"} src={item[0].image} alt={item[0].title}
 
                                width={400} height={300}/>
                         <Button type="button"
