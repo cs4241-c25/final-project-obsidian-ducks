@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
 import Image from 'next/image'
+import LikeButton from "@/components/LikeButton";
 async function getItem(params) {
 
     const {id} = await params
@@ -42,10 +43,7 @@ export default async function ItemPage({params}) {
                         <Image className={" drop-shadow-2xl rounded-3xl"} src={item[0].image} alt={item[0].title}
 
                                width={400} height={300}/>
-                        <Button type="button"
-                                className="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md bg-white hover:bg-auburn-300">
-                            <Image src="/like.svg" alt="Heart Image" width={15} height={15}/>
-                        </Button>
+                        <LikeButton itemID={item[0]._id}/>
                     </div>
 
 
