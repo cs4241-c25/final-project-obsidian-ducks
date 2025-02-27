@@ -5,44 +5,11 @@ import FavoritePost from "../../components/FavoritePost"
 export default function Favorites() {
     const [likes, setLikes] = useState([]);
     const [likeCount, setLikeCount] = useState(0)
-    const [style, setStyle] = useState({
-        overflow: "hidden",
-        height: "65vh"
-    })
-    const [seeLess,setSeeLess] = useState({
-        display: "none"
-    })
-    const [seeMore,setSeeMore] = useState({
-        display: "block"
-    })
-    function handleSeeMore() {
-        setStyle({
-            overflow: "visible",
-            height: "100vh"
-
-        })
-        setSeeMore({
-            display: "none"
-        })
-        setSeeLess({
-            display: "block"
-        })
-    }
-    function handleSeeLess() {
-        if(style.overflow === "visible"){
-             setStyle({
-                overflow: "hidden",
-                height: "65vh"
-            })
-
-        }
-        setSeeLess({
-            display: "none"
-        })
-        setSeeMore({
-            display: "block"
-        })
-    }
+    const removeFavorite = (itemID: string) => {
+        // Update the likes array by filtering out the item that was removed
+        setLikes(likes.filter(item => item._id !== itemID));
+        setLikeCount(likeCount - 1)
+    };
     async function getLikes() {
         try {
             const response = await fetch("http://localhost:3000/api/likes", {
@@ -81,7 +48,7 @@ export default function Favorites() {
                     {likes.map(item => (
                         <FavoritePost key={item._id} id={item._id} title={item.title} description={item.description}
                                   category={item.category}
-                                  price={item.price} image={item.image}/>
+                               onRemove={() => removeFavorite(item._id)}   price={item.price} image={item.image}/>
                     ))
                     }
                 </div>
