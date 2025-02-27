@@ -56,8 +56,8 @@ export default async function ItemPage({params}) {
 
                         <Button type={"submit"}>Message Seller</Button>
                         <div className={"flex items-center gap-5"}>
-                            <img alt={"seller icon"} src={"https://placehold.co/40x40"} width={40} height={40}/>
-                            <p>Seller Name: Anon</p>
+                            <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
+                            <p>Seller: {item[0].username}</p>
                         </div>
 
                     </div>
