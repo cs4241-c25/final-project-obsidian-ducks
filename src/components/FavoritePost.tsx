@@ -9,18 +9,15 @@ interface ItemPost {
     category: string;
     price: number;
     image: string;
+    onRemove?: (itemID: string) => void
 }
 
-export default function ItemPost(props: ItemPost) {
+export default function FavoritePost(props: ItemPost) {
     const {data: session} = useSession()
     const usernameSession = session?.user?.name
 
     async function handleLikes(itemID: string) {
 
-        alert("removed!")
-        if (window.location.pathname === "/favorites") {
-            window.location.reload()
-        }
         let data = {
             _id: itemID,
             username: usernameSession
@@ -35,6 +32,13 @@ export default function ItemPost(props: ItemPost) {
             });
             const test = await response
 
+            console.log(test.bodyUsed)
+
+            if(test.bodyUsed === false){
+                if (props.onRemove) {
+                    props.onRemove(itemID)
+                }
+            }
         } catch (e) {
             console.error(e);
         }
