@@ -1,10 +1,7 @@
 import Button from "@/components/Button";
 import Image from 'next/image'
-<<<<<<< HEAD
 import  "@/lib/db"
-=======
 import LikeButton from "@/components/LikeButton";
->>>>>>> main
 async function getItem(params) {
 
     const {id} = await params
