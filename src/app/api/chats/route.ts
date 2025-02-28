@@ -1,6 +1,5 @@
 import ChatRoom from "@/models/ChatRoom";
 import { NextRequest } from "next/server";
-import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
@@ -42,12 +41,7 @@ export async function POST(req: Request) {
   try {
     const { chatters}:{chatters:string[]} = await req.json();
 
-    const chat_id = uuidv4();
-    const chat_room = new ChatRoom()
-    chat_room.chatters = chatters;
-    chat_room.chat_id = chat_id
-    console.log( await chat_room.save())
-
+    const { chat_id } = await createChatRoom(chatters)
 
     return new Response(
       JSON.stringify({
@@ -71,3 +65,5 @@ export async function POST(req: Request) {
     )
   }
 }
+
+

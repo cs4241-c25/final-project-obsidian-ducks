@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import Image from 'next/image'
-import  "@/lib/db"
 import LikeButton from "@/components/LikeButton";
+import { redirect } from 'next/navigation'
 async function getItem(params) {
 
     const {id} = await params
