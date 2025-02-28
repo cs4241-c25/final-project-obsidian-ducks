@@ -18,16 +18,20 @@ async function getPosts() {
 
 export default async function Home() {
     await connectToDatabase()
-    let items = await Item.find({}).exec();
-    items = items.map(item => ({
+    let items = []
+    try {
+      items = await Item.find({}).exec();
+      items = items.map(item => ({
         id: item._id.toString(),
         title: item.title,
         price: item.price,
         category: item.category,
         description: item.description,
         image: item.image
-    }));
-
+      }));
+    } catch(error) {
+      console.log(error)
+    }
     return (
         <main className="overflow-x-hidden">
             <HeroSection/>
