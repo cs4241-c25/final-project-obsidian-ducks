@@ -19,6 +19,7 @@ export async function POST(req: Request) {
 
         //hashing password
         const saltRounds = 10;
+        // @ts-ignore
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const newUser = new User({ username, password: hashedPassword });

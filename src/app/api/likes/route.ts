@@ -7,6 +7,15 @@ import User from "@/models/User";
 //get likes for specific user
 export async function GET(request: Request){
     const session = await getServerSession()
+    if(!session){
+        return new Response(
+            JSON.stringify([]),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    }
     const sessionUser = JSON.parse(JSON.stringify(session)).user.name
     try {
 
@@ -44,6 +53,8 @@ export async function GET(request: Request){
 export async function POST(request: Request) {
     const session = await getServerSession()
     const sessionUser = JSON.parse(JSON.stringify(session)).user.name
+   let itemCondition = true
+
 
     try {
 
@@ -68,7 +79,7 @@ export async function POST(request: Request) {
             console.log(check.get('_id'))
             const removeUserLike = await User.updateOne({'username': sessionUser}, {$pull: {'likes': check.get('_id')}})
             const updatedLike = await Like.updateOne({'itemID': data._id} , {$set: {'isLiked': false}})
-
+            itemCondition = false
         }
 
         const item = await Item.findOne({'_id': data._id}).exec()
@@ -76,7 +87,7 @@ export async function POST(request: Request) {
         console.log(item.likes)
 
         return new Response(
-            JSON.stringify(item.likesCount),
+            JSON.stringify(itemCondition),
             {
                 status: 200,
                 statusText: "OK",

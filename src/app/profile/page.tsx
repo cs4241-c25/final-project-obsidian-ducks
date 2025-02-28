@@ -81,6 +81,7 @@ export default function ProfilePage() {
         }
     }, [status, tabFilter])
 
+
     return (
         <main>
             <h1>Profile Page</h1>
