@@ -18,6 +18,7 @@ export default function ProfilePage() {
     const router = useRouter();
 
 
+
     return (
         <main>
             <h1>Profile Page</h1>

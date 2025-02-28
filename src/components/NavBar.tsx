@@ -9,7 +9,7 @@ import {useLogout} from '../app/profile/handleLogout';
 
 export default function NavBar(){
     const { data: session, status } = useSession();
-    const handleLogout = useLogout(); // Initialize the custom hook
+    const handleLogout = useLogout();
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -49,9 +49,7 @@ export default function NavBar(){
 
             </div>
             <Link href="/">
-                <svg className="xl:w-[75px] 2xl:w-[85px]" width={70} height="100%" viewBox="0 0 100 100">
-                    <image href="/WPIBuys.png" />
-                </svg>
+                <Image src={"/wpibuysicon1.svg"} alt={"WPIBuys Logo"} width={75} height={85}/>
             </Link>
             <div className="flex flex-row gap-5">
               <Link href={"/chats"}>
