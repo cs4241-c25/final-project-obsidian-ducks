@@ -1,12 +1,19 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ChatSession from "./chatSession"
 import { useWebSocket } from "./ChatContext"
 
 export default function ChatRoom(props: {chat_id:string}) {
   const websocket = useWebSocket()
-  const [currentChatIndex,setCurrentChatIndex] = useState(websocket.chats.findIndex((chat) => { return chat.chat_id === props.chat_id }))
+  const [currentChatIndex,setCurrentChatIndex] = useState(0)
 
+  useEffect(() => {
+    if(props.chat_id.length === 0 ) {
+      return
+    }
+    const chat_index = websocket.chats.findIndex((chat) => { return chat.chat_id === props.chat_id })
+    setCurrentChatIndex(chat_index)
+  },[websocket])
 
   if(websocket.chats.length <= 0) {
     return <div>

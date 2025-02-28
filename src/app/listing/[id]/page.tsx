@@ -2,6 +2,10 @@ import Button from "@/components/Button";
 import Image from 'next/image'
 import LikeButton from "@/components/LikeButton";
 import { redirect } from 'next/navigation'
+import { getAuthServer } from "app/api/auth/[...nextauth]/route";
+import "@/lib/db"
+import { createChatRoom } from "@/lib/createChatRoom";
+import { console } from "node:inspector/promises";
 async function getItem(params) {
 
     const {id} = await params
@@ -28,8 +32,20 @@ async function getItem(params) {
 }
 
 export default async function ItemPage({params}) {
+
     let item = await getItem(params)
-   console.log(item)
+
+   async function createChat() {
+      "use server";
+      const session = await getAuthServer()
+      console.log("in create chat")
+      console.log(session.user)
+      const chatters = [item[0].username,session.user.name]
+      console.log(chatters)
+      const chat_room = await createChatRoom(chatters)
+      console.log(chat_room)
+      redirect(`/chats/${chat_room.chat_id}`)
+   }
 
     return (
 
@@ -52,8 +68,9 @@ export default async function ItemPage({params}) {
                         <p className={"text-5xl"}>{item[0].title}</p>
                         <p className={""}>{item[0].description}</p>
                         <p>${item[0].price}</p>
-
-                        <Button type={"submit"}>Message Seller</Button>
+                        <form action={createChat}>
+                          <Button type={"submit"}>Message Seller</Button>
+                        </form>
                         <div className={"flex items-center gap-5"}>
                             <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
                             <p >Seller: {item[0].username}</p>

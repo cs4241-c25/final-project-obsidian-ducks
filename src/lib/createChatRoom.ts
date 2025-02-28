@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import ChatRoom from '@/models/ChatRoom';
+import ChatRoom from '@/models/ChatRooms';
 
-export default async function createChatRoom(chatters:string[]) {
+export async function createChatRoom(chatters:string[]) {
   const chat_id = uuidv4();
   const chat_room = new ChatRoom()
   chat_room.chatters = chatters;
@@ -11,4 +11,9 @@ export default async function createChatRoom(chatters:string[]) {
     chat_id:chat_id,
     chatters:chatters
   }
+}
+
+export async function findChatRooms(username: string) {
+  const chat_rooms = await ChatRoom.find({ chatters: username }).exec()
+  return chat_rooms;
 }

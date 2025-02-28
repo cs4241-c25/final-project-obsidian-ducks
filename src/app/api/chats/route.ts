@@ -1,4 +1,4 @@
-import ChatRoom from "@/models/ChatRoom";
+import { createChatRoom,findChatRooms }  from "@/lib/createChatRoom";
 import { NextRequest } from "next/server";
 
 export async function GET(req:NextRequest) {
@@ -14,9 +14,8 @@ export async function GET(req:NextRequest) {
         }
     )
   }
+  const chat_rooms = await findChatRooms(username);
   try {
-    const chat_rooms = await ChatRoom.find({ chatters: username }).exec()
-    console.log(chat_rooms)
     return new Response(
       JSON.stringify(chat_rooms),
       {
@@ -65,5 +64,3 @@ export async function POST(req: Request) {
     )
   }
 }
-
-

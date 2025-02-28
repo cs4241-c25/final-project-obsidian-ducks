@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '@/models/User';
 import connectToDatabase from '@/lib/db';
@@ -69,4 +69,11 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
+export async function getAuthServer() {
+  const session = await getServerSession(authOptions);
+  console.log("in getAuthServer")
+  console.log(session)
+  return session
+}
+
 export { handler as GET, handler as POST };

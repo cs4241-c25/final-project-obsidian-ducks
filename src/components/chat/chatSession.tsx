@@ -14,13 +14,11 @@ export default function ChatSession(props: {chat:ChatRoom}) {
       const res = await fetch(`/api/chats/msgs?chatid=${props.chat.chat_id}`, {
         method:"GET",
       })
-      console.log(res)
 
       if(res.status != 200) {
         return []
       }
       const body = await res.json()
-      console.log(body)
       setMessages([])
       return body
     }
@@ -31,10 +29,8 @@ export default function ChatSession(props: {chat:ChatRoom}) {
 
   useEffect(() => {
     chatHandler.addOnMessageSub("chatSession",(msgEvent) => {
-      console.log(msgEvent)
       try {
         const msg: Message = JSON.parse(msgEvent)
-        console.log(msg)
 
           if(props.chat === undefined) {
             return
@@ -51,13 +47,9 @@ export default function ChatSession(props: {chat:ChatRoom}) {
             break;
           case "MESSAGE":
             const chat_msg = (msg as ChatMessage)
-            console.log(chat_msg)
             if(chat_msg.chat_id.toLowerCase() === props.chat.chat_id) {
               setMessages((prevMessages) => [...prevMessages,chat_msg]);
-            } else {
-              console.log(props.chat.chat_id)
-              console.log("huhhhh")
-            }
+            } 
             break;
           case "READ_MESSAGE":
             break;
