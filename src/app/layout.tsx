@@ -15,6 +15,7 @@ const chat_url = process.env.CHAT_URL;
 export const metadata: Metadata = {
   title: "WPIBuys",
   description: "An online platform for WPI students to sell second-hand items.",
+  icons: "/WPIBuysIcon.png"
 };
 
 export default function RootLayout({

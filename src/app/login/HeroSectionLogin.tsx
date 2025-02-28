@@ -8,7 +8,7 @@ export default function HeroSectionLogin() {
     return (
         <section className="w-screen h-[740px] relative mb-8">
             <div className="absolute w-full h-full bg-linear-to-r from-crimson-500 to-crimson-500 opacity-50"></div>
-            <img className="w-full h-full object-cover" src="/WPI.png" alt="WPI campus"/>
+            <img className="w-full h-full object-cover" src="/WPIHero.png" alt="WPI campus"/>
             <div className="absolute top-0 left-0 w-45/100 h-full flex justify-center items-center">
                 <p className={`${oswald.className} inline text-center text-white opacity-95 
                     md:font-medium lg:font-semibold 

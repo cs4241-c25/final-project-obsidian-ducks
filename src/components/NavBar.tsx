@@ -49,7 +49,7 @@ export default function NavBar(){
 
             </div>
             <Link href="/">
-                <Image src={"/wpibuysicon1.svg"} alt={"WPIBuys Logo"} width={75} height={85}/>
+                <Image src={"/WPIBuysLogo.png"} alt={"WPIBuys Logo"} width={75} height={85}/>
             </Link>
             <div className="flex flex-row gap-5">
               <Link href={"/chats"}>
