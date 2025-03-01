@@ -4,10 +4,10 @@ import Button from "@/components/Button";
 import {useSession} from 'next-auth/react';
 import {useRouter} from "next/navigation";
 import ItemPost from "../ItemPost";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
-
+import {getServerSession} from "next-auth";
 
 export default function ProfilePage() {
     const {data: session, status} = useSession();
@@ -16,9 +16,23 @@ export default function ProfilePage() {
     const [likes, setLikes] = useState<Item[]>([]);
     const [tabFilter, setTab] = useState("Posts");
 
+    async function postPicture(formData: FormData) {
+        const sellForm = formData
+        sellForm.append("username", session.user?.name);
+        try {
+            const response = await fetch("http://localhost:3000/api/picture", {
+                method: "POST",
+                body: sellForm
+            });
+            if (!response.ok) throw new Error(response.statusText);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+
     function handleTab(tab: string){
         setTab(tab);
-        console.log(tabFilter);
     }
 
     function renderTab(){
@@ -101,7 +115,13 @@ export default function ProfilePage() {
                 <div>
                     <div className="flex flex-col md:py-20 md:px-60">
                         <div className="flex flex-row items-center ">
-                            <FileDropzone className="w-50 h-50"/>
+                            <form action={postPicture}>
+                                <FileDropzone className="w-50 h-50"/>
+                                <Button className="w-25 grow" type="submit">Submit</Button>
+                            </form>
+                            <img
+                                className="w-[250px] h-[250px] rounded-sm object-cover hover:scale-105 duration-150 ease-in-out "
+                                src={"https://fly.storage.tigris.dev/wpi-buys1/watch.jpg"} alt={"test"}/>
                             <div className="pl-4">
                                 <h1 className="text-2xl font-bold">{session.user?.name}</h1>
                                 <h2 className="text-lg">Posts: {posts.length}</h2>
@@ -111,7 +131,8 @@ export default function ProfilePage() {
 
                         <div>
                             <div className="flex my-4 gap-x-2 border-b-2 w-fit">
-                                    <Button className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out${tabFilter === "Posts" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
+                                <Button
+                                    className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out${tabFilter === "Posts" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
                                             onClick={() => handleTab("Posts")}>
                                     Postings
                                 </Button>
