@@ -28,13 +28,12 @@ export default function ChatSession(props: {chat:ChatRoom}) {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    chatHandler.addOnMessageSub("chatSession",(msgEvent) => {
-      try {
-        const msg: Message = JSON.parse(msgEvent)
-
-          if(props.chat === undefined) {
-            return
-          }
+    chatHandler.addOnMessageSub("chatSession",(msg:Message) => {
+        console.log(msg)
+        if(props.chat === undefined) {
+          console.log("ah ha")
+          return
+        }
         switch (msg.event) {
           case "CONNECT":
             break;
@@ -47,16 +46,14 @@ export default function ChatSession(props: {chat:ChatRoom}) {
             break;
           case "MESSAGE":
             const chat_msg = (msg as ChatMessage)
+            console.log(chat_msg.chat_id.toLowerCase() === props.chat.chat_id)
             if(chat_msg.chat_id.toLowerCase() === props.chat.chat_id) {
               setMessages((prevMessages) => [...prevMessages,chat_msg]);
-            } 
+            }
             break;
           case "READ_MESSAGE":
             break;
         }
-      } catch(error) {
-        console.log(error)
-      }
     });
   }, []);
 
@@ -96,16 +93,18 @@ export default function ChatSession(props: {chat:ChatRoom}) {
   }
 
   return (
-    <div className='flex flex-col px-10 h-full'>
-      <div className='flex flex-col grow gap-2'>
-        {old_msgs.map((message, index) => (
-          <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
-        ))}
-        {messages.filter((message) => {
-          return message.chat_id === props.chat.chat_id
-        }).map((message, index) => (
-          <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
-        ))}
+    <div className='flex flex-col px-10 py-10 w-full'>
+      <div className='basis-3xs grow overflow-scroll'>
+        <div className='flex flex-col gap-2 px-2 '>
+          {old_msgs.map((message, index) => (
+            <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
+          ))}
+          {messages.filter((message) => {
+            return message.chat_id.toLowerCase() === props.chat.chat_id
+          }).map((message, index) => (
+            <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
+          ))}
+        </div>
       </div >
       <div className='flex flex-row gap-10  pb-10'>
         <input

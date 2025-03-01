@@ -8,7 +8,7 @@ const queryClient = new QueryClient()
 export default function ReactQueryProvider(props:{children:ReactNode}) {
   return(
     <QueryClientProvider client={queryClient}>
-      {props.children}s
+      {props.children}
     </QueryClientProvider>
   )
 }
