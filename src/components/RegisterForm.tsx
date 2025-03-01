@@ -4,6 +4,7 @@ import { postRegister } from '../app/actions/actions'
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { useRouter } from 'next/navigation';
+import FileDropzone from "@/components/FileDropzone";
 
 export default function RegisterForm({ error }: { error?: string }) {
     const router = useRouter();
@@ -45,13 +46,24 @@ export default function RegisterForm({ error }: { error?: string }) {
 
         // @ts-ignore
         <form onSubmit={handleSubmit}
-              className="max-w-md mx-auto p-8 bg-white rounded-lg border-2 border-crimson-500 shadow-md min-h-[400px] -mt-45">
+              className="max-w-md mx-auto p-8 rounded-lg bg-alice-blue-200 shadow-md min-h-[400px] -mt-45">
             <h1 className="text-3xl font-bold mb-10">Register</h1>
             <div className="flex flex-col space-y-4">
-                <TextInput type="text" name="username" placeholder="School email" onChange={(e) => console.log(e.target.value)}>Username:</TextInput>
+                <TextInput type="text" name="username" placeholder="School email"
+                           onChange={(e) => console.log(e.target.value)}>Username:</TextInput>
                 {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
-                <TextInput type="password" name="password" placeholder="Choose a password" onChange={(e) => console.log(e.target.value)}>Password</TextInput>
+                <TextInput type="password" name="password" placeholder="Choose a password"
+                           onChange={(e) => console.log(e.target.value)}>Password</TextInput>
                 {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
+                <div className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium">Profile Picture:</label>
+                    <input
+                        type="file"
+                        name="profilePicture"
+                        accept="image/*"
+                        className="w-full p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                    />
+                </div>
                 <a href="/login" className="text-crimson-500 hover:underline mb-0">Already have an account?</a>
                 <div className="w-full flex justify-end">
                     <Button type="submit">Register</Button>
