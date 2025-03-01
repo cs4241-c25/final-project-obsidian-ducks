@@ -7,6 +7,7 @@ import ItemPost from "../ItemPost";
 import React, {useEffect, useState} from "react";
 import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
+import {Router} from "next/router";
 
 export default function ProfilePage() {
     const {data: session, status} = useSession();
@@ -25,6 +26,7 @@ export default function ProfilePage() {
                 body: sellForm
             });
             if (!response.ok) throw new Error(response.statusText);
+            Router.reload(window.location.pathname);
         } catch (e) {
             console.error(e);
         }
@@ -137,13 +139,26 @@ export default function ProfilePage() {
                 <div>
                     <div className="flex flex-col md:py-20 md:px-60">
                         <div className="flex flex-row items-center ">
-                            <img
-                                className="w-[225px] h-[225px] object-cover hover:scale-105 duration-150 ease-in-out rounded-full"
-                                src={profile} alt={"test"}/>
-                            <form action={postPicture}>
-                                <FileDropzone className="w-30 h-30"/>
-                                <Button className="w-25 grow" type="submit">Submit</Button>
-                            </form>
+                            <div className="relative group">
+                                <form action={postPicture} className="">
+                                    <FileDropzone
+                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10"/>
+                                    <Button className="grow bg-transparent hover:bg-transparent hover:scale-110 absolute -right-10 z-20 p-0" type="submit" onClick={() => {
+                                        window.location.reload();
+
+                                    }}>
+                                        <svg width="50px" height="50px" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd"
+                                                  d="M6.75 6L7.5 5.25H16.5L17.25 6V19.3162L12 16.2051L6.75 19.3162V6ZM8.25 6.75V16.6838L12 14.4615L15.75 16.6838V6.75H8.25Z"
+                                                  fill="#000000"/>
+                                        </svg>
+                                    </Button>
+                                </form>
+                                <img
+                                    className=" w-[225px] h-[225px] object-cover duration-150 ease-in-out rounded-full group-hover:scale-105"
+                                    src={profile} alt={"Profile Image"}/>
+                            </div>
                             <div className="pl-4">
                                 <h1 className="text-2xl font-bold">{session.user?.name}</h1>
                                 <h2 className="text-lg">Posts: {posts.length}</h2>
