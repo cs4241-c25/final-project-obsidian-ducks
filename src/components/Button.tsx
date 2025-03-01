@@ -1,11 +1,11 @@
-import { ReactNode, MouseEvent } from "react";
+import { ReactNode, MouseEventHandler } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface Button {
     children: ReactNode;
     className?: string;
-    type: "button" | "submit" | "reset" | undefined
-    onClick?: (event: MouseEvent<HTMLInputElement>) => void;
+    type: "button" | "submit" | "reset" | undefined;
+    onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 export default function Button(props: Button) {
