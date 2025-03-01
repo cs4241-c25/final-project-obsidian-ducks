@@ -38,9 +38,9 @@ export default async function ItemPage({params}) {
             <div
                 className={"flex flex-col  w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
 
-                <div className={"flex w-auto p-3 flex-col border-solid shadow-xl border-black border-2 border-r-10 border-l-10  items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
+                <div className={"flex w-auto p-3 flex-col  items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
                     <div className={"relative m-9"}>
-                        <Image className={"w-[350] h-[350] drop-shadow-xl rounded-3xl object-cover"} src={item[0].image} alt={item[0].title}
+                        <Image className={"w-[750] h-[550] drop-shadow-xl rounded-3xl object-cover "} src={item[0].image} alt={item[0].title}
 
                                width={400} height={300}/>
                         <LikeButton itemID={item[0]._id}/>
