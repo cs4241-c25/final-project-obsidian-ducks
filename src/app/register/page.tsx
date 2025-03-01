@@ -14,11 +14,11 @@ export default function RegisterPage() {
     }
 
     return (
-        <main className="relative">
+        <main>
             <HeroSectionLogin/>
 
-            <div className="absolute inset-0 flex justify-center items-center ">
-                <div className="w-full md:w-86 lg:w-86 ml-20">
+            <div className="absolute inset-0 flex items-center ">
+                <div className="w-full" style={{ maxWidth: '800px' }}>
                     <RegisterForm/>
                 </div>
             </div>
