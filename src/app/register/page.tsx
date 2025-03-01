@@ -15,9 +15,7 @@ export default function RegisterPage() {
 
     return (
         <main>
-            <HeroSectionLogin/>
-
-            <div className="absolute inset-0 flex items-center ">
+            <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-full" style={{ maxWidth: '800px' }}>
                     <RegisterForm/>
                 </div>
