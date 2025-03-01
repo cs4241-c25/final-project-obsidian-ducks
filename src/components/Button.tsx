@@ -5,7 +5,7 @@ interface Button {
     children: ReactNode;
     className?: string;
     type: "button" | "submit" | "reset" | undefined
-    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+    onClick?: (event: MouseEvent<HTMLInputElement>) => void;
 }
 
 export default function Button(props: Button) {
