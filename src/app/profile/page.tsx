@@ -7,7 +7,6 @@ import ItemPost from "../ItemPost";
 import React, {useEffect, useState} from "react";
 import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
-import {getServerSession} from "next-auth";
 
 export default function ProfilePage() {
     const {data: session, status} = useSession();
@@ -15,6 +14,7 @@ export default function ProfilePage() {
     const [posts, setPosts] = useState<Item[]>([]);
     const [likes, setLikes] = useState<Item[]>([]);
     const [tabFilter, setTab] = useState("Posts");
+    const [profile, setProfile] = useState();
 
     async function postPicture(formData: FormData) {
         const sellForm = formData
@@ -99,14 +99,36 @@ export default function ProfilePage() {
         }
     }
 
+    async function getUser(){
+        try {
+            if(!session?.user?.name){
+                return;
+            }
+            const response = await fetch("http://localhost:3000/api/image", {
+                method: "POST",
+                body: JSON.stringify(session.user?.name),
+            });
+            if (!response.ok) throw new Error(response.statusText);
+            const data = await response.json();
+            console.log(data);
+            const image = data.profileImage;
+            setProfile(image);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     useEffect(() => {
         if (status === "authenticated") {
             getPostings().then(() => {
             });
             getLikes().then(() => {
             })
+            getUser().then(() => {
+
+            })
         }
-    }, [status, tabFilter])
+    }, [status, tabFilter, profile])
 
 
     return (
@@ -115,13 +137,13 @@ export default function ProfilePage() {
                 <div>
                     <div className="flex flex-col md:py-20 md:px-60">
                         <div className="flex flex-row items-center ">
+                            <img
+                                className="w-[225px] h-[225px] object-cover hover:scale-105 duration-150 ease-in-out rounded-full"
+                                src={profile} alt={"test"}/>
                             <form action={postPicture}>
-                                <FileDropzone className="w-50 h-50"/>
+                                <FileDropzone className="w-30 h-30"/>
                                 <Button className="w-25 grow" type="submit">Submit</Button>
                             </form>
-                            <img
-                                className="w-[250px] h-[250px] rounded-sm object-cover hover:scale-105 duration-150 ease-in-out "
-                                src={"https://fly.storage.tigris.dev/wpi-buys1/watch.jpg"} alt={"test"}/>
                             <div className="pl-4">
                                 <h1 className="text-2xl font-bold">{session.user?.name}</h1>
                                 <h2 className="text-lg">Posts: {posts.length}</h2>

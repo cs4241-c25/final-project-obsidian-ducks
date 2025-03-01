@@ -1,6 +1,7 @@
 import {S3Client} from "@aws-sdk/client-s3";
 import uploadFile from "@/lib/uploadFile";
 import User from "@/models/User";
+import Item from "@/models/Item";
 
 /**
  * Posts a profile picture
