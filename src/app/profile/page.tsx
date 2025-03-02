@@ -112,7 +112,6 @@ export default function ProfilePage() {
             });
             if (!response.ok) throw new Error(response.statusText);
             const data = await response.json();
-            console.log(data);
             const image = data.profileImage;
             setProfile(image);
         } catch (e) {
@@ -167,7 +166,7 @@ export default function ProfilePage() {
                         </div>
 
                         <div>
-                            <div className="flex my-4 gap-x-2 border-b-2 w-fit">
+                            <div className="flex pt-2 my-4 gap-x-2 border-b-2 w-fit">
                                 <Button
                                     className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out${tabFilter === "Posts" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
                                             onClick={() => handleTab("Posts")}>

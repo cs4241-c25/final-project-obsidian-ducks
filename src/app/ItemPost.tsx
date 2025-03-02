@@ -12,10 +12,7 @@ interface ItemPost {
     image: string;
 }
 
-
-
 export default function ItemPost(props: ItemPost) {
-
     return (
         <figure className="">
             <div className="relative">

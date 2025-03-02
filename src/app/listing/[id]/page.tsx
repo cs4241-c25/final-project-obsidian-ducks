@@ -1,6 +1,51 @@
 import Button from "@/components/Button";
 import Image from 'next/image'
 import LikeButton from "@/components/LikeButton";
+import {getServerSession} from "next-auth";
+import DeleteButton from "@/components/DeleteButton";
+
+// async function deletePost(id: string){
+//     try {
+//         const response = await fetch(`http://localhost:3000/api/profile`, {
+//             method: "DELETE",
+//             body: JSON.stringify(id),
+//         });
+//         if (!response.ok) throw new Error(response.statusText);
+//         return await response.json();
+//     } catch (e) {
+//         console.log("im an eror")
+//         console.error(e);
+//         throw e;
+//     }
+// }
+
+async function renderButtons(username: string, id: string){
+    const session = await getServerSession();
+    const sessionUser = JSON.parse(JSON.stringify(session)).user.name;
+
+    if(sessionUser === username){
+        return (
+            <>
+                <DeleteButton itemID={id}/>
+                <div className={"flex items-center gap-5"}>
+                    <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
+                    <p >Seller: {username}</p>
+                </div>
+            </>
+        )
+    } else {
+        return (
+            <>
+                <Button type={"submit"}>Message Seller</Button>
+                <div className={"flex items-center gap-5"}>
+                    <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
+                    <p >Seller: {username}</p>
+                </div>
+            </>
+        )
+    }
+}
+
 async function getItem(params) {
 
     const {id} = await params
@@ -29,7 +74,6 @@ async function getItem(params) {
 export default async function ItemPage({params}) {
     let item = await getItem(params)
    console.log(item)
-
     return (
 
         <main
@@ -52,12 +96,12 @@ export default async function ItemPage({params}) {
                         <p className={"text-5xl"}>{item[0].title}</p>
                         <p className={""}>{item[0].description}</p>
                         <p>${item[0].price}</p>
-
-                        <Button type={"submit"}>Message Seller</Button>
-                        <div className={"flex items-center gap-5"}>
-                            <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
-                            <p >Seller: {item[0].username}</p>
-                        </div>
+                        {await renderButtons(item[0].username, item[0]._id)}
+                        {/*<Button type={"submit"}>Message Seller</Button>*/}
+                        {/*<div className={"flex items-center gap-5"}>*/}
+                        {/*    <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>*/}
+                        {/*    <p >Seller: {item[0].username}</p>*/}
+                        {/*</div>*/}
 
                     </div>
                     <span className={'flex self-end justify-end whitespace-nowrap'}>

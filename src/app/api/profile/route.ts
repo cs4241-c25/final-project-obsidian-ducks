@@ -29,3 +29,26 @@ export async function POST(req: Request) {
         )
     }
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const data = await req.json();
+        console.log(data);
+        const items = await Item.deleteOne({_id: data}).exec();
+        return new Response(
+            JSON.stringify(items),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    } catch (e) {
+        return new Response(
+            "Failed to fetch items",
+            {
+                status: 500,
+                statusText: "Internal Server Error"
+            }
+        )
+    }
+}
