@@ -1,7 +1,8 @@
 import Button from "@/components/Button";
 import Image from 'next/image'
 import LikeButton from "@/components/LikeButton";
-// import {getServerSession} from "next-auth";
+import AuthorizedButtons from "@/components/AuthorizedButtons";
+import {getServerSession} from "next-auth";
 // import DeleteButton from "@/components/DeleteButton";
 // import React, {ChangeEvent} from "react";
 //
@@ -79,6 +80,8 @@ async function getItem(params) {
 export default async function ItemPage({params}) {
     let item = await getItem(params)
     console.log(item)
+    const session = await getServerSession();
+    const sessionUser = JSON.parse(JSON.stringify(session)).user.name;
     return (
 
         <main
@@ -101,13 +104,14 @@ export default async function ItemPage({params}) {
                     {/*    <p className={"text-5xl"}>{item[0].title}</p>*/}
                     {/*    <p className={""}>{item[0].description}</p>*/}
                     {/*    <p>${item[0].price}</p>*/}
-
-                        {await renderButtons(item[0].username, item[0]._id, item[0].title, item[0].description, item[0].price)}
+                    <AuthorizedButtons username={item[0].username} id={item[0].id} title={item[0].title}
+                                       description={item[0].description} price={item[0].price} session={sessionUser} category={item[0].category}/>
+                        {/*{await renderButtons(item[0].username, item[0]._id, item[0].title, item[0].description, item[0].price)}*/}
                     {/*</div>*/}
-                    <span className={'flex self-end justify-end whitespace-nowrap'}>
-                            <Image src={'/tag.svg'} alt={"tag"} width={15} height={15}/>
-                            <p className={"p-1 mr-5"}>{item[0].category}</p>
-                    </span>
+                    {/*<span className={'flex self-end justify-end whitespace-nowrap'}>*/}
+                    {/*        <Image src={'/tag.svg'} alt={"tag"} width={15} height={15}/>*/}
+                    {/*        <p className={"p-1 mr-5"}>{item[0].category}</p>*/}
+                    {/*</span>*/}
 
 
                 </div>
