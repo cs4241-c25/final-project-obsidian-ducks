@@ -1,7 +1,6 @@
 'use client';
 import { postRegister } from '@/lib/actions'
 import React, { useState , useRef} from 'react';
-import { postRegister } from '../app/actions/actions'
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { useRouter } from 'next/navigation';

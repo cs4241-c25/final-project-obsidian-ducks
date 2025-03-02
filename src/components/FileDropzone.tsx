@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 interface FileDropzone {
     className?: string;
     files: File[];
-    changeHandler: (e: ChangeEvent<HTMLInputElement>) => void;
+    changeHandler?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function FileDropzone(props: FileDropzone) {
