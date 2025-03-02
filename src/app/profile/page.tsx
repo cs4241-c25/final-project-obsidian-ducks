@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import Button from "@/components/Button";
 import {useSession} from 'next-auth/react';
 import {useRouter} from "next/navigation";
@@ -9,6 +8,7 @@ import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
 import {Router} from "next/router";
 
+
 export default function ProfilePage() {
     const {data: session, status} = useSession();
     const router = useRouter();
@@ -16,6 +16,12 @@ export default function ProfilePage() {
     const [likes, setLikes] = useState<Item[]>([]);
     const [tabFilter, setTab] = useState("Posts");
     const [profile, setProfile] = useState();
+
+    useEffect(() => {
+        if (status === "unauthenticated"){
+            router.push("/login");
+        }
+    }, [status, router]);
 
     async function postPicture(formData: FormData) {
         const sellForm = formData
@@ -141,7 +147,7 @@ export default function ProfilePage() {
                             <div className="relative group">
                                 <form action={postPicture} className="">
                                     <FileDropzone
-                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10"/>
+                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10" files={[]}/>
                                     <Button className="grow bg-transparent hover:bg-transparent hover:scale-110 absolute -right-10 z-20 p-0" type="submit" onClick={() => {
                                         window.location.reload();
 
@@ -185,13 +191,6 @@ export default function ProfilePage() {
                 </div>
             ) : (
                 <div>
-                    <div>
-                    <p>Please log in to view your profile.</p>
-                        <Link href="/login">
-                            <Button type={"button"}>Login</Button>
-                        </Link>
-                    </div>
-
                 </div>
             )}
 

@@ -6,15 +6,15 @@ const oswald = Oswald({
 
 export default function HeroSection() {
     return (
-        <section className="w-screen relative mb-8">
-            <div className="absolute w-full h-full bg-linear-to-r from-crimson-500 to-crimson-500 opacity-50"></div>
-            <img className="w-full" src="/WPI.png" alt="WPI campus"/>
+        <section className="w-screen flex justify-center relative mb-8">
+            <div className="absolute w-9/10 h-full rounded-lg bg-linear-to-r from-crimson-deep to-crimson-deep opacity-50"></div>
+            <img className="w-9/10 rounded-lg" src="/WPIHero.png" alt="WPI's campus"/>
             <div className="absolute top-0 left-0 w-45/100 h-full flex justify-center items-center">
-                <p className={`${oswald.className} inline text-center text-white opacity-95 
+                <p className={`${oswald.className} inline text-center text-white opacity-90 
                     md:font-medium lg:font-semibold 
-                    text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl 
-                    tracking-wider lg:tracking-widest xl:tracking-[0.15em] 2xl:tracking-[0.2em]
-                    leading-[30px] md:leading-[45px] xl:leading-[55px] 2xl:leading-[75px] 
+                    text-base sm:text-xl md:text-lg lg:text-xl xl:text-3xl 2xl:text-4xl 
+                    tracking-wider lg:tracking-widest xl:tracking-[0.10em] 2xl:tracking-[0.15em]
+                    leading-[15px] md:leading-[25px] lg:leading-[40px] xl:leading-[50px] 2xl:leading-[65px] 
                     `}>
                     Sell, Buy, and Swap<br/>
                     Secondhand Items with<br/>

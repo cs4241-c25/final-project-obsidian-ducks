@@ -3,7 +3,7 @@ import LoginForm from "@/components/LoginForm";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import HeroSectionLogin from "../login/HeroSectionLogin";
+import Image from "next/image";
 
 export default function LoginPage() {
     const { data: session, status } = useSession();
@@ -17,12 +17,12 @@ export default function LoginPage() {
     }, [status, router]);
 
     return (
-        <main className="relative">
-            <HeroSectionLogin/>
-            <div className="absolute inset-0 flex justify-center items-center ">
-                <div className="w-full md:w-86 lg:w-86 ml-20">
-                <LoginForm/>
-                </div>
+        <main className="relative flex justify-center items-center h-screen">
+            <div className="absolute top-[38%] left-[18%] transform -translate-x-1/2 -translate-y-1/2 hidden xl:block">
+                <Image src={"/WPIBuysLogo.png"} alt={"WPIBuys Logo"} width={240} height={272}/>
+            </div>
+            <div className="w-full max-w-2xl px-4" >
+                <LoginForm />
             </div>
 
         </main>
