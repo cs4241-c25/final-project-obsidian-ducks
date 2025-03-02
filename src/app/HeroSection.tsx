@@ -7,7 +7,7 @@ const oswald = Oswald({
 export default function HeroSection() {
     return (
         <section className="w-screen flex justify-center relative mb-8">
-            <div className="absolute w-9/10 h-full rounded-lg bg-linear-to-r from-crimson-500 to-crimson-500 opacity-50"></div>
+            <div className="absolute w-9/10 h-full rounded-lg bg-linear-to-r from-crimson-deep to-crimson-deep opacity-50"></div>
             <img className="w-9/10 rounded-lg" src="/WPIHero.png" alt="WPI's campus"/>
             <div className="absolute top-0 left-0 w-45/100 h-full flex justify-center items-center">
                 <p className={`${oswald.className} inline text-center text-white opacity-90 
