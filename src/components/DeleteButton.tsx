@@ -1,6 +1,7 @@
 "use client"
 
 import Button from "@/components/Button";
+import {useRouter} from "next/navigation";
 
 interface  DeleteButton {
     itemID: string
@@ -13,7 +14,6 @@ async function deletePost(id: string){
             body: JSON.stringify(id),
         });
         if (!response.ok) throw new Error(response.statusText);
-        return await response.json();
     } catch (e) {
         console.log("im an eror")
         console.error(e);
@@ -23,9 +23,11 @@ async function deletePost(id: string){
 
 
 export default function DeleteButton(props: DeleteButton){
+    const router = useRouter();
 
     async function handleDelete() {
         await deletePost(props.itemID);
+        router.push('/profile');
     }
 
     return (
