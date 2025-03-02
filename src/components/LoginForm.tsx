@@ -2,7 +2,7 @@
 
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
-
+import { useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { postLogin } from '../app/actions/actions';
 import { useRouter } from 'next/navigation';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 export default function LoginForm() {
     const { update } = useSession();
     const router = useRouter();
+    const [loginError, setLoginError] = useState<string | null>(null);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -25,7 +26,7 @@ export default function LoginForm() {
             });
 
             if (signInResponse?.error) {
-                alert(signInResponse.error);
+                setLoginError("Wrong username or password");
             } else {
                 await update();
                 console.log("Session updated after login");
@@ -33,16 +34,17 @@ export default function LoginForm() {
                 router.push('/profile');
             }
         } else {
-            alert(result.error || "Login failed");
+            setLoginError("Wrong username or password.");
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg border-2 border-crimson-500 shadow-md">
-            <h1 className="text-3xl font-bold mb-6">Login</h1>
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 rounded-lg bg-alice-blue-200 shadow-md min-h-[400px] -mt-45">
+            <h1 className="text-3xl font-bold mb-10">Login</h1>
             <div className="flex flex-col space-y-4">
-                <TextInput type="text" name="username" placeholder="Enter your school email" onChange={(e) => console.log(e.target.value)}>Username:</TextInput>
-                <TextInput type="password" name="password" placeholder="Enter your password" onChange={(e) => console.log(e.target.value)}>Password:</TextInput>
+                <TextInput type="text" name="username" placeholder="School email" onChange={(e) => console.log(e.target.value)}>Username:</TextInput>
+                <TextInput type="password" name="password" placeholder="Password" onChange={(e) => console.log(e.target.value)}>Password:</TextInput>
+                {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
                 <a href="/register" className="text-crimson-500 hover:underline mb-0">Don't have an account?</a>
                 <div className="w-full flex justify-end">
                     <Button type="submit">Login</Button>
