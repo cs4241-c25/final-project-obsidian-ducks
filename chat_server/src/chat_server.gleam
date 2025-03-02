@@ -17,21 +17,37 @@ import messages
 import gleam/function
 import gleam/string
 import envoy
+import nessie_cluster
 
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  // load_env("../.env") // this should load .env file
-  // let assert Ok(db_uri) = envoy.get("MONGODB_URI")
-  // io.debug(db_uri)
+  let dns_query = case envoy.get("FLY_APP_NAME") {
+    Ok(app_name) -> nessie_cluster.DnsQuery(app_name <> ".internal")
+    Error(Nil) -> nessie_cluster.Ignore
+  }
+  let cluster: nessie_cluster.DnsCluster =
+      nessie_cluster.with_query(nessie_cluster.new(), dns_query)
+
+  let cluster_worker =
+      supervisor.worker(fn(_) {
+          nessie_cluster.start_spec(cluster, None)
+      })
+
   let assert Ok(chat_server) = actor.start(create_chat_server(process.self()), handle_chat_server_message)
 
-  let assert Ok(_server) = create_request_handler(chat_server)
+  let assert Ok(server) = create_request_handler(chat_server)
   |> mist.new
   |> mist.port(3001)
   |> mist.bind("0.0.0.0")
   |> mist.start_http
+  |> result.map_error(fn(e) { actor.InitCrashed(dynamic.from(e)) })
 
+  let assert Ok(_) =
+    supervisor.start(fn(children) {
+      children
+      |> supervisor.add(supervisor.worker(server))
+    })
 
   //todo be able to shut down process
   process.sleep_forever()
@@ -57,7 +73,6 @@ type ChatServer {
     connections:dict.Dict(uuid.Uuid,Subject(InternalMessages)),
     online_chatters:dict.Dict(String,uuid.Uuid),
     id_to_name:dict.Dict(uuid.Uuid,String),
-    main_pid:process.Pid
   )
 }
 
@@ -92,15 +107,9 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
           let chatters = chat_server.online_chatters |> dict.delete(name)
           let id_to_name = chat_server.id_to_name |> dict.delete(id)
           let connections = chat_server.connections |> dict.delete(id)
-          // case connections |> dict.size {
-          //   0 ->  {
-          //     io.debug("stopping server")
-          //     process.kill(chat_server.main_pid)
-          //     actor.Stop(process.Normal)
-          //   }
-            // _ ->
-            actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
-            //}
+
+          actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
+
         }
         Error(err) -> {
           io.debug(err)
@@ -118,8 +127,8 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
   }
 }
 
-fn create_chat_server(main_process) {
-  ChatServer(dict.new(),dict.new(),dict.new(),main_process)
+fn create_chat_server() {
+  ChatServer(dict.new(),dict.new(),dict.new())
 }
 
 

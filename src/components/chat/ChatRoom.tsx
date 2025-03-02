@@ -29,7 +29,7 @@ export default function ChatRoom(props: {chat_id:string}) {
         <CreateChatButton username={websocket.userName}/>
         {
           websocket.chats.map((chat_room,index) =>
-            <Link href={`/chats/${websocket.chats[index].chat_id}`} className={twMerge("border w-full p-3",currentChatIndex === index ? "bg-onyx-500" : "" )}
+            <Link href={`/chats/${websocket.chats[index].chat_id}`} className={twMerge("border w-full p-3",currentChatIndex === index ? "bg-gray-100" : "" )}
               key={chat_room.chat_id}>
                 {
                   chat_room.chatters
@@ -68,7 +68,6 @@ export function CreateChatButton(props: {username:string}) {
      body:JSON.stringify({chatters:[props.username,...otherChatters]})
    })
    const new_chat_room = await res.json()
-   console.log()
    setShow(false)
 
    chatContext.setChats([...chatContext.chats,new_chat_room])
