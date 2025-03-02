@@ -3,7 +3,6 @@
 import RegisterForm from "@/components/RegisterForm";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import HeroSectionLogin from "../login/HeroSectionLogin";
 import Image from "next/image";
 
 export default function RegisterPage() {
@@ -16,11 +15,11 @@ export default function RegisterPage() {
 
     return (
         <main className="relative flex justify-center items-center h-screen mt-30">
-            <div className="absolute top-[40%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 hidden lg:block">
+            <div className="absolute top-[30%] left-[18%] transform -translate-x-1/2 -translate-y-1/2 hidden xl:block">
                 <Image src={"/wpibuysicon1.svg"} alt={"WPIBuys Logo"} width={240} height={272}/>
             </div>
 
-            <div className="flex justify-center items-center">
+            <div className="w-full max-w-2xl px-4">
                 <RegisterForm/>
             </div>
         </main>

@@ -56,7 +56,7 @@ export default function RegisterForm({ error }: { error?: string }) {
                 {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                 <div className="flex flex-col space-y-2">
                     <label className="text-sm font-medium">Profile Picture:</label>
-                    <FileDropzoneRegister className="w-65 h-40 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50" name="profileImage"/>
+                    <FileDropzoneRegister className="w-65 h-45 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50" name="profileImage"/>
                 </div>
 
                 <a href="/login" className="text-crimson-500 hover:underline mb-0">Already have an account?</a>
