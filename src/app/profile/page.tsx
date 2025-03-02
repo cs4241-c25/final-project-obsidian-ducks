@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import Button from "@/components/Button";
 import {useSession} from 'next-auth/react';
 import {useRouter} from "next/navigation";
@@ -149,7 +148,7 @@ export default function ProfilePage() {
                             <div className="relative group">
                                 <form action={postPicture} className="">
                                     <FileDropzone
-                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10"/>
+                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10" files={[]}/>
                                     <Button className="grow bg-transparent hover:bg-transparent hover:scale-110 absolute -right-10 z-20 p-0" type="submit" onClick={() => {
                                         window.location.reload();
 

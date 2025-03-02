@@ -1,19 +1,25 @@
 export enum ItemCategory {
-    Clothes = "Clothes",
+    Clothing = "Clothing",
+    Accessories = "Accessories",
+    HealthBeauty = "Health & Beauty",
     Electronics = "Electronics",
-    HomeEssentials = "Home Essentials",
-    HandMade = "Handmade",
-    Furniture = "Furniture",
-    Stationary = "Stationary"
+    Home = "Home",
+    ArtsCraft = "Arts & Crafts",
+    Stationary = "Stationary",
+    BooksMedia = "Books & Media",
+    Other = "Other"
 }
 
 export const ITEM_CATEGORIES = [
-    ItemCategory.Clothes,
+    ItemCategory.Clothing,
+    ItemCategory.Accessories,
+    ItemCategory.HealthBeauty,
     ItemCategory.Electronics,
-    ItemCategory.Furniture,
-    ItemCategory.HomeEssentials,
-    ItemCategory.HandMade,
+    ItemCategory.Home,
+    ItemCategory.ArtsCraft,
     ItemCategory.Stationary,
+    ItemCategory.BooksMedia,
+    ItemCategory.Other
 ];
 
 export type Item = {
@@ -24,6 +30,13 @@ export type Item = {
     description: string;
     image: string;
 }
+
+export type Session = {
+    user: {
+        id: string;
+        name: string;
+    }
+} | null;
 
 export type Event =
 "CONNECT" |  //connect to chat server

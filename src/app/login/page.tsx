@@ -19,7 +19,7 @@ export default function LoginPage() {
     return (
         <main className="relative flex justify-center items-center h-screen">
             <div className="absolute top-[38%] left-[18%] transform -translate-x-1/2 -translate-y-1/2 hidden xl:block">
-                <Image src={"/wpibuysicon1.svg"} alt={"WPIBuys Logo"} width={240} height={272}/>
+                <Image src={"/WPIBuysLogo.png"} alt={"WPIBuys Logo"} width={240} height={272}/>
             </div>
             <div className="w-full max-w-2xl px-4" >
                 <LoginForm />

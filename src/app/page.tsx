@@ -33,7 +33,7 @@ export default async function Home() {
       console.log(error)
     }
     return (
-        <main className="overflow-x-hidden">
+        <main className="overflow-x-hidden pb-20">
             <HeroSection/>
             <ItemsSection items={items}/>
         </main>
