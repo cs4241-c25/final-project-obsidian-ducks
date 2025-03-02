@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import HeroSectionLogin from "../login/HeroSectionLogin";
+import Image from "next/image";
 
 export default function LoginPage() {
     const { data: session, status } = useSession();
@@ -17,12 +18,12 @@ export default function LoginPage() {
     }, [status, router]);
 
     return (
-        <main>
-            <HeroSectionLogin/>
-            <div className="absolute inset-0 flex items-center">
-                <div className="w-full" style={{ maxWidth: '800px' }}>
+        <main className="relative flex justify-center items-center h-screen">
+            <div className="absolute top-[40%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 hidden lg:block">
+                <Image src={"/wpibuysicon1.svg"} alt={"WPIBuys Logo"} width={240} height={272}/>
+            </div>
+            <div className="flex justify-center items-center" >
                 <LoginForm />
-                </div>
             </div>
 
         </main>
