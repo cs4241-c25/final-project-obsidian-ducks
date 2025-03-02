@@ -15,7 +15,7 @@ export default function RegisterPage() {
     }
 
     return (
-        <main className="relative flex justify-center items-center h-screen">
+        <main className="relative flex justify-center items-center h-screen mt-30">
             <div className="absolute top-[40%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 hidden lg:block">
                 <Image src={"/wpibuysicon1.svg"} alt={"WPIBuys Logo"} width={240} height={272}/>
             </div>
