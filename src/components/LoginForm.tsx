@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 
 import { useSession, signIn } from 'next-auth/react';
-import { postLogin } from '../app/actions/actions';
+import { postLogin } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 
 

@@ -1,4 +1,7 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useState} from "react";
+
 import Button from "@/components/Button";
 import FileDropzone from "@/components/FileDropzone";
 import TextArea from "@/components/TextArea";
@@ -6,30 +9,12 @@ import TextInput from "@/components/TextInput";
 import SelectInput from "@/components/SelectInput";
 
 import { ITEM_CATEGORIES } from "@/lib/types";
+import { postItem } from "@/lib/actions";
 
-import { getServerSession } from "next-auth";
-import { ChangeEvent, useState } from "react";
-
-async function postItem(formData: FormData) {
-    const session = await getServerSession()
-    const sessionUser = JSON.parse(JSON.stringify(session)).user.name
-    const sellForm = formData
-    sellForm.append("username", sessionUser)
-
-    try {
-        const response = await fetch("http://localhost:3000/api/items", {
-            method: "POST",
-            body: sellForm
-
-        });
-        if (!response.ok) throw new Error(response.statusText);
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 export default function SellForm() {
     const [files, setFiles] = useState<File[]>([]);
+    const router = useRouter();
 
     function updateFiles(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files === null) return;
@@ -40,8 +25,19 @@ export default function SellForm() {
         setFiles(buffer);
     }
 
+    async function uploadItem(e: FormEvent) {
+        e.preventDefault();
+
+        try {
+            const itemID = await postItem(new FormData(e.target as HTMLFormElement));
+            router.push(`/listing/${itemID}`);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
-        <form className="w-full xl:w-3/4" action={postItem}>
+        <form className="w-full xl:w-3/4" onSubmit={uploadItem}>
             <h1 className="font-semibold text-lg text-center pt-8 mb-8">Sell an Item</h1>
             <div className="flex flex-col justify-center gap-6 xl:flex-row">
                 <FileDropzone className="w-full h-[25vh] xl:w-1/2 xl:h-[44.5vh] 2xl:w-9/20 2xl:h-140" files={files} changeHandler={updateFiles}/>

@@ -1,5 +1,5 @@
 'use client';
-import { postRegister } from '../app/actions/actions'
+import { postRegister } from '@/lib/actions'
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { useRouter } from 'next/navigation';
