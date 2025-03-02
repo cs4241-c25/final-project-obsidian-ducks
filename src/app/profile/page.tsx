@@ -9,6 +9,7 @@ import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
 import {Router} from "next/router";
 
+
 export default function ProfilePage() {
     const {data: session, status} = useSession();
     const router = useRouter();
@@ -16,6 +17,12 @@ export default function ProfilePage() {
     const [likes, setLikes] = useState<Item[]>([]);
     const [tabFilter, setTab] = useState("Posts");
     const [profile, setProfile] = useState();
+
+    useEffect(() => {
+        if (status === "unauthenticated"){
+            router.push("/login");
+        }
+    }, [status, router]);
 
     async function postPicture(formData: FormData) {
         const sellForm = formData
@@ -186,13 +193,6 @@ export default function ProfilePage() {
                 </div>
             ) : (
                 <div>
-                    <div>
-                    <p>Please log in to view your profile.</p>
-                        <Link href="/login">
-                            <Button type={"button"}>Login</Button>
-                        </Link>
-                    </div>
-
                 </div>
             )}
 
