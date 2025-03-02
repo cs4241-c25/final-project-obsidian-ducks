@@ -10,6 +10,8 @@ import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/bytes_tree
 import gleam/option
+import gleam/erlang/node
+import gleam/erlang/atom
 import gleam/erlang/process.{type Subject}
 import gleam/dict
 import youid/uuid
@@ -18,7 +20,8 @@ import gleam/function
 import gleam/string
 import envoy
 import nessie_cluster
-
+import gleam/otp/supervisor
+import gleam/dynamic
 
 pub fn main() {
   io.println("Hello from chat_server!")
@@ -31,17 +34,25 @@ pub fn main() {
 
   let cluster_worker =
       supervisor.worker(fn(_) {
-          nessie_cluster.start_spec(cluster, None)
+          nessie_cluster.start_spec(cluster, option.None)
       })
 
-  let assert Ok(chat_server) = actor.start(create_chat_server(process.self()), handle_chat_server_message)
+  let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
 
-  let assert Ok(server) = create_request_handler(chat_server)
-  |> mist.new
-  |> mist.port(3001)
-  |> mist.bind("0.0.0.0")
-  |> mist.start_http
-  |> result.map_error(fn(e) { actor.InitCrashed(dynamic.from(e)) })
+  let server = fn(_) {
+    create_request_handler(chat_server)
+    |> mist.new
+    |> mist.port(3001)
+    |> mist.bind("0.0.0.0")
+    |> mist.start_http
+    |> result.map_error(fn(e) { actor.InitCrashed(dynamic.from(e)) })
+  }
+
+
+  node.visible()
+  |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
+  |> string.join(", ")
+  |> io.debug
 
   let assert Ok(_) =
     supervisor.start(fn(children) {
@@ -73,7 +84,7 @@ type ChatServer {
     connections:dict.Dict(uuid.Uuid,Subject(InternalMessages)),
     online_chatters:dict.Dict(String,uuid.Uuid),
     id_to_name:dict.Dict(uuid.Uuid,String),
-  )
+)
 }
 
 //todo update this to be a bunch of diffrent messages

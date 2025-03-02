@@ -3,7 +3,6 @@ FROM ghcr.io/gleam-lang/gleam:v1.8.1-erlang-alpine
 # Add project code
 COPY . /build/
 
-RUN touch .env
 
 # Compile the project
 RUN cd /build \
