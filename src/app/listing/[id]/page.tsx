@@ -38,11 +38,12 @@ export default async function ItemPage({params}) {
             <div
                 className={"flex flex-col  w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
 
-                <div className={"flex w-auto p-3 flex-col border-solid shadow-xl border-black border-2 border-r-10 border-l-10  items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
+                <div className={"flex p-3 flex-col flex-wrap sm:flex-nowrap items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
                     <div className={"relative m-9"}>
-                        <Image className={"w-[350] h-[350] drop-shadow-xl rounded-3xl object-cover"} src={item[0].image} alt={item[0].title}
+                            <Image className={"max-w-full max-h-full drop-shadow-xl rounded-3xl m-auto  "} src={item[0].image} alt={item[0].title}
 
-                               width={400} height={300}/>
+                                   width={500} height={500}/>
+
                         <LikeButton itemID={item[0]._id}/>
                     </div>
 
@@ -61,7 +62,7 @@ export default async function ItemPage({params}) {
                     </div>
                     <span className={'flex self-end justify-end whitespace-nowrap'}>
                             <Image src={'/tag.svg'} alt={"tag"} width={15} height={15}/>
-                            <p className={"p-3"}>{item[0].category}</p>
+                            <p className={"p-1 mr-5"}>{item[0].category}</p>
                     </span>
 
 
