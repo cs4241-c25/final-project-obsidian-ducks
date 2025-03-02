@@ -12,10 +12,7 @@ interface ItemPost {
     image: string;
 }
 
-
-
 export default function ItemPost(props: ItemPost) {
-
     return (
         <figure className="">
             <div className="relative">
@@ -27,8 +24,8 @@ export default function ItemPost(props: ItemPost) {
                 <LikeButton  itemID={props.id}/>
             </div>
             <figcaption>
-                <p className="font-semibold tracking-wider ">${props.price}.00</p>
-                <p className="opacity-75">{props.title}</p>
+                <p className="font-semibold">${props.price}</p>
+                <p className="opacity-95">{props.title}</p>
                 <p className="opacity-75">{props.category}</p>
             </figcaption>
         </figure>
