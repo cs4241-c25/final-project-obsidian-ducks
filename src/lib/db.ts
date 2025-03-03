@@ -11,7 +11,7 @@ async function connectToDatabase(): Promise<void> {
   const opts = {
     bufferCommands: false,
   };
-  console.log(await mongoose.connect(url,opts));
+  await mongoose.connect(url,opts);
 }
 
 connectToDatabase()

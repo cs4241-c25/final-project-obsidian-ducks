@@ -1,23 +1,10 @@
 import HeroSection from "./HeroSection";
 import ItemsSection from "./ItemsSection";
 import Item from "@/models/Item";
-import connectToDatabase  from "@/lib/db";
-async function getPosts() {
-    try {
-        const response = await fetch("http://localhost:3000/api/items", {
-            method: "GET",
-        });
-        if (!response.ok) throw new Error(response.statusText);
-        return await response.json();
-    } catch (e) {
-        console.error(e);
-        throw e;
-    }
-}
+import "@/lib/db";
 
 export default async function Home() {
-    await connectToDatabase()
-    let items = []
+    let items = [];
     try {
       items = await Item.find({}).exec();
       items = items.map(item => ({
