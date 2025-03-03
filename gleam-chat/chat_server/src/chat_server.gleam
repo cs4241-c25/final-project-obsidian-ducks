@@ -33,9 +33,9 @@ pub fn main() {
   let cluster: nessie_cluster.DnsCluster =
       nessie_cluster.with_query(nessie_cluster.new(), dns_query) |> io.debug
 
-  let cluster_worker = supervisor.worker(fn(_) {
+  let cluster_worker = fn(_) {
       nessie_cluster.start_spec(cluster, option.None)
-  })
+  }
 
   let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
 
@@ -51,6 +51,7 @@ pub fn main() {
   let assert Ok(_) =
     supervisor.start(fn(children) {
       children
+      |> supervisor.add(supervisor.worker(cluster_worker))
       |> supervisor.add(supervisor.worker(server))
     })
 
@@ -168,8 +169,11 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
       ["api","nodes"] -> {
         let nodes =
           node.visible()
+          |> list.append([node.self()])
           |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
           |> string.join(", ")
+          |> string.append("nodes:",_)
+
         response.new(200)
         |> response.set_body(mist.Bytes(bytes_tree.from_string(nodes)))
         |> response.set_header("content-type", "text")
