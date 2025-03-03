@@ -10,7 +10,6 @@ COPY . /build/
 # Compile the project
 RUN cd /build/chat_server \
   && gleam export erlang-shipment \
-  && mv build/entrypoint.sh /app \
     && mv build/erlang-shipment /app \
   && rm -r /build
 
