@@ -28,6 +28,8 @@ dot_env = ">= 1.2.0 and < 2.0.0"
 bison = ">= 1.7.0 and < 2.0.0"
 envoy = ">= 1.0.2 and < 2.0.0"
 simplifile = ">= 2.2.0 and < 3.0.0"
+nessie_cluster = ">= 0.3.0 and < 1.0.0"
+nessie = {path = "../nessie"}
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

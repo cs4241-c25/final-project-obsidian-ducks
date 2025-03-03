@@ -24,6 +24,8 @@ export const authOptions = {
                 }
 
                 try {
+
+
                     const user = await User.findOne({ username: credentials.username });
                     if (!user) {
 
