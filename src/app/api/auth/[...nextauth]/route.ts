@@ -5,7 +5,7 @@ import connectToDatabase from '@/lib/db';
 import bcrypt from "bcrypt";
 
 // @ts-ignore
-export const authOptions = {
+export default authOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
