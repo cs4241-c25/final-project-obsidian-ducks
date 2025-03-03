@@ -25,7 +25,7 @@ import gleam/dynamic
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  let dns_query = case envoy.get("FLY_APP_NAME") {
+  let dns_query = case envoy.get("FLY_APP_NAME") |> io.debug {
     Ok(app_name) -> nessie_cluster.DnsQuery(app_name <> ".internal")
     Error(Nil) -> nessie_cluster.Ignore
   }
