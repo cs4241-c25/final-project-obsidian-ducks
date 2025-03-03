@@ -43,10 +43,10 @@ export default async function ItemPage({params}) {
             className={"flex items-center mt-5 drop-shadow-2xl flex-wrap sm:mt-[0] sm:flex-nowrap sm:mx-auto sm:w-full sm:h-[calc(100vh-77px)] "}>
 
             <div
-                className={"flex flex-col  w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
+                className={"flex flex-col w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
                 <div className={"flex p-3 flex-col flex-wrap sm:flex-nowrap items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
                     <div className={"relative m-9"}>
-                            <Image className={"max-w-full max-h-full drop-shadow-xl rounded-3xl m-auto  "} src={item[0].image} alt={item[0].title}
+                            <Image className={"max-w-full max-h-full drop-shadow-xl rounded-3xl m-auto"} src={item[0].image} alt={item[0].title}
 
                                    width={500} height={500}/>
 
