@@ -12,7 +12,7 @@ export default function Favorites() {
     };
     async function getLikes() {
         try {
-            const response = await fetch("http://localhost:3000/api/likes", {
+            const response = await fetch("/api/likes", {
                 method: "GET",
             });
             if (!response.ok) throw new Error(response.statusText);

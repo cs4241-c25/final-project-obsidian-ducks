@@ -9,7 +9,7 @@ export default function NavBar(){
     const { status } = useSession();
 
     return (
-        <nav className="w-screen h-[10vh] flex justify-center">
+        <nav className="w-screen h-[10vh] flex-shrink-0 flex justify-center">
             <div className="w-9/10 flex justify-center items-center relative z-10">
                 <div className="mr-auto text-base font-semibold">
                     {status === 'authenticated' ? (
