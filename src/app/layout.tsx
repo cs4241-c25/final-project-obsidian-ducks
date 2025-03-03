@@ -30,7 +30,7 @@ export default function RootLayout({
           <Providers>
             <ChatContextProvider url={chat_url}>
               <NavBar/>
-                {children}
+              {children}
             </ChatContextProvider>
           </Providers>
         </ReactQueryProvider>
