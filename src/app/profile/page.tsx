@@ -28,7 +28,7 @@ export default function ProfilePage() {
         if (session == null) return;
         sellForm.append("username", session.user.name);
         try {
-            const response = await fetch("http://localhost:3000/api/picture", {
+            const response = await fetch("/api/picture", {
                 method: "POST",
                 body: sellForm
             });
@@ -63,7 +63,7 @@ export default function ProfilePage() {
             if(!session?.user?.name){
                 return;
             }
-            const response = await fetch("http://localhost:3000/api/filter", {
+            const response = await fetch("/api/filter", {
                 method: "POST",
                 body: JSON.stringify(session.user.name)
             });
@@ -88,7 +88,7 @@ export default function ProfilePage() {
             if(!session?.user?.name){
                 return;
             }
-            const response = await fetch("http://localhost:3000/api/profile", {
+            const response = await fetch("/api/profile", {
                 method: "POST",
                 body: JSON.stringify(session.user.name)
             });
@@ -113,7 +113,7 @@ export default function ProfilePage() {
             if(!session?.user?.name){
                 return;
             }
-            const response = await fetch("http://localhost:3000/api/image", {
+            const response = await fetch("/api/image", {
                 method: "POST",
                 body: JSON.stringify(session.user?.name),
             });
