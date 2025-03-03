@@ -28,6 +28,7 @@ export default async function Home() {
         description: item.description,
         image: item.image
       }));
+      console.log(items)
     } catch(error) {
       console.log(error)
     }

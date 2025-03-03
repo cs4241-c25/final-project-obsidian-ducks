@@ -24,7 +24,7 @@ export const authOptions = {
                 try {
                     await connectToDatabase();
 
-
+                    
                     const user = await User.findOne({ username: credentials.username });
                     if (!user) {
 
