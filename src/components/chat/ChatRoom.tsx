@@ -14,6 +14,7 @@ export default function ChatRoom(props: {chat_id:string}) {
       return
     }
     const chat_index = websocket.chats.findIndex((chat) => { return chat.chat_id === props.chat_id })
+    console.log(websocket.chats)
     setCurrentChatIndex(chat_index)
   },[websocket])
 
@@ -25,7 +26,7 @@ export default function ChatRoom(props: {chat_id:string}) {
   }
   return (
     <div className="flex flex-row grow">
-      <div className='flex flex-col border overflow-scroll basis-sm'>
+      <div className='flex flex-col border overflow-scroll basis-md'>
         <CreateChatButton username={websocket.userName}/>
         {
           websocket.chats.map((chat_room,index) =>

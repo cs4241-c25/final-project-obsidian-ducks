@@ -34,6 +34,7 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
 
   // const { data: session, status } = useSession()
   async function send_conn(session:Session | null) {
+    console.log("huhhhhhh")
     if(socket === undefined) {
       return
     }

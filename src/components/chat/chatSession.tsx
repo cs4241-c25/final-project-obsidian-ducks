@@ -106,17 +106,17 @@ export default function ChatSession(props: {chat:ChatRoom}) {
           ))}
         </div>
       </div >
-      <div className='flex flex-row gap-10  pb-10'>
+      <div className='flex flex-row gap-10 py-10'>
         <input
           type="text"
-          className="border border-gray-400 grow rounded p-2"
+          className="border border-gray-400 grow h-12 rounded p-2"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type your message..."
         />
 
         <button onClick={sendMessage}>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg></button>
+          <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="black"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg></button>
       </div>
     </div>
   );

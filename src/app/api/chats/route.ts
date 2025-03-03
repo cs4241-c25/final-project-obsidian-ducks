@@ -2,6 +2,7 @@ import { createChatRoom,findChatRooms }  from "@/lib/createChatRoom";
 import { NextRequest } from "next/server";
 
 export async function GET(req:NextRequest) {
+  console.log("test")
   const searchParams = req.nextUrl.searchParams
   const username:string | null = searchParams.get('username')
   console.log(username)
