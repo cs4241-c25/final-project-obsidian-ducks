@@ -8,7 +8,7 @@ async function connectToDatabase() {
           throw new Error("MongoDB URL must be provided.");
       }
       if (mongoose.connection.readyState) {
-          console.log("A MongoDB connection was already established. Close this one.");
+          return;
       }
       await mongoose.connect(url);
       console.log("Connected to MongoDB :D");

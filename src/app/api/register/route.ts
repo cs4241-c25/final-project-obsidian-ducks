@@ -3,6 +3,7 @@ import User from '@/models/User';
 import bcrypt from 'bcrypt';
 import { S3Client } from '@aws-sdk/client-s3';
 import uploadFile from '@/lib/uploadFile';
+import connectToDatabase from "@/lib/db";
 
 export async function POST(req: Request) {
     try {
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
         }
 
 
-
+        await connectToDatabase();
         const newUser = new User({ username, password: hashedPassword, profileImage: profileImageUrl });
         await newUser.save();
 

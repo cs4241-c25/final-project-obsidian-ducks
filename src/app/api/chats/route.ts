@@ -1,6 +1,7 @@
 import ChatRoom from "@/models/ChatRoom";
 import {NextRequest} from "next/server";
 import {v4 as uuidv4} from 'uuid';
+import connectToDatabase from "@/lib/db";
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams
@@ -16,6 +17,7 @@ export async function GET(req: NextRequest) {
         )
     }
     try {
+        await connectToDatabase();
         const chat_rooms = await ChatRoom.find({chatters: username}).exec()
 
         return new Response(
@@ -46,6 +48,7 @@ export async function POST(req: Request) {
         const chat_room = new ChatRoom()
         chat_room.chatters = chatters;
         chat_room.chat_id = chat_id
+        await connectToDatabase();
         console.log(await chat_room.save())
 
 

@@ -6,12 +6,14 @@ import Item from "@/models/Item";
 import {S3Client} from "@aws-sdk/client-s3";
 import User from "@/models/User";
 import Like from "@/models/Like";
+import connectToDatabase from "@/lib/db";
 
 /**
  * Fetches all the items being sold
  */
 export async function GET(req: Request) {
     try {
+        await connectToDatabase();
         const items = await Item.find({}).exec();
         return new Response(
             JSON.stringify(items),
@@ -58,6 +60,7 @@ export async function POST(request: Request) {
     formData.delete("image");
 
     try {
+        await connectToDatabase();
         // Upload everything else to database
         const item = new Item(
             Object.fromEntries(formData.entries()) // Converts it to a JS object
