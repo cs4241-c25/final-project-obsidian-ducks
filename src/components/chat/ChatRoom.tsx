@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
-import ChatSession from "./chatSession"
+import ChatSession from "@/components/chat/chatSession"
 import { useWebSocket } from "./ChatContext"
 import { twMerge } from "tailwind-merge"
 import Link from "next/link"
