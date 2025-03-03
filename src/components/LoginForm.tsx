@@ -39,13 +39,13 @@ export default function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 rounded-lg bg-alice-blue-200 shadow-md min-h-[400px] -mt-45">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 rounded-lg shadow-md bg-white -mt-20 transform translate-x-[10px]">
             <h1 className="text-3xl font-bold mb-10">Login</h1>
             <div className="flex flex-col space-y-4">
                 <TextInput type="text" name="username" placeholder="School email" onChange={(e) => console.log(e.target.value)}>Username:</TextInput>
                 <TextInput type="password" name="password" placeholder="Password" onChange={(e) => console.log(e.target.value)}>Password:</TextInput>
                 {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
-                <a href="/register" className="text-crimson-500 hover:underline mb-0">Don't have an account?</a>
+                <a href="/register" className="text-crimson-500 hover:underline mb-6">Don't have an account?</a>
                 <div className="w-full flex justify-end">
                     <Button type="submit">Login</Button>
                 </div>
