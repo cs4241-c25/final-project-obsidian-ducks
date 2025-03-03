@@ -5,7 +5,7 @@ import ChatRoom from '@/components/chat/ChatRoom';
 
 export default function Page() {
   const { data: session } = useSession()
-  if (!session) {
+  if (session === null) {
     redirect('/login');
   }
   return (
