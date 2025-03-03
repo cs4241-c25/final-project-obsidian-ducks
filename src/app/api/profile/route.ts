@@ -29,3 +29,54 @@ export async function POST(req: Request) {
         )
     }
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const data = await req.json();
+        const items = await Item.deleteOne({_id: data}).exec();
+        return new Response(
+            JSON.stringify(items),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    } catch (e) {
+        return new Response(
+            "Failed to fetch items",
+            {
+                status: 500,
+                statusText: "Internal Server Error"
+            }
+        )
+    }
+}
+
+export async function PATCH(req: Request) {
+    try {
+        const data = await req.json();
+        const items = await Item.updateOne({_id: data._id}, {
+            $set: {
+                title: data.title,
+                description: data.description,
+                price: data.price,
+                category: data.category,
+            }
+        }).exec();
+        return new Response(
+            JSON.stringify(items),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    } catch (e) {
+        return new Response(
+            "Failed to fetch items",
+            {
+                status: 500,
+                statusText: "Internal Server Error"
+            }
+        )
+    }
+}

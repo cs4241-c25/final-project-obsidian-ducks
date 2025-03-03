@@ -58,3 +58,25 @@ export async function POST(request: Request) {
         }
     )
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const data = await req.json();
+        const items = await Item.deleteOne({_id: data}).exec();
+        return new Response(
+            JSON.stringify(items),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    } catch (e) {
+        return new Response(
+            "Failed to fetch items",
+            {
+                status: 500,
+                statusText: "Internal Server Error"
+            }
+        )
+    }
+}
