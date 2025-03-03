@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const username:string | null = searchParams.get('username')
-  console.log(username)
+
   if(username === null) {
     return new Response(
         JSON.stringify({message: "please enter a username"}),
@@ -17,7 +17,7 @@ export async function GET(req:NextRequest) {
   }
   try {
     const chat_rooms = await ChatRoom.find({ chatters: username }).exec()
-    console.log(chat_rooms)
+
     return new Response(
       JSON.stringify(chat_rooms),
       {

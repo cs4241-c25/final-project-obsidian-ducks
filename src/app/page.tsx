@@ -1,9 +1,10 @@
 import HeroSection from "./HeroSection";
 import ItemsSection from "./ItemsSection";
 import Item from "@/models/Item";
-import "@/lib/db";
+import connectToDatabase from "@/lib/db";
 
 export default async function Home() {
+    await connectToDatabase();
     let items = [];
     try {
       items = await Item.find({}).exec();
@@ -15,9 +16,8 @@ export default async function Home() {
         description: item.description,
         image: item.image
       }));
-      console.log(items)
-    } catch(error) {
-      console.log(error)
+    } catch(e) {
+      console.error(e);
     }
     return (
         <main className="overflow-x-hidden pb-20">
