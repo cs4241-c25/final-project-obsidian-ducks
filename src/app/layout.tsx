@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.className} overflow-x-hidden`}>
+      <body className={`${openSans.className} h-svh flex flex-col overflow-x-hidden`}>
         <ReactQueryProvider>
           <Providers>
             <ChatContextProvider url={chat_url}>
