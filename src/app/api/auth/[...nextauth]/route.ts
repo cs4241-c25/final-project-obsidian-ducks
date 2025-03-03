@@ -13,18 +13,16 @@ export const authOptions = {
                 username: { label: 'Username', type: 'text' },
                 password: { label: 'Password', type: 'password' },
             },
+
             // @ts-ignore
             async authorize(credentials) {
-
+                await connectToDatabase();
                 if (!credentials) {
                     console.error('No credentials provided');
                     return null;
                 }
 
                 try {
-                    await connectToDatabase();
-
-
                     const user = await User.findOne({ username: credentials.username });
                     if (!user) {
 
