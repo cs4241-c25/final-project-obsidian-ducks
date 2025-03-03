@@ -32,7 +32,13 @@ export default async function ItemPage({params}) {
     let item = await getItem(params)
     console.log(item)
     const session = await getServerSession();
-    const sessionUser = JSON.parse(JSON.stringify(session)).user.name;
+    let sessionUser = JSON.stringify(session)
+    if(session){
+        sessionUser = JSON.parse(JSON.stringify(session)).user.name;
+
+    }
+
+
     return (
 
         <main
