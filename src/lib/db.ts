@@ -2,26 +2,20 @@ import mongoose from 'mongoose';
 
 const url = process.env.MONGODB_URI;
 
-//i named the db WPIBuys and made two collections so far: item and user
-//call this function to connect to Database
-async function connectToDatabase(): Promise<void> {
-  if (url === undefined || url === null || url === '') {
-      return;
+async function connectToDatabase() {
+    try {
+      if (url === undefined || url === null || url === '') {
+          throw new Error("MongoDB URL must be provided.");
+      }
+      if (mongoose.connection.readyState) {
+          console.log("A MongoDB connection was already established. Close this one.");
+      }
+      await mongoose.connect(url);
+      console.log("Connected to MongoDB :D");
+  } catch (e) {
+      console.log("Failed to connect to MongoDB D:");
+      console.error(e);
   }
-  const opts = {
-    bufferCommands: false,
-  };
-  console.log(await mongoose.connect(url,opts));
 }
-
-connectToDatabase()
-    .then((mongoose) => {
-        console.log(mongoose)
-        console.log("Connected to MongoDB :D");
-    })
-    .catch((e) => {
-        console.log("Failed to connect to MongoDB D:");
-        console.error(e);
-});
 
 export default connectToDatabase;

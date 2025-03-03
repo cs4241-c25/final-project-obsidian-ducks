@@ -1,4 +1,4 @@
-import "@/lib/db";
+
 import uploadFile from "@/lib/uploadFile";
 
 import Item from "@/models/Item";

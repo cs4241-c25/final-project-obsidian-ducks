@@ -1,13 +1,10 @@
 import Item from "@/models/Item";
-import PostInput from "../../../ItemPost"
 
 /*Get single item for listing page*/
 export async function GET(req: Request) {
     const url = new URL(req.url)
     try {
-        const id = url.pathname.split('/').pop()
-        console.log(url)
-        console.log(id)
+        const id = url.pathname.split('/').pop();
         const item = await Item.find({'_id': id}).exec();
 
         console.log(item)

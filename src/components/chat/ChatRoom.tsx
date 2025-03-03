@@ -1,9 +1,9 @@
 "use client"
 import { useState } from "react"
-import ChatSession from "./chatSession"
-import { useWebSocket } from "./ChatContext"
+import { ChatSession } from "@/components/chat/chatSession"
+import { useWebSocket } from "@/components/chat/ChatContext"
 
-export default function ChatRoom() {
+export function ChatRoom() {
   const websocket = useWebSocket()
   const [currentChatIndex,setCurrentChatIndex] = useState(0)
 

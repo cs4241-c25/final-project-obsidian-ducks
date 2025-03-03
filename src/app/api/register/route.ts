@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
-import connectToDatabase from '@/lib/db';
 import bcrypt from 'bcrypt';
 import { S3Client } from '@aws-sdk/client-s3';
 import uploadFile from '@/lib/uploadFile';
 
 export async function POST(req: Request) {
     try {
-        await connectToDatabase();
-
         const formData = await req.formData();
         const username = formData.get('username');
         const password = formData.get('password');

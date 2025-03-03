@@ -18,8 +18,6 @@ export async function GET(request: Request){
     }
     const sessionUser = JSON.parse(JSON.stringify(session)).user.name
     try {
-
-
        //figure out why there are errors??
         const user = await User.findOne({'username': sessionUser})
             .populate({
@@ -57,7 +55,6 @@ export async function POST(request: Request) {
 
 
     try {
-
         //this is the item id
         let data = await request.json()
         //check if user liked item

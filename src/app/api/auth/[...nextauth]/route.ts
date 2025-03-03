@@ -1,11 +1,10 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '@/models/User';
-import connectToDatabase from '@/lib/db';
 import bcrypt from "bcrypt";
 
 // @ts-ignore
-export default authOptions = {
+export const authOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -13,18 +12,15 @@ export default authOptions = {
                 username: { label: 'Username', type: 'text' },
                 password: { label: 'Password', type: 'password' },
             },
+
             // @ts-ignore
             async authorize(credentials) {
-
                 if (!credentials) {
                     console.error('No credentials provided');
                     return null;
                 }
 
                 try {
-                    await connectToDatabase();
-
-
                     const user = await User.findOne({ username: credentials.username });
                     if (!user) {
 
