@@ -6,11 +6,11 @@ import ItemPost from "../ItemPost";
 import React, {useEffect, useState} from "react";
 import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
-import {Router} from "next/router";
+import { Session } from "@/lib/types";
 
 
 export default function ProfilePage() {
-    const {data: session, status} = useSession();
+    const {data: session, status} = useSession() as {data: Session, status: string};
     const router = useRouter();
     const [posts, setPosts] = useState<Item[]>([]);
     const [likes, setLikes] = useState<Item[]>([]);
@@ -24,15 +24,16 @@ export default function ProfilePage() {
     }, [status, router]);
 
     async function postPicture(formData: FormData) {
-        const sellForm = formData
-        sellForm.append("username", session.user?.name);
+        const sellForm = formData;
+        if (session == null) return;
+        sellForm.append("username", session.user.name);
         try {
             const response = await fetch("http://localhost:3000/api/picture", {
                 method: "POST",
                 body: sellForm
             });
             if (!response.ok) throw new Error(response.statusText);
-            Router.reload(window.location.pathname);
+            router.push("/profile");
         } catch (e) {
             console.error(e);
         }
