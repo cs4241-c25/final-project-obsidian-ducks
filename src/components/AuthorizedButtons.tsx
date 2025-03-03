@@ -3,7 +3,8 @@ import Button from "@/components/Button";
 import DeleteButton from "@/components/DeleteButton";
 import Image from 'next/image'
 import React from "react";
-import {ITEM_CATEGORIES} from "@/lib/types";
+import {ChatRoom, ITEM_CATEGORIES} from "@/lib/types";
+import { redirect } from "next/navigation";
 
 interface AuthorizedButtons {
     username: string,
@@ -26,7 +27,7 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
             category: String(formData.get("category")),
         }
         try {
-            const response = await fetch("http://localhost:3000/api/profile", {
+            const response = await fetch("/api/profile", {
                 method: "PATCH",
                 body: JSON.stringify(formattedData),
             });
@@ -36,6 +37,21 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
             console.error(e);
         }
     }
+
+    async function createChatRoom() {
+      if(props.session === "") {
+        return
+      }
+      const response = await fetch("/api/chats",{
+        method:"POST",
+        body: JSON.stringify({
+          chatters:[props.username,props.session]
+        })
+      })
+      const resJson:ChatRoom = await response.json()
+      redirect(`/chats/${resJson.chat_id}`)
+    }
+
 
     function renderButtons(){
 
@@ -80,8 +96,11 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
                     <p className={"text-5xl"}>{props.title}</p>
                         <p className={""}>{props.description}</p>
                         <p>${props.price}</p>
+                        { props.session !== "" ?
+                          <Button onClick={() => { createChatRoom().then() } }  type={"submit"}>Message Seller</Button>
+                          : <></>
+                        }
 
-                        <Button type={"submit"}>Message Seller</Button>
                         <div className={"flex items-center gap-5"}>
                             <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
                             <p>Seller: {props.username}</p>

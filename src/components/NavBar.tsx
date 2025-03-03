@@ -48,7 +48,7 @@ export default function NavBar(){
 
 
     return (
-        <nav className="w-screen h-[10vh] flex justify-center pt-2 mb-5 md:py-0 md:mb-0">
+        <nav className="w-screen h-[10vh] flex-shrink-0 flex justify-center pt-2 mb-5 md:py-0 md:mb-0">
                 <div className="w-9/10 flex justify-center items-center relative z-30">
                     <div className="md:hidden">
                         <Button onClick={handleHamburgerClick} className="bg-transparent hover:bg-transparent">

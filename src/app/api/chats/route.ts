@@ -1,11 +1,11 @@
-import ChatRoom from "@/models/ChatRoom";
+import { createChatRoom,findChatRooms }  from "@/lib/createChatRoom";
 import { NextRequest } from "next/server";
-import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(req:NextRequest) {
+  console.log("test")
   const searchParams = req.nextUrl.searchParams
   const username:string | null = searchParams.get('username')
-
+  console.log(username)
   if(username === null) {
     return new Response(
         JSON.stringify({message: "please enter a username"}),
@@ -15,9 +15,8 @@ export async function GET(req:NextRequest) {
         }
     )
   }
+  const chat_rooms = await findChatRooms(username);
   try {
-    const chat_rooms = await ChatRoom.find({ chatters: username }).exec()
-
     return new Response(
       JSON.stringify(chat_rooms),
       {
@@ -42,12 +41,7 @@ export async function POST(req: Request) {
   try {
     const { chatters}:{chatters:string[]} = await req.json();
 
-    const chat_id = uuidv4();
-    const chat_room = new ChatRoom()
-    chat_room.chatters = chatters;
-    chat_room.chat_id = chat_id
-    console.log( await chat_room.save())
-
+    const { chat_id } = await createChatRoom(chatters)
 
     return new Response(
       JSON.stringify({

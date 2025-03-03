@@ -6,22 +6,19 @@ import { ChatMessage, ChatRoom, Message} from "@/lib/types"
 import { useQuery } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function ChatSession(props: {chat:ChatRoom}) {
+export function ChatSession(props: {chat:ChatRoom}) {
   const chatHandler = useWebSocket()
   const { isLoading, error, data:old_msgs } = useQuery<ChatMessage[]>({
     queryKey:["messages",props.chat.chat_id],
     queryFn:async () => {
-      console.log(props.chat.chat_id)
       const res = await fetch(`/api/chats/msgs?chatid=${props.chat.chat_id}`, {
         method:"GET",
       })
-      console.log(res)
 
       if(res.status != 200) {
         return []
       }
       const body = await res.json()
-      console.log(body)
       setMessages([])
       return body
     }
@@ -31,12 +28,12 @@ export default function ChatSession(props: {chat:ChatRoom}) {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    chatHandler.addOnMessageSub("chatSession",(msgEvent) => {
-      console.log(msgEvent)
-      try {
-        const msg: Message = JSON.parse(msgEvent)
+    chatHandler.addOnMessageSub("chatSession",(msg:Message) => {
         console.log(msg)
-
+        if(props.chat === undefined) {
+          console.log("ah ha")
+          return
+        }
         switch (msg.event) {
           case "CONNECT":
             break;
@@ -49,20 +46,14 @@ export default function ChatSession(props: {chat:ChatRoom}) {
             break;
           case "MESSAGE":
             const chat_msg = (msg as ChatMessage)
-            console.log(chat_msg)
+            console.log(chat_msg.chat_id.toLowerCase() === props.chat.chat_id)
             if(chat_msg.chat_id.toLowerCase() === props.chat.chat_id) {
               setMessages((prevMessages) => [...prevMessages,chat_msg]);
-            } else {
-              console.log(props.chat.chat_id)
-              console.log("huhhhh")
             }
             break;
           case "READ_MESSAGE":
             break;
         }
-      } catch(error) {
-        console.log(error)
-      }
     });
   }, []);
 
@@ -102,26 +93,30 @@ export default function ChatSession(props: {chat:ChatRoom}) {
   }
 
   return (
-    <div className='flex flex-col px-10 h-full'>
-      <div className='flex flex-col grow gap-2'>
-        {old_msgs.map((message, index) => (
-          <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
-        ))}
-        {messages.filter((message) => { return message.chat_id === props.chat.chat_id }).map((message, index) => (
-          <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
-        ))}
+    <div className='flex flex-col px-10 py-10 w-full'>
+      <div className='basis-3xs grow overflow-scroll'>
+        <div className='flex flex-col gap-2 px-2 '>
+          {old_msgs.map((message, index) => (
+            <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
+          ))}
+          {messages.filter((message) => {
+            return message.chat_id.toLowerCase() === props.chat.chat_id
+          }).map((message, index) => (
+            <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
+          ))}
+        </div>
       </div >
-      <div className='flex flex-row gap-10  pb-10'>
+      <div className='flex flex-row gap-10 py-10'>
         <input
           type="text"
-          className="border border-gray-400 grow rounded p-2"
+          className="border border-gray-400 grow h-12 rounded p-2"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type your message..."
         />
 
         <button onClick={sendMessage}>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg></button>
+          <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="black"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg></button>
       </div>
     </div>
   );

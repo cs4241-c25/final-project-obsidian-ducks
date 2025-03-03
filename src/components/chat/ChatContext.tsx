@@ -1,6 +1,5 @@
 "use client"
 import { ChatRoom, Connect, Message } from "@/lib/types"
-import { useQuery } from "@tanstack/react-query"
 import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 // import { useSession } from "next-auth/react"
@@ -11,7 +10,7 @@ export type MsgContext = {
   websocket:WebSocket | undefined,
   chats:ChatRoom[],
   setChats:(chats:ChatRoom[]) => void,
-  addOnMessageSub:(key:string,sub:(msg:string) =>void)=>void
+  addOnMessageSub:(key:string,sub:(msg:MEssa) =>void)=>void
 }
 
 
@@ -27,13 +26,14 @@ const webSocketContext = createContext<MsgContext>({
 export function ChatContextProvider(props: { url: string |undefined,children:ReactNode}) {
   const [socket, setSocket] = useState<undefined | WebSocket>();
   const [chats,setChats] = useState<ChatRoom[]>([])
-  const onMessageSubsRef = useRef<Map<String,(msg:string) =>void>>(new Map());//we use ref here becasue we dont want re renders
+  const onMessageSubsRef = useRef<Map<string,(msg:Message) =>void>>(new Map());//we use ref here becasue we dont want re renders
   const [socketOpen, setSocketOpen] = useState(false);
   const { data: session } = useSession()
 
 
   // const { data: session, status } = useSession()
   async function send_conn(session:Session | null) {
+    console.log("huhhhhhh")
     if(socket === undefined) {
       return
     }
@@ -73,6 +73,7 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
         setSocketOpen(true)
       }
       webSocket.onmessage = (event) => {
+        console.log(event)
         try {
           const msg: Message = JSON.parse(event.data)
           console.log(msg)
@@ -98,12 +99,13 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
             case "READ_MESSAGE":
               break;
           }
+          console.log(onMessageSubsRef.current)
+          for (const sub of onMessageSubsRef.current.values()) {
+            console.log(sub)
+            sub(msg)
+          }
         } catch(error) {
           console.log(error)
-        }
-        console.log(onMessageSubsRef.current)
-        for (const sub of onMessageSubsRef.current.values()) {
-          sub(event.data)
         }
       }
     } catch (error) {
@@ -129,7 +131,6 @@ export function ChatContextProvider(props: { url: string |undefined,children:Rea
       },
       chats:chats
     }}>
-      {/* <div>{session.user.name }</div> */}
       {props.children}
     </webSocketContext.Provider>
   )
