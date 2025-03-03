@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '@/models/User';
-import '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import bcrypt from "bcrypt";
 
 // @ts-ignore
@@ -13,9 +13,10 @@ export const authOptions = {
                 username: { label: 'Username', type: 'text' },
                 password: { label: 'Password', type: 'password' },
             },
-            // @ts-ignore
 
+            // @ts-ignore
             async authorize(credentials) {
+                await connectToDatabase();
                 if (!credentials) {
                     console.error('No credentials provided');
                     return null;
