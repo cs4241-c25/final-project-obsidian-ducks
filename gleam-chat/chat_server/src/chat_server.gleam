@@ -31,7 +31,8 @@ pub fn main() {
     Error(Nil) -> nessie_cluster.Ignore
   }
   let cluster: nessie_cluster.DnsCluster =
-      nessie_cluster.with_query(nessie_cluster.new(), dns_query) |> io.debug
+      nessie_cluster.with_query(nessie_cluster.new(), dns_query) 
+      |> io.debug
 
   let cluster_worker = fn(_) {
       nessie_cluster.start_spec(cluster, option.None)
