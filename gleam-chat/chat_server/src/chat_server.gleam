@@ -25,17 +25,17 @@ import gleam/dynamic
 
 pub fn main() {
   io.println("Hello from chat_server!")
+  envoy.all() |> io.debug()
   let dns_query = case envoy.get("FLY_APP_NAME") |> io.debug {
-    Ok(app_name) -> nessie_cluster.DnsQuery(app_name <> ".internal")
+    Ok(app_name) -> nessie_cluster.DnsQuery(app_name <> ".internal") |> io.debug
     Error(Nil) -> nessie_cluster.Ignore
   }
   let cluster: nessie_cluster.DnsCluster =
-      nessie_cluster.with_query(nessie_cluster.new(), dns_query)
+      nessie_cluster.with_query(nessie_cluster.new(), dns_query) |> io.debug
 
-  let cluster_worker =
-      supervisor.worker(fn(_) {
-          nessie_cluster.start_spec(cluster, option.None)
-      })
+  let cluster_worker = supervisor.worker(fn(_) {
+      nessie_cluster.start_spec(cluster, option.None)
+  })
 
   let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
 
@@ -47,12 +47,6 @@ pub fn main() {
     |> mist.start_http
     |> result.map_error(fn(e) { actor.InitCrashed(dynamic.from(e)) })
   }
-
-
-  node.visible()
-  |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
-  |> string.join(", ")
-  |> io.debug
 
   let assert Ok(_) =
     supervisor.start(fn(children) {
