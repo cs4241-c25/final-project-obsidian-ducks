@@ -4,9 +4,9 @@ import Item from "@/models/Item";
 import connectToDatabase from "@/lib/db";
 
 export default async function Home() {
-    await connectToDatabase();
     let items = [];
     try {
+        await connectToDatabase();
       items = await Item.find({}).exec();
       items = items.map(item => ({
         id: item._id.toString(),

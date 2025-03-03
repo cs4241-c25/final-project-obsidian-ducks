@@ -2,6 +2,7 @@ import {S3Client} from "@aws-sdk/client-s3";
 import uploadFile from "@/lib/uploadFile";
 import User from "@/models/User";
 import Item from "@/models/Item";
+import connectToDatabase from "@/lib/db";
 
 /**
  * Posts a profile picture
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
 
 
     try {
+        await connectToDatabase();
         // Upload everything else to database
         const user = new User(
             Object.fromEntries(formData.entries()) // Converts it to a JS object
@@ -62,6 +64,7 @@ export async function POST(request: Request) {
 export async function DELETE(req: Request) {
     try {
         const data = await req.json();
+        await connectToDatabase();
         const items = await Item.deleteOne({_id: data}).exec();
         return new Response(
             JSON.stringify(items),

@@ -1,8 +1,10 @@
 import User from "@/models/User";
+import connectToDatabase from "@/lib/db";
 
 export async function POST(req: Request) {
     try {
         const data = await req.json();
+        await connectToDatabase();
         const user = await User.findOne({username: data}).exec();
         return new Response(
             JSON.stringify(user),
