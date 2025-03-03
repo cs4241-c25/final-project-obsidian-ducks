@@ -9,6 +9,9 @@ export default function Page() {
     redirect('/login');
   }
   return (
-    <ChatRoom chat_id={""} />
+      <div className={"h-[calc(100vh-77px)] flex flex-col"}>
+        <ChatRoom chat_id={""} />
+
+      </div>
   )
 }
