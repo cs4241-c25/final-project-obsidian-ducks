@@ -2,7 +2,7 @@ FROM ghcr.io/gleam-lang/gleam:v1.8.1-erlang-alpine
 
 # Add project code
 COPY . /build/
-COPY ../nessie /build/nessie
+RUN git clone https://github.com/nick-leslie/nessie.git /build
 
 
 # Compile the project
