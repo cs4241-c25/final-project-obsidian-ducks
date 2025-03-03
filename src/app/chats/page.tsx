@@ -1,4 +1,4 @@
-import ChatRoom from "@/components/chat/ChatRoom";
+import { ChatRoom } from "@/components/chat/ChatRoom";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
