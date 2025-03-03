@@ -165,6 +165,15 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
             },
             handler: handle_websocket_message,
         )
+      ["api","nodes"] -> {
+        let nodes =
+          node.visible()
+          |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
+          |> string.join(", ")
+        response.new(200)
+        |> response.set_body(mist.Bytes(bytes_tree.from_string(nodes)))
+        |> response.set_header("content-type", "text")
+      }
       _ ->  not_found
     }
   }
