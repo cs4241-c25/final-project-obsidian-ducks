@@ -1,7 +1,6 @@
 import {ChatMessage} from "@/lib/types";
 import Message from "@/models/Messages";
 import {NextRequest} from "next/server";
-import connectToDatabase from "@/lib/db";
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams
@@ -16,7 +15,6 @@ export async function GET(req: NextRequest) {
         )
     }
     try {
-        await connectToDatabase();
         const messages = await Message.find({chat_id: chat_id}).exec()
         console.log(chat_id)
 

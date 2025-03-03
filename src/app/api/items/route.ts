@@ -1,4 +1,4 @@
-import connectToDatabase from "@/lib/db";
+
 import uploadFile from "@/lib/uploadFile";
 
 import Item from "@/models/Item";
@@ -12,7 +12,6 @@ import Like from "@/models/Like";
  */
 export async function GET(req: Request) {
     try {
-        await connectToDatabase();
         const items = await Item.find({}).exec();
         return new Response(
             JSON.stringify(items),
@@ -59,7 +58,6 @@ export async function POST(request: Request) {
     formData.delete("image");
 
     try {
-        await connectToDatabase();
         // Upload everything else to database
         const item = new Item(
             Object.fromEntries(formData.entries()) // Converts it to a JS object
