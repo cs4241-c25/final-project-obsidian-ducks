@@ -1,4 +1,3 @@
-import ChatSession from "@/components/chat/chatSession";
 import HeroSection from "./HeroSection";
 import ItemsSection from "./ItemsSection";
 import Item from "@/models/Item";
