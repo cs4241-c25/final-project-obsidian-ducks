@@ -1,13 +1,11 @@
 import Item from "@/models/Item";
 import User from "@/models/User";
 import Like from "@/models/Like";
-import connectToDatabase from "@/lib/db";
 
 export async function POST(req: Request) {
     try {
         //Getting user
         const data = await req.json();
-        await connectToDatabase();
         const user = await User.findOne({username: data}, {likes: 1, _id: 0});
         //Getting just the like ids from same user
         const likeItems = await Like.find({_id: user.likes});
@@ -35,7 +33,6 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
     try {
         const data = await req.json();
-        await connectToDatabase();
         const items = await Item.deleteOne({_id: data}).exec();
         return new Response(
             JSON.stringify(items),
