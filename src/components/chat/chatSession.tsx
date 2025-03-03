@@ -6,7 +6,7 @@ import { ChatMessage, ChatRoom, Message} from "@/lib/types"
 import { useQuery } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function ChatSession(props: {chat:ChatRoom}) {
+export function ChatSession(props: {chat:ChatRoom}) {
   const chatHandler = useWebSocket()
   const { isLoading, error, data:old_msgs } = useQuery<ChatMessage[]>({
     queryKey:["messages",props.chat.chat_id],

@@ -1,6 +1,5 @@
 "use client"
 import { ChatRoom, Connect, Message } from "@/lib/types"
-import { useQuery } from "@tanstack/react-query"
 import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 // import { useSession } from "next-auth/react"
