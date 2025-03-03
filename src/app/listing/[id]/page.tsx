@@ -32,11 +32,16 @@ export default async function ItemPage({params}) {
     let item = await getItem(params)
     console.log(item)
     const session = await getServerSession();
-    const sessionUser = JSON.parse(JSON.stringify(session)).user.name;
+    let sessionUser = ""
+    if(session !== null && session.user !== undefined && session.user.name !== null && session.user.name !== undefined) {
+      sessionUser = session.user.name;
+    }
+
     return (
 
         <main
             className={"flex items-center mt-5 drop-shadow-2xl flex-wrap sm:mt-[0] sm:flex-nowrap sm:mx-auto sm:w-full sm:h-[calc(100vh-77px)] "}>
+
             <div
                 className={"flex flex-col  w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
                 <div className={"flex p-3 flex-col flex-wrap sm:flex-nowrap items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>

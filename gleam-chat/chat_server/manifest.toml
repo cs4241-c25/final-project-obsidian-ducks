@@ -27,6 +27,8 @@ packages = [
   { name = "mist", version = "4.0.6", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_http", "gleam_otp", "gleam_stdlib", "gleam_yielder", "glisten", "gramps", "hpack_erl", "logging"], otp_app = "mist", source = "hex", outer_checksum = "ED319E5A7F2056E08340B6976EA5E717F3C3BB36056219AF826D280D9C077952" },
   { name = "mug", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_stdlib"], otp_app = "mug", source = "hex", outer_checksum = "C5F62A3FD753B823CE296ED1B223D4B2FF06E91170A7DE35A283D70BB74B700E" },
   { name = "mungo", version = "0.27.0", build_tools = ["gleam"], requirements = ["bison", "gleam_crypto", "gleam_deque", "gleam_erlang", "gleam_otp", "gleam_stdlib", "gleam_yielder", "mug"], otp_app = "mungo", source = "hex", outer_checksum = "A33264371406898330F3F0FF104A8848C50C76F11C606940DFB81FFC5B89321A" },
+  { name = "nessie", version = "0.1.0", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_stdlib"], source = "local", path = "../nessie" },
+  { name = "nessie_cluster", version = "0.3.0", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_otp", "gleam_stdlib", "nessie"], otp_app = "nessie_cluster", source = "hex", outer_checksum = "3540E9B82513DBB3E9960CAA07EADCC8A8E7A4BDDFE600ECD6E62782F0FBA15E" },
   { name = "ranger", version = "1.4.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "gleam_yielder"], otp_app = "ranger", source = "hex", outer_checksum = "C8988E8F8CDBD3E7F4D8F2E663EF76490390899C2B2885A6432E942495B3E854" },
   { name = "simplifile", version = "2.2.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "0DFABEF7DC7A9E2FF4BB27B108034E60C81BEBFCB7AB816B9E7E18ED4503ACD8" },
   { name = "stratus", version = "0.9.5", build_tools = ["gleam"], requirements = ["gleam_crypto", "gleam_erlang", "gleam_http", "gleam_otp", "gleam_stdlib", "gramps", "logging"], otp_app = "stratus", source = "hex", outer_checksum = "ADF99E6C2857A807684A3ACF456066140E625074F8F25B49C690AC0F9A65AE6D" },
@@ -49,6 +51,8 @@ gleam_yielder = { version = ">= 1.1.0 and < 2.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
 mist = { version = ">= 4.0.6 and < 5.0.0" }
 mungo = { version = ">= 0.27.0 and < 1.0.0" }
+nessie = { path = "../nessie" }
+nessie_cluster = { version = ">= 0.3.0 and < 1.0.0" }
 simplifile = { version = ">= 2.2.0 and < 3.0.0" }
 stratus = { version = ">= 0.9.5 and < 1.0.0" }
 youid = { version = ">= 1.2.0 and < 2.0.0" }

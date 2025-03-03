@@ -26,7 +26,7 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
             category: String(formData.get("category")),
         }
         try {
-            const response = await fetch("http://localhost:3000/api/profile", {
+            const response = await fetch("/api/profile", {
                 method: "PATCH",
                 body: JSON.stringify(formattedData),
             });

@@ -2,6 +2,7 @@ import Item from "@/models/Item";
 import Like from "@/models/Like";
 import {getServerSession} from "next-auth";
 import User from "@/models/User";
+import connectToDatabase from "@/lib/db";
 
 
 //get likes for specific user
@@ -18,8 +19,7 @@ export async function GET(request: Request){
     }
     const sessionUser = JSON.parse(JSON.stringify(session)).user.name
     try {
-
-
+        await connectToDatabase();
        //figure out why there are errors??
         const user = await User.findOne({'username': sessionUser})
             .populate({
@@ -57,10 +57,10 @@ export async function POST(request: Request) {
 
 
     try {
-
         //this is the item id
         let data = await request.json()
         //check if user liked item
+        await connectToDatabase();
         const check =  await Like.findOne({'itemID': data._id, 'isLiked': true})
 
         const checkItemId =  await Like.findOne({'itemID': data._id})

@@ -9,7 +9,7 @@ interface  DeleteButton {
 
 async function deletePost(id: string){
     try {
-        const response = await fetch(`http://localhost:3000/api/profile`, {
+        const response = await fetch(`/api/profile`, {
             method: "DELETE",
             body: JSON.stringify(id),
         });

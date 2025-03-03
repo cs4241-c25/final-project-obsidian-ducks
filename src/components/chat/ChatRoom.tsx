@@ -1,14 +1,22 @@
 "use client"
-import { useState } from "react"
-import ChatSession from "./chatSession"
+import { useEffect, useState } from "react"
+import { ChatSession } from "@/components/chat/chatSession"
 import { useWebSocket } from "./ChatContext"
+import { twMerge } from "tailwind-merge"
+import Link from "next/link"
 
-export default function ChatRoom() {
+export default function ChatRoom(props: {chat_id:string}) {
   const websocket = useWebSocket()
   const [currentChatIndex,setCurrentChatIndex] = useState(0)
 
-  //todo load from db
-
+  useEffect(() => {
+    if(props.chat_id.length === 0 ) {
+      return
+    }
+    const chat_index = websocket.chats.findIndex((chat) => { return chat.chat_id === props.chat_id })
+    console.log(websocket.chats)
+    setCurrentChatIndex(chat_index)
+  },[websocket])
 
   if(websocket.chats.length <= 0) {
     return <div>
@@ -17,22 +25,33 @@ export default function ChatRoom() {
     </div>
   }
   return (
-    <div className="flex flex-col grow">
-      <div className='flex flex-row gap-5 overflow-scroll py-10'>
-        <h1>chats:</h1>{
-          websocket.chats.map((chat_room,index) =>
-            <button className="border px-5 rounded-xl" onClick={() => {
-              setCurrentChatIndex(index);
-            }}
-              key={chat_room.chat_id}>{chat_room.chatters.join(", ")}
-            </button>
-          )}
+    <div className="flex flex-row grow">
+      <div className='flex flex-col border overflow-scroll basis-md'>
         <CreateChatButton username={websocket.userName}/>
+        {
+          websocket.chats.map((chat_room,index) =>
+            <Link href={`/chats/${websocket.chats[index].chat_id}`} className={twMerge("border w-full p-3",currentChatIndex === index ? "bg-gray-100" : "" )}
+              key={chat_room.chat_id}>
+                {
+                  chat_room.chatters
+                  .filter((chatter) => {return chatter !== websocket.userName} )
+                  .slice(0,3)
+                  .join(", ")
+                }
+            </Link>
+          )
+        }
       </div>
-      <ChatSession chat={websocket.chats[currentChatIndex]} />
+      {currentChatIndex !== -1  ?
+        <ChatSession chat={websocket.chats[currentChatIndex]} />
+        :
+        <div>No chat exists with that id</div>
+      }
     </div>
   )
 }
+
+
 
 
 export function CreateChatButton(props: {username:string}) {
@@ -50,13 +69,14 @@ export function CreateChatButton(props: {username:string}) {
      body:JSON.stringify({chatters:[props.username,...otherChatters]})
    })
    const new_chat_room = await res.json()
-   console.log()
    setShow(false)
 
    chatContext.setChats([...chatContext.chats,new_chat_room])
   }
   if(show === false ) {
-    return <button onClick={() => setShow(!show)}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
+    return <button className="p-3" onClick={() => setShow(!show)}>
+      New Chat
+    </button>
   }
   return (
     <div className={"py-5"}>
@@ -64,7 +84,9 @@ export function CreateChatButton(props: {username:string}) {
         const chattersStr = event.target.value
         setOtherChatters(chattersStr.split(","))
       }}></input>
-      <button onClick={createChat}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
+      <button className="p-3" onClick={createChat}>
+        New Chat
+      </button>
     </div>
   )
 }
