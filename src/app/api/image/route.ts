@@ -1,17 +1,13 @@
-import Item from "@/models/Item";
+import User from "@/models/User";
 import connectToDatabase from "@/lib/db";
 
-/*Get single item for listing page*/
-export async function GET(req: Request) {
-    const url = new URL(req.url)
+export async function POST(req: Request) {
     try {
-        const id = url.pathname.split('/').pop();
+        const data = await req.json();
         await connectToDatabase();
-        const item = await Item.find({'_id': id}).exec();
-
-        console.log(item)
+        const user = await User.findOne({username: data}).exec();
         return new Response(
-            JSON.stringify(item),
+            JSON.stringify(user),
             {
                 status: 200,
                 statusText: "OK",

@@ -1,44 +1,15 @@
-
-import uploadFile from "@/lib/uploadFile";
-
-import Item from "@/models/Item";
-
 import {S3Client} from "@aws-sdk/client-s3";
+import uploadFile from "@/lib/uploadFile";
 import User from "@/models/User";
-import Like from "@/models/Like";
+import Item from "@/models/Item";
 import connectToDatabase from "@/lib/db";
 
 /**
- * Fetches all the items being sold
- */
-export async function GET(req: Request) {
-    try {
-        await connectToDatabase();
-        const items = await Item.find({}).exec();
-        return new Response(
-            JSON.stringify(items),
-            {
-                status: 200,
-                statusText: "OK",
-                headers: {"Content-type": "application/json"}
-            });
-    } catch (e) {
-        return new Response(
-            "Failed to fetch items",
-            {
-                status: 500,
-                statusText: "Internal Server Error"
-            }
-        )
-    }
-}
-
-/**
- * Posts a new item for sale
+ * Posts a profile picture
  */
 export async function POST(request: Request) {
     const formData = await request.formData();
-
+    console.log("This is form data ", formData);
     // Upload image to S3 bucket
     const sessionUser = formData.get("username") as String
     const S3 = new S3Client();
@@ -59,21 +30,17 @@ export async function POST(request: Request) {
     // Remove image from form data
     formData.delete("image");
 
+
     try {
-        await connectToDatabase();
         // Upload everything else to database
-        const item = new Item(
+        await connectToDatabase();
+        const user = new User(
             Object.fromEntries(formData.entries()) // Converts it to a JS object
         );
-        const like = new Like({itemID: item._id})
-        const updateUserItems = await User.updateOne({'username': sessionUser} ,{$push : {'items': item._id}})
-        item.image = result.url;
-        // user that sold the item
-        item.username = sessionUser
-
-        await item.save();
-        await like.save()
-
+        await User.updateOne({'username': sessionUser} ,{$set : {'profileImage': result.url}})
+        await user.save();
+        user.profileImage = result.url;
+        console.log("This is user ", user);
     } catch (e) {
         console.error(e);
         return new Response(
@@ -92,4 +59,27 @@ export async function POST(request: Request) {
             statusText: "OK"
         }
     )
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const data = await req.json();
+        await connectToDatabase();
+        const items = await Item.deleteOne({_id: data}).exec();
+        return new Response(
+            JSON.stringify(items),
+            {
+                status: 200,
+                statusText: "OK",
+                headers: {"Content-type": "application/json"}
+            });
+    } catch (e) {
+        return new Response(
+            "Failed to fetch items",
+            {
+                status: 500,
+                statusText: "Internal Server Error"
+            }
+        )
+    }
 }

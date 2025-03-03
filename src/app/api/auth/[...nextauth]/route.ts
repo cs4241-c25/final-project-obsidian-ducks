@@ -1,8 +1,8 @@
-import NextAuth, { getServerSession } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '@/models/User';
-import connectToDatabase from '@/lib/db';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import connectToDatabase from "@/lib/db";
 
 // @ts-ignore
 export const authOptions = {
@@ -13,8 +13,10 @@ export const authOptions = {
                 username: { label: 'Username', type: 'text' },
                 password: { label: 'Password', type: 'password' },
             },
+
             // @ts-ignore
             async authorize(credentials) {
+                await connectToDatabase();
 
                 if (!credentials) {
                     console.error('No credentials provided');
@@ -22,7 +24,6 @@ export const authOptions = {
                 }
 
                 try {
-                    await connectToDatabase();
 
 
                     const user = await User.findOne({ username: credentials.username });
@@ -69,11 +70,4 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-export async function getAuthServer() {
-  const session = await getServerSession(authOptions);
-  console.log("in getAuthServer")
-  console.log(session)
-  return session
-}
-
 export { handler as GET, handler as POST };

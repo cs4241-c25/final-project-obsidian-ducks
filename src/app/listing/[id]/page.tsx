@@ -1,11 +1,8 @@
-import Button from "@/components/Button";
 import Image from 'next/image'
 import LikeButton from "@/components/LikeButton";
-import { redirect } from 'next/navigation'
-import { getAuthServer } from "app/api/auth/[...nextauth]/route";
-import "@/lib/db"
-import { createChatRoom } from "@/lib/createChatRoom";
-import { console } from "node:inspector/promises";
+import AuthorizedButtons from "@/components/AuthorizedButtons";
+import {getServerSession} from "next-auth";
+
 async function getItem(params) {
 
     const {id} = await params
@@ -32,20 +29,13 @@ async function getItem(params) {
 }
 
 export default async function ItemPage({params}) {
-
     let item = await getItem(params)
-
-   async function createChat() {
-      "use server";
-      const session = await getAuthServer()
-      console.log("in create chat")
-      console.log(session.user)
-      const chatters = [item[0].username,session.user.name]
-      console.log(chatters)
-      const chat_room = await createChatRoom(chatters)
-      console.log(chat_room)
-      redirect(`/chats/${chat_room.chat_id}`)
-   }
+    console.log(item)
+    const session = await getServerSession();
+    let sessionUser = ""
+    if(session !== null && session.user !== undefined && session.user.name !== null && session.user.name !== undefined) {
+      sessionUser = session.user.name;
+    }
 
     return (
 
@@ -54,39 +44,18 @@ export default async function ItemPage({params}) {
 
             <div
                 className={"flex flex-col  w-screen items-center justify-evenly flex-wrap sm:flex-nowrap sm:flex sm:flex-row"}>
-
-                <div className={"flex w-auto p-3 flex-col border-solid shadow-xl border-black border-2 border-r-10 border-l-10  items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
+                <div className={"flex p-3 flex-col flex-wrap sm:flex-nowrap items-baseline sm:w-auto sm:flex-row sm:items-center sm:gap-10"}>
                     <div className={"relative m-9"}>
-                        <Image className={"w-[350] h-[350] drop-shadow-xl rounded-3xl object-cover"} src={item[0].image} alt={item[0].title}
+                            <Image className={"max-w-full max-h-full drop-shadow-xl rounded-3xl m-auto  "} src={item[0].image} alt={item[0].title}
 
-                               width={400} height={300}/>
+                                   width={500} height={500}/>
+
                         <LikeButton itemID={item[0]._id}/>
                     </div>
-
-
-                    <div className={"flex w-[60%] flex-col flex-wrap sm:w-[50%] gap-5"}>
-                        <p className={"text-5xl"}>{item[0].title}</p>
-                        <p className={""}>{item[0].description}</p>
-                        <p>${item[0].price}</p>
-                        <form action={createChat}>
-                          <Button type={"submit"}>Message Seller</Button>
-                        </form>
-                        <div className={"flex items-center gap-5"}>
-                            <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
-                            <p >Seller: {item[0].username}</p>
-                        </div>
-
-                    </div>
-                    <span className={'flex self-end justify-end whitespace-nowrap'}>
-                            <Image src={'/tag.svg'} alt={"tag"} width={15} height={15}/>
-                            <p className={"p-3"}>{item[0].category}</p>
-                    </span>
-
-
+                    <AuthorizedButtons username={item[0].username} _id={item[0]._id} title={item[0].title}
+                                       description={item[0].description} price={item[0].price} session={sessionUser} category={item[0].category}/>
                 </div>
             </div>
-
-
         </main>
     )
 }

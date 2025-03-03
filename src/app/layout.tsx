@@ -15,6 +15,7 @@ const chat_url = process.env.CHAT_URL;
 export const metadata: Metadata = {
   title: "WPIBuys",
   description: "An online platform for WPI students to sell second-hand items.",
+  icons: "/WPIBuysIcon.png"
 };
 
 export default function RootLayout({
@@ -24,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.className} flex flex-col h-dvh overflow-x-hidden`}>
+      <body className={`${openSans.className} overflow-x-hidden`}>
         <ReactQueryProvider>
           <Providers>
             <ChatContextProvider url={chat_url}>

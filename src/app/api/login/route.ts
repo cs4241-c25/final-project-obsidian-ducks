@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
-import connectToDatabase from '@/lib/db';
 import bcrypt from 'bcrypt';
+import connectToDatabase from "@/lib/db";
 
 export async function POST(req: Request) {
     try {
-        await connectToDatabase();
-
         const formData = await req.formData();
         const username = formData.get('username');
         const password = formData.get('password');
@@ -14,6 +12,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
         }
 
+        await connectToDatabase();
         const user = await User.findOne({ username });
         if (!user) {
             return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });

@@ -1,17 +1,15 @@
-import Image from "next/image";
-import React from "react";
+import { ChangeEventHandler } from "react";
+import { IoMdSearch } from "react-icons/io";
 
 interface SearchBar {
     value: string,
-    onChange: React.ChangeEventHandler<HTMLInputElement>;
+    onChange: ChangeEventHandler<HTMLInputElement>;
 }
 export default function SearchBar(props: SearchBar){
     return (
-        <div className="relative w-fit bg-gray-100 px-14 p-2 items-center rounded-lg focus-within:bg-alice-blue-700  hover:bg-alice-blue-700">
-            <input type="input" name="Search Bar" placeholder="Search for an item" className="pr-6 focus:outline-none placeholder: text-center"  value={props.value} onChange={props.onChange}/>
-            <div className="absolute top-2 right-2">
-                <Image src="/search.svg" alt="Search Logo" width={20} height={20} color="alice-blue-900"/>
-            </div>
-        </div>
+        <label className="w-[35vw] h-10 flex justify-center items-center gap-4 bg-onyx-100 rounded-lg opacity-80 cursor-text">
+            <IoMdSearch/>
+            <input className="field-sizing-content focus:outline-none text-center" name="search-bar" type="input" placeholder="Search for an item" value={props.value} onChange={props.onChange}/>
+        </label>
     )
 }
