@@ -1,14 +1,14 @@
-import { ChatRoom } from "@/components/chat/ChatRoom";
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+"use client"
 import { redirect } from 'next/navigation';
+import { useSession } from "next-auth/react";
+import ChatRoom from '@/components/chat/ChatRoom';
 
-export default async function Page() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
+export default function Page() {
+  const { data: session } = useSession()
+  if (session === null) {
     redirect('/login');
   }
   return (
-    <ChatRoom/>
+    <ChatRoom chat_id={""} />
   )
 }

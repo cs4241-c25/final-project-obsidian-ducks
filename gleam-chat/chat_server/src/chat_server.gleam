@@ -10,6 +10,8 @@ import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/bytes_tree
 import gleam/option
+import gleam/erlang/node
+import gleam/erlang/atom
 import gleam/erlang/process.{type Subject}
 import gleam/dict
 import youid/uuid
@@ -17,21 +19,45 @@ import messages
 import gleam/function
 import gleam/string
 import envoy
-
+import nessie_cluster
+import gleam/otp/supervisor
+import gleam/dynamic
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  // load_env("../.env") // this should load .env file
-  // let assert Ok(db_uri) = envoy.get("MONGODB_URI")
-  // io.debug(db_uri)
-  let assert Ok(chat_server) = actor.start(create_chat_server(process.self()), handle_chat_server_message)
+  envoy.all() |> io.debug()
+  let dns_query = case envoy.get("FLY_APP_NAME") |> io.debug {
+    Ok(app_name) -> {
+      nessie_cluster.Ignore
+      //nessie_cluster.DnsQuery(app_name <> ".internal") |> io.debug
+    }
+    Error(Nil) -> nessie_cluster.Ignore
+  }
+  let cluster: nessie_cluster.DnsCluster =
+      nessie_cluster.with_query(nessie_cluster.new(), dns_query)
+      |> io.debug
 
-  let assert Ok(_server) = create_request_handler(chat_server)
-  |> mist.new
-  |> mist.port(3001)
-  |> mist.bind("0.0.0.0")
-  |> mist.start_http
+  let cluster_worker = fn(_) {
+      nessie_cluster.start_spec(cluster, option.None)
+  }
 
+  let assert Ok(chat_server) = actor.start(create_chat_server(), handle_chat_server_message)
+
+  let server = fn(_) {
+    create_request_handler(chat_server)
+    |> mist.new
+    |> mist.port(3001)
+    |> mist.bind("0.0.0.0")
+    |> mist.start_http
+    |> result.map_error(fn(e) { actor.InitCrashed(dynamic.from(e)) })
+  }
+
+  let assert Ok(_) =
+    supervisor.start(fn(children) {
+      children
+      |> supervisor.add(supervisor.worker(cluster_worker))
+      |> supervisor.add(supervisor.worker(server))
+    })
 
   //todo be able to shut down process
   process.sleep_forever()
@@ -57,8 +83,7 @@ type ChatServer {
     connections:dict.Dict(uuid.Uuid,Subject(InternalMessages)),
     online_chatters:dict.Dict(String,uuid.Uuid),
     id_to_name:dict.Dict(uuid.Uuid,String),
-    main_pid:process.Pid
-  )
+)
 }
 
 //todo update this to be a bunch of diffrent messages
@@ -92,15 +117,9 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
           let chatters = chat_server.online_chatters |> dict.delete(name)
           let id_to_name = chat_server.id_to_name |> dict.delete(id)
           let connections = chat_server.connections |> dict.delete(id)
-          // case connections |> dict.size {
-          //   0 ->  {
-          //     io.debug("stopping server")
-          //     process.kill(chat_server.main_pid)
-          //     actor.Stop(process.Normal)
-          //   }
-            // _ ->
-            actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
-            //}
+
+          actor.continue(ChatServer(..chat_server,connections:connections,online_chatters:chatters,id_to_name:id_to_name))
+
         }
         Error(err) -> {
           io.debug(err)
@@ -118,8 +137,8 @@ fn handle_chat_server_message(msg:ChatServerMessage,chat_server:ChatServer) {
   }
 }
 
-fn create_chat_server(main_process) {
-  ChatServer(dict.new(),dict.new(),dict.new(),main_process)
+fn create_chat_server() {
+  ChatServer(dict.new(),dict.new(),dict.new())
 }
 
 
@@ -151,6 +170,18 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
             },
             handler: handle_websocket_message,
         )
+      ["api","nodes"] -> {
+        let nodes =
+          node.visible()
+          |> list.append([node.self()])
+          |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
+          |> string.join(", ")
+          |> string.append("nodes:",_)
+
+        response.new(200)
+        |> response.set_body(mist.Bytes(bytes_tree.from_string(nodes)))
+        |> response.set_header("content-type", "text")
+      }
       _ ->  not_found
     }
   }

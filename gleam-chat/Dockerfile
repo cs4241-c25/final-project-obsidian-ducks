@@ -1,15 +1,18 @@
+FROM debian as cloner
+
+RUN apt-get install -y git
+
 FROM ghcr.io/gleam-lang/gleam:v1.8.1-erlang-alpine
 
 # Add project code
 COPY . /build/
 
-RUN touch .env
-
 # Compile the project
-RUN cd /build \
+RUN cd /build/chat_server \
   && gleam export erlang-shipment \
-  && mv build/erlang-shipment /app \
+    && mv build/erlang-shipment /app \
   && rm -r /build
+
 
 # Run the server
 EXPOSE 3001

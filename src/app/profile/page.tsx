@@ -6,13 +6,13 @@ import ItemPost from "../ItemPost";
 import React, {useEffect, useState} from "react";
 import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
-import {Router} from "next/router";
+import { Session } from "@/lib/types";
 import FavoritePost from "@/components/FavoritePost";
 import Like from "@/models/Like";
 
 
 export default function ProfilePage() {
-    const {data: session, status} = useSession();
+    const {data: session, status} = useSession() as {data: Session, status: string};
     const router = useRouter();
     const [posts, setPosts] = useState<Item[]>([]);
     const [likes, setLikes] = useState<Item[]>([]);
@@ -31,15 +31,16 @@ export default function ProfilePage() {
     };
 
     async function postPicture(formData: FormData) {
-        const sellForm = formData
-        sellForm.append("username", session.user?.name);
+        const sellForm = formData;
+        if (session == null) return;
+        sellForm.append("username", session.user.name);
         try {
-            const response = await fetch("http://localhost:3000/api/picture", {
+            const response = await fetch("/api/picture", {
                 method: "POST",
                 body: sellForm
             });
             if (!response.ok) throw new Error(response.statusText);
-            Router.reload(window.location.pathname);
+            router.push("/profile");
         } catch (e) {
             console.error(e);
         }
@@ -69,7 +70,7 @@ export default function ProfilePage() {
             if(!session?.user?.name){
                 return;
             }
-            const response = await fetch("http://localhost:3000/api/filter", {
+            const response = await fetch("/api/filter", {
                 method: "POST",
                 body: JSON.stringify(session.user.name)
             });
@@ -94,7 +95,7 @@ export default function ProfilePage() {
             if(!session?.user?.name){
                 return;
             }
-            const response = await fetch("http://localhost:3000/api/profile", {
+            const response = await fetch("/api/profile", {
                 method: "POST",
                 body: JSON.stringify(session.user.name)
             });
@@ -119,7 +120,7 @@ export default function ProfilePage() {
             if(!session?.user?.name){
                 return;
             }
-            const response = await fetch("http://localhost:3000/api/image", {
+            const response = await fetch("/api/image", {
                 method: "POST",
                 body: JSON.stringify(session.user?.name),
             });
@@ -149,13 +150,13 @@ export default function ProfilePage() {
         <main>
             {status === 'authenticated' ? (
                 <div>
-                    <div className="flex flex-col md:py-20 md:px-60">
-                        <div className="flex flex-row items-center ">
-                            <div className="relative group">
+                    <div className="flex flex-col py-10 md:py-20 md:px-60">
+                        <div className="flex flex-col sm:flex-col md:flex-row md:items-center">
+                            <div className="flex flex-col items-center justify-center relative group">
                                 <form action={postPicture} className="">
                                     <FileDropzone
                                         className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10" files={[]}/>
-                                    <Button className="grow bg-transparent hover:bg-transparent hover:scale-110 absolute -right-10 z-20 p-0" type="submit" onClick={() => {
+                                    <Button className="grow bg-transparent hover:bg-transparent hover:scale-110 absolute top-0 right-0 right-5 sm:right-45 md:-right-7 z-20 p-0" type="submit" onClick={() => {
                                         window.location.reload();
 
                                     }}>
@@ -171,28 +172,28 @@ export default function ProfilePage() {
                                     className=" w-[225px] h-[225px] object-cover duration-150 ease-in-out rounded-full group-hover:scale-105"
                                     src={profile} alt={"Profile Image"}/>
                             </div>
-                            <div className="pl-4">
-                                <h1 className="text-2xl font-bold">{session.user?.name}</h1>
-                                <h2 className="text-lg">Posts: {posts.length}</h2>
-                                <h2 className="text-lg">Likes: {likes.length}</h2>
+                            <div className="pl-4 flex flex-col items-center md:items-start">
+                                <h1 className="sm:text-lg md:text-2xl font-bold">{session.user?.name}</h1>
+                                <h2 className="md:text-lg">Posts: {posts.length}</h2>
+                                <h2 className="md:text-lg">Likes: {likes.length}</h2>
                             </div>
                         </div>
 
-                        <div>
-                            <div className="flex pt-2 my-4 gap-x-2 border-b-2 w-fit">
-                                <Button
-                                    className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out${tabFilter === "Posts" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
-                                            onClick={() => handleTab("Posts")}>
-                                    Postings
-                                </Button>
-                                <Button className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out ${tabFilter === "Likes" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
-                                        onClick={() => handleTab("Likes")}>
-                                    Likes
-                                </Button>
-                            </div>
-                            <div className="flex sm:justify-center md:justify-start flex-wrap gap-9.5 sm:pl-4 md:pl-0">
-                                    {renderTab()}
-                            </div>
+                        <div className="pt-6 flex flex-col">
+                                <div className="flex justify-center mx-auto md:mx-0 sm:justify-center md:justify-start pt-2 my-4 gap-x-2 border-b-2 w-fit">
+                                    <Button
+                                        className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out${tabFilter === "Posts" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
+                                                onClick={() => handleTab("Posts")}>
+                                        Postings
+                                    </Button>
+                                    <Button className={`text-2xl bg-transparent text-black hover:bg-gray-100 hover:scale-110 duration-125 ease-in-out ${tabFilter === "Likes" ? ' bg-gray-100 scale-110 ': ' '}`} type={"button"}
+                                            onClick={() => handleTab("Likes")}>
+                                        Likes
+                                    </Button>
+                                </div>
+                                <div className="flex justify-center sm:justify-center md:justify-start flex-wrap gap-9.5 sm:pl-4 md:pl-0">
+                                        {renderTab()}
+                                </div>
                         </div>
                     </div>
                 </div>
