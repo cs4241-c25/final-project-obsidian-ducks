@@ -7,6 +7,8 @@ import React, {useEffect, useState} from "react";
 import {Item} from "@/lib/types";
 import FileDropzone from "@/components/FileDropzone";
 import { Session } from "@/lib/types";
+import FavoritePost from "@/components/FavoritePost";
+import Like from "@/models/Like";
 
 
 export default function ProfilePage() {
@@ -22,6 +24,11 @@ export default function ProfilePage() {
             router.push("/login");
         }
     }, [status, router]);
+    const removeFavorite = (itemID: string) => {
+        // Update the likes array by filtering out the item that was removed
+        setLikes(likes.filter(item => item.id !== itemID));
+
+    };
 
     async function postPicture(formData: FormData) {
         const sellForm = formData;
@@ -54,8 +61,8 @@ export default function ProfilePage() {
         } else if (tabFilter === "Likes") {
             return (
                 likes.map((item) =>
-                <ItemPost key={item.id} id={item.id} title={item.title} category={item.category}
-                          price={item.price} image={item.image}/>))
+                <FavoritePost key={item.id} id={item.id} title={item.title} category={item.category}
+                         onRemove={() => removeFavorite(item.id)} price={item.price} image={item.image}/>))
         }
     }
     async function getPostings(){

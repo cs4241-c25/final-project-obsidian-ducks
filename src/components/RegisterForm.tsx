@@ -4,7 +4,6 @@ import React, { useState , useRef} from 'react';
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { useRouter } from 'next/navigation';
-import FileDropzoneRegister from "../app/register/fileDropzoneRegister";
 
 export default function RegisterForm({ error }: { error?: string }) {
     const router = useRouter();
@@ -42,10 +41,9 @@ export default function RegisterForm({ error }: { error?: string }) {
         }
     };
     return (
-
         // @ts-ignore
         <form ref={formRef} onSubmit={handleSubmit}
-              className="max-w-md mx-auto p-8 rounded-lg bg-alice-blue-200 shadow-md min-h-[400px] -mt-45">
+              className="max-w-md mx-auto p-8 rounded-lg shadow-md min-h-[400px] bg-white -mt-20 transform translate-x-[10px]">
             <h1 className="text-3xl font-bold mb-10">Register</h1>
             <div className="flex flex-col space-y-4">
                 <TextInput type="text" name="username" placeholder="School email"
@@ -54,12 +52,8 @@ export default function RegisterForm({ error }: { error?: string }) {
                 <TextInput type="password" name="password" placeholder="Choose a password"
                            onChange={(e) => console.log(e.target.value)}>Password:</TextInput>
                 {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
-                <div className="flex flex-col space-y-2">
-                    <label className="text-sm font-medium">Profile Picture:</label>
-                    <FileDropzoneRegister className="w-65 h-45 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50" name="profileImage"/>
-                </div>
-
-                <a href="/login" className="text-crimson-500 hover:underline mb-0">Already have an account?</a>
+                <input type="hidden" name="profileImage" value="/profileDefault.png"/>
+                <a href="/login" className="text-crimson-500 hover:underline mb-6">Already have an account?</a>
                 <div className="w-full flex justify-end">
                     <Button type="submit">Register</Button>
                 </div>
