@@ -20,7 +20,7 @@ export default function ItemsSection(props: ItemPosts) {
 
     const [search, setSearch] = useState<string>("");
     const min = useRef<number>(0);
-    const max = useRef<number>(1000);
+    const max = useRef<number>(10000000);
 
 
     function filterBySearch(e: ChangeEvent<HTMLInputElement>) {
