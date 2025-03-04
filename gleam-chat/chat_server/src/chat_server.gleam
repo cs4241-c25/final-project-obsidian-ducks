@@ -177,6 +177,7 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
           |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
           |> string.join(", ")
           |> string.append("nodes:",_)
+          |> string.append("\n")
           let enviorn = envoy.all()
           |> dict.to_list
           |> list.map(fn(kv) {
