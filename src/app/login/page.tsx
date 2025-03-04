@@ -17,12 +17,15 @@ export default function LoginPage() {
     }, [status, router]);
 
     return (
-        <main className="relative flex justify-center items-center h-screen">
-            <div className="absolute top-[38%] left-[18%] transform -translate-x-1/2 -translate-y-1/2 hidden xl:block">
-                <Image src={"/WPIBuysLogo.png"} alt={"WPIBuys Logo"} width={240} height={272}/>
-            </div>
-            <div className="w-full max-w-2xl px-4" >
-                <LoginForm />
+        <main className="relative min-h-screen">
+            <section className="absolute inset-0 z-0 mt-4">
+                <img className="w-full h-full object-cover blur-md" src="/wpibackground.png" alt="WPI's campus"/>
+                <div className="absolute inset-0 bg-black opacity-50"></div>
+            </section>
+            <div className="relative z-10 flex justify-center items-center min-h-screen">
+                <div className="w-full max-w-2xl px-4">
+                    <LoginForm/>
+                </div>
             </div>
 
         </main>
