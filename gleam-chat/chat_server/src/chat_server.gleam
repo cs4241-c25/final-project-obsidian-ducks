@@ -22,6 +22,7 @@ import envoy
 import nessie_cluster
 import gleam/otp/supervisor
 import gleam/dynamic
+import erlang_unstable
 
 pub fn main() {
   io.println("Hello from chat_server!")

@@ -1,4 +1,4 @@
-name = "gleam_erlang_unstable"
+name = "erlang_unstable"
 
 version = "0.34.0"
 licences = ["Apache-2.0"]
