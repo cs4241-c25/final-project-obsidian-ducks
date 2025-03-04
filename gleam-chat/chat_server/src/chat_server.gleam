@@ -28,8 +28,8 @@ pub fn main() {
   envoy.all() |> io.debug()
   let dns_query = case envoy.get("FLY_APP_NAME") |> io.debug {
     Ok(app_name) -> {
-      nessie_cluster.Ignore
-      //nessie_cluster.DnsQuery(app_name <> ".internal") |> io.debug
+      //nessie_cluster.Ignore
+      nessie_cluster.DnsQuery(app_name <> ".internal") |> io.debug
     }
     Error(Nil) -> nessie_cluster.Ignore
   }
