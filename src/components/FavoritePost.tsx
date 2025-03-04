@@ -25,7 +25,7 @@ export default function FavoritePost(props: ItemPost) {
 
         }
         try {
-            const response = await fetch("http://localhost:3000/api/likes", {
+            const response = await fetch("/api/likes", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {'Content-type': 'application/json'}

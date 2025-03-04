@@ -18,7 +18,7 @@ export default function ProfilePage() {
     const [likes, setLikes] = useState<Item[]>([]);
     const [tabFilter, setTab] = useState("Posts");
     const [profile, setProfile] = useState();
-
+    const [fill, setFill] = useState("black")
     useEffect(() => {
         if (status === "unauthenticated"){
             router.push("/login");
@@ -155,18 +155,35 @@ export default function ProfilePage() {
                             <div className="flex flex-col items-center justify-center relative group">
                                 <form action={postPicture} className="">
                                     <FileDropzone
-                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10" files={[]}/>
-                                    <Button className="grow bg-transparent hover:bg-transparent hover:scale-110 absolute top-0 right-0 right-5 sm:right-45 md:-right-7 z-20 p-0" type="submit" onClick={() => {
+                                        className="w-[225px] h-[225px] top-10 absolute rounded-full opacity-0 group-hover:opacity-0 group-hover:pointer-events-auto pointer-events-none duration-200 z-10"
+                                        files={[]}/>
+                                    {/*  <Button className="" type="submit" onClick={() => {
                                         window.location.reload();
 
-                                    }}>
-                                        <svg width="50px" height="50px" viewBox="0 0 24 24" fill="none"
+                                    }}>*/}
+
+                                    {/*         <svg onClick={() => {
+                                            window.location.reload();
+
+                                        }} className={"grow hover:scale-110 absolute top-0 right-5 sm:right-45 md:-right-7 z-20 p-0"} width="50px" height="50px" viewBox="0 0 24 24" fill="pink"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" clipRule="evenodd"
                                                   d="M6.75 6L7.5 5.25H16.5L17.25 6V19.3162L12 16.2051L6.75 19.3162V6ZM8.25 6.75V16.6838L12 14.4615L15.75 16.6838V6.75H8.25Z"
-                                                  fill="#000000"/>
-                                        </svg>
+                                                  fill="red"/>
+                                        </svg>*/}
+
+                                    <Button type={"submit"} className={"grow bg-transparent hover:bg-transparent hover:scale-110 absolute top-0 right-5 sm:right-45 md:-right-7 z-20 p-0"} onClick={() => {
+                                        setFill("green")
+                                        window.location.reload()
+                                    }}>
+                                    <svg fill={fill}  width="30" height="30" viewBox="0 0 32 32"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="m16 0c8.836556 0 16 7.163444 16 16s-7.163444 16-16 16-16-7.163444-16-16 7.163444-16 16-16zm0 2c-7.7319865 0-14 6.2680135-14 14s6.2680135 14 14 14 14-6.2680135 14-14-6.2680135-14-14-14zm6.6208153 9.8786797c.3905243.3905242.3905243 1.0236892 0 1.4142135l-7.0710678 7.0710678c-.3626297.3626297-.9344751.3885319-1.3269928.0777064l-.0872208-.0777064-4.24264068-4.2426407c-.39052429-.3905242-.39052429-1.0236892 0-1.4142135.39052428-.3905243 1.02368928-.3905243 1.41421358 0l3.5348268 3.5348268 6.3646681-6.3632539c.3905243-.3905243 1.0236893-.3905243 1.4142136 0z"/>
+                                      <title>Save</title>
+                                    </svg>
                                     </Button>
+                                    {/*</Button>*/}
                                 </form>
                                 <img
                                     className=" w-[225px] h-[225px] object-cover duration-150 ease-in-out rounded-full group-hover:scale-105"
