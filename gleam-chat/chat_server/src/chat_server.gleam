@@ -177,9 +177,16 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
           |> list.map(fn(a) { atom.to_string(node.to_atom(a)) })
           |> string.join(", ")
           |> string.append("nodes:",_)
-
+          let enviorn = envoy.all()
+          |> dict.to_list
+          |> list.map(fn(kv) {
+            let key_string = string.append("key: ",kv.0)
+            let value_string = string.append(",value: ",kv.1)
+            string.append(key_string,value_string)
+          })
+          |> string.join("\n")
         response.new(200)
-        |> response.set_body(mist.Bytes(bytes_tree.from_string(nodes)))
+        |> response.set_body(mist.Bytes(bytes_tree.from_string(string.append(nodes,enviorn))))
         |> response.set_header("content-type", "text")
       }
       _ ->  not_found
