@@ -25,7 +25,6 @@ import gleam/dynamic
 
 pub fn main() {
   io.println("Hello from chat_server!")
-  envoy.all() |> io.debug()
   let dns_query = case envoy.get("FLY_APP_NAME") |> io.debug {
     Ok(app_name) -> {
       //nessie_cluster.Ignore
@@ -189,7 +188,7 @@ fn create_request_handler(chat_server:Subject(ChatServerMessage)) {
           // |> string.join("\n")
 
         response.new(200)
-        |> response.set_body(mist.Bytes(bytes_tree.from_string(string.append(nodes,enviorn))))
+        |> response.set_body(mist.Bytes(bytes_tree.from_string(nodes)))
         |> response.set_header("content-type", "text")
       }
       _ ->  not_found
