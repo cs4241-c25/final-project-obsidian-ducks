@@ -24,21 +24,40 @@ export default function ChatRoom(props: {chat_id:string}) {
       <CreateChatButton username={websocket.userName } />
     </div>
   }
+
+  async function leaveChat(chat_id) {
+    const response = await fetch('/api/chats/leave', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: websocket.userName, chat_id: chat_id }),
+    });
+    const left_chat_info= await response.json();
+    websocket.setChats(websocket.chats.filter((chat) => { return chat.chat_id !== left_chat_info.chat_id}));
+  }
+
   return (
     <div className="flex flex-row grow">
       <div className='flex flex-col border overflow-scroll basis-md'>
         <CreateChatButton username={websocket.userName}/>
         {
           websocket.chats.map((chat_room,index) =>
-            <Link href={`/chats/${websocket.chats[index].chat_id}`} className={twMerge("border w-full p-3",currentChatIndex === index ? "bg-gray-100" : "" )}
+            <div  className={twMerge("border w-full p-3 flex flex-row",currentChatIndex === index ? "bg-gray-100" : "" )}
               key={chat_room.chat_id}>
-                {
-                  chat_room.chatters
-                  .filter((chatter) => {return chatter !== websocket.userName} )
-                  .slice(0,3)
-                  .join(", ")
-                }
-            </Link>
+                <Link href={`/chats/${websocket.chats[index].chat_id}`}>
+                  {
+                    chat_room.chatters
+                    .filter((chatter) => {return chatter !== websocket.userName} )
+                    .slice(0,3)
+                    .join(", ")
+                  }
+                </Link>
+                <div className="grow"/>
+              <button className="place-self-center" onClick={() => leaveChat(chat_room.chat_id).then()}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+              </button>
+            </div>
           )
         }
       </div>
