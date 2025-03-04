@@ -21,11 +21,11 @@ export default function ChatRoom(props: {chat_id:string}) {
   if(websocket.chats.length <= 0) {
     return <div>
       <h1>Chats</h1>
-      <CreateChatButton username={websocket.userName } />
+      <CreateChatButton createChat={createChat} username={websocket.userName } />
     </div>
   }
 
-  async function leaveChat(chat_id) {
+  async function leaveChat(chat_id:string) {
     const response = await fetch('/api/chats/leave', {
       method: 'POST',
       headers: {
@@ -37,10 +37,29 @@ export default function ChatRoom(props: {chat_id:string}) {
     websocket.setChats(websocket.chats.filter((chat) => { return chat.chat_id !== left_chat_info.chat_id}));
   }
 
+  async function createChat(chatters:string[]) {
+    if(websocket.userName.length === 0) {
+      return
+    }
+   const res = await fetch("/api/chats",{
+     method:"POST",
+     body:JSON.stringify({chatters:[websocket.userName,...chatters]})
+   })
+   const new_chat_room = await res.json()
+
+   const existingChatIndex = websocket.chats.findIndex((chat) => { return chat.chat_id === new_chat_room.chat_id })
+   if(existingChatIndex !== -1) {
+     setCurrentChatIndex(existingChatIndex)
+     return
+   }
+
+    websocket.setChats([...websocket.chats,new_chat_room])
+  }
+
   return (
     <div className="flex flex-row grow">
       <div className='flex flex-col border overflow-scroll basis-md'>
-        <CreateChatButton username={websocket.userName}/>
+        <CreateChatButton createChat={createChat} username={websocket.userName}/>
         {
           websocket.chats.map((chat_room,index) =>
             <div  className={twMerge("border w-full p-3 flex flex-row",currentChatIndex === index ? "bg-gray-100" : "" )}
@@ -73,25 +92,12 @@ export default function ChatRoom(props: {chat_id:string}) {
 
 
 
-export function CreateChatButton(props: {username:string}) {
+export function CreateChatButton(props: {username:string,createChat:(chatters:string[])=>Promise<void>}) {
   const [otherChatters,setOtherChatters] = useState<string[]>([])
   const [show, setShow] = useState(false)
-  const chatContext = useWebSocket()
 
 
-  async function createChat() {
-    if(props.username.length === 0) {
-      return
-    }
-   const res = await fetch("/api/chats",{
-     method:"POST",
-     body:JSON.stringify({chatters:[props.username,...otherChatters]})
-   })
-   const new_chat_room = await res.json()
-   setShow(false)
 
-   chatContext.setChats([...chatContext.chats,new_chat_room])
-  }
   if(show === false ) {
     return <button className="p-3" onClick={() => setShow(!show)}>
       New Chat
@@ -103,7 +109,10 @@ export function CreateChatButton(props: {username:string}) {
         const chattersStr = event.target.value
         setOtherChatters(chattersStr.split(","))
       }}></input>
-      <button className="p-3" onClick={createChat}>
+      <button className="p-3" onClick={() => {
+        props.createChat(otherChatters).then();
+        setShow(false);
+      }}>
         New Chat
       </button>
     </div>
