@@ -18,6 +18,6 @@ RUN cd /build/chat_server \
 # Run the server
 EXPOSE 3001
 WORKDIR /app
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+RUN chmod +x /app/env_setter.sh
+ENTRYPOINT ["/app/env_setter.sh", "/app/entrypoint.sh"]
 CMD ["run"]
