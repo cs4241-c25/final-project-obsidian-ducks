@@ -50,7 +50,9 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
         })
       })
       const newChatRoom:ChatRoom = await response.json()
-      chatManager.setChats([newChatRoom,...chatManager.chats])
+      if(chatManager.chats.find((chat) =>  chat.chat_id===newChatRoom.chat_id) === undefined) {
+        chatManager.setChats([newChatRoom,...chatManager.chats])
+      }
       redirect(`/chats/${newChatRoom.chat_id}`)
     }
 
