@@ -57,12 +57,12 @@ export default function ChatRoom(props: {chat_id:string}) {
   }
 
   return (
-    <div className="flex flex-row grow">
-      <div className='flex flex-col border overflow-scroll basis-md'>
+    <div className="flex flex-col md:flex-row grow">
+      <div className='flex flex-row md:flex-col border overflow-scroll md:basis-md'>
         <CreateChatButton createChat={createChat} username={websocket.userName}/>
         {
           websocket.chats.map((chat_room,index) =>
-            <div  className={twMerge("border w-full p-3 flex flex-row",currentChatIndex === index ? "bg-gray-100" : "" )}
+            <div  className={twMerge("border md:w-full p-3 flex flex-col md:flex-row",currentChatIndex === index ? "bg-gray-100" : "" )}
               key={chat_room.chat_id}>
                 <Link href={`/chats/${websocket.chats[index].chat_id}`}>
                   {
@@ -72,7 +72,7 @@ export default function ChatRoom(props: {chat_id:string}) {
                     .join(", ")
                   }
                 </Link>
-                <div className="grow"/>
+                <div className="md:grow"/>
               <button className="place-self-center" onClick={() => leaveChat(chat_room.chat_id).then()}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
               </button>
