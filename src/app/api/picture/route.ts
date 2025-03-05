@@ -34,13 +34,13 @@ export async function POST(request: Request) {
     try {
         // Upload everything else to database
         await connectToDatabase();
-        const user = new User(
-            Object.fromEntries(formData.entries()) // Converts it to a JS object
-        );
+        // const user = new User(
+        //     Object.fromEntries(formData.entries()) // Converts it to a JS object
+        // );
         await User.updateOne({'username': sessionUser} ,{$set : {'profileImage': result.url}})
-        await user.save();
-        user.profileImage = result.url;
-        console.log("This is user ", user);
+        // await user.save();
+        // user.profileImage = result.url;
+        // console.log("This is user ", user);
     } catch (e) {
         console.error(e);
         return new Response(
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     }
 
     return new Response(
-        "Success",
+        JSON.stringify({url: result.url}),
         {
             status: 200,
             statusText: "OK"

@@ -40,7 +40,10 @@ export default function ProfilePage() {
                 body: sellForm
             });
             if (!response.ok) throw new Error(response.statusText);
-            router.push("/profile");
+            // router.push("/profile");
+            const data:{url:string} = await response.json()
+            setFill("black");
+            setProfile(data.url);
         } catch (e) {
             console.error(e);
         }
@@ -174,7 +177,7 @@ export default function ProfilePage() {
 
                                     <Button type={"submit"} className={"grow bg-transparent hover:bg-transparent hover:scale-110 absolute top-0 right-5 sm:right-45 md:-right-7 z-20 p-0"} onClick={() => {
                                         setFill("green")
-                                        window.location.reload()
+                                        // window.location.reload()
                                     }}>
                                     <svg fill={fill}  width="30" height="30" viewBox="0 0 32 32"
                                          xmlns="http://www.w3.org/2000/svg">
