@@ -51,6 +51,7 @@ export default function FavoritePost(props: ItemPost) {
             </Link>
             <figcaption>
                 <p className="font-semibold tracking-wider">${props.price}.00</p>
+                <p>{props.title}</p>
                 <p className="opacity-75">{props.category}</p>
             </figcaption>
             <div>
