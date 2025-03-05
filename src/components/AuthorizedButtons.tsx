@@ -18,7 +18,7 @@ interface AuthorizedButtons {
 }
 
 export default function AuthorizedButtons(props: AuthorizedButtons){
-    const [profilePicture, setProfilePicture] = useState<string>("/sellerIcon.svg");
+    const [profilePicture, setProfilePicture] = useState<string>("/blank.svg");
 
     useEffect(() => {
         async function fetchProfilePicture() {
@@ -29,7 +29,7 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
                 });
                 if (!response.ok) throw new Error(response.statusText);
                 const data = await response.json();
-                setProfilePicture(data.profileImage || "/sellerIcon.svg");
+                setProfilePicture(data.profileImage || "/blank.svg");
             } catch (e) {
                 console.error(e);
             }
@@ -96,7 +96,7 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
                                     </select>
                                 <div className={"flex items-center gap-5 pt-4 md:pt-0"}>
                                     <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
-                                        <Image alt={"seller icon"} src={profilePicture} width={60} height={60} className="w-full h-full object-cover"/>
+                                        <Image alt={"seller icon"} src={profilePicture} width={60} height={60} priority={true} className="w-full h-full object-cover"/>
                                     </div>
                                     <p>Seller: {props.username}</p>
                                 </div>
@@ -124,7 +124,7 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
 
                         <div className={"flex items-center gap-5"}>
                             <div className= "w-[90px] h-[90px] rounded-full overflow-hidden">
-                                <Image alt={"seller icon"} src={profilePicture} width={90} height={90} className="w-full h-full object-cover"/>
+                                <Image alt={"seller icon"} src={profilePicture} width={90} height={90} priority={true} className="w-full h-full object-cover"/>
                             </div>
                                 <p>Seller: {props.username}</p>
                         </div>
