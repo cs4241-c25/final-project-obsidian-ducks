@@ -94,7 +94,7 @@ export function ChatSession(props: {chat:ChatRoom}) {
 
   return (
     <div className='flex flex-col px-10 py-10 w-full'>
-      <div className='basis-3xs grow overflow-scroll'>
+      <div className='basis-xl md:basis-3xs grow overflow-scroll'>
         <div className='flex flex-col gap-2 px-2 '>
           {old_msgs.map((message, index) => (
             <MessageDisplay username={chatHandler.userName} key={index} message={message}/>
