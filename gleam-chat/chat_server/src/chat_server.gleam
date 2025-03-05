@@ -1,3 +1,4 @@
+import gleam/erlang
 import simplifile
 import bath
 import gleam/json
@@ -22,7 +23,8 @@ import envoy
 import nessie_cluster
 import gleam/otp/supervisor
 import gleam/dynamic
-import erlang_unstable
+import unstable/process as unstable_process
+import unstable/atom as unstable_atom
 
 pub fn main() {
   io.println("Hello from chat_server!")
@@ -33,6 +35,9 @@ pub fn main() {
     }
     Error(Nil) -> nessie_cluster.Ignore
   }
+  unstable_process.named_subject(unstable_process.new_name())
+  
+  
   let cluster: nessie_cluster.DnsCluster =
       nessie_cluster.with_query(nessie_cluster.new(), dns_query)
       |> io.debug

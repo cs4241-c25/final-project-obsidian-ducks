@@ -3,7 +3,7 @@
 //// start module and supervision tree. Each Gleam package is an Erlang
 //// application.
 
-import node.{type Node}
+import unstable/node.{type Node}
 
 /// The Erlang/OTP application `start` callback takes a start-type as an
 /// argument, indicating the context in which the application is being started.

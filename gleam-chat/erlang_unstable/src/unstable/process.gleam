@@ -1,9 +1,9 @@
 import gleam/dynamic.{type Dynamic}
 import gleam/dynamic/decode
-import atom.{type Atom}
-import reference.{type Reference}
 import gleam/function
 import gleam/string
+import unstable/atom.{type Atom}
+import unstable/reference.{type Reference}
 
 /// A `Pid` (or Process identifier) is a reference to an Erlang process. Each
 /// process has a `Pid` and it is one of the lowest level building blocks of
@@ -148,10 +148,10 @@ fn raw_send(a: Pid, b: message) -> DoNotLeak
 /// This function does not wait for the `Subject` owner process to call the
 /// `receive` function, instead it returns once the message has been placed in
 /// the process' mailbox.
-/// 
+///
 /// # Named Subjects
-/// 
-/// If this function is called on a named subject for which a process has not been 
+///
+/// If this function is called on a named subject for which a process has not been
 /// registered, it will simply drop the message as there's no mailbox to send it to.
 ///
 /// # Ordering

@@ -29,8 +29,9 @@ envoy = ">= 1.0.2 and < 2.0.0"
 simplifile = ">= 2.2.0 and < 3.0.0"
 nessie_cluster = ">= 0.3.0 and < 1.0.0"
 gleam_erlang = ">= 0.34.0 and < 1.0.0"
-erlang_unstable = {path = "../erlang_unstable"}
 nessie = {path = "../nessie"}
+unstable = {path = "../erlang_unstable"}
+
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

@@ -1,5 +1,5 @@
-import atom.{type Atom}
-import reference.{type Reference}
+import unstable/atom.{type Atom}
+import unstable/reference.{type Reference}
 
 pub type Node
 

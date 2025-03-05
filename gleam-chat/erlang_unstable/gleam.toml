@@ -1,4 +1,4 @@
-name = "erlang_unstable"
+name = "unstable"
 
 version = "0.34.0"
 licences = ["Apache-2.0"]
