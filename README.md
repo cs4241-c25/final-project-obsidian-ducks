@@ -1,7 +1,7 @@
 # WPI Buys
-*This web application was created by Team Obsidian Ducks for the final project in CS4241 at WPI. The team includes Theresa Acheampong, Mia Frattassio, Nicholas Leslie, Colin Nguyen, and Andy Truong.*
+*This web application was created by Team Obsidian Ducks for the final project in CS4241 at WPI. The team includes Theresa Acheampong, Mia Frattasio, Nicholas Leslie, Colin Nguyen, and Andy Truong.*
 
-For our final project, we created an ecommerce platform for WPI students to swap, sell, and buy second-hand items. The platform is called *WPIBuys*. All logos and icons representing WPIBuys were created by the team. Our application was designed  to allow users to easily buy and sell items from other WPI students.
+For our final project, we created an ecommerce platform for WPI students to swap, sell, and buy second-hand items. The platform is called *WPIBuys*. All logos and icons representing WPIBuys were created by the team. Our application was designed to allow users to easily buy and sell items from other WPI students.
 
 https://wpi-buys.fly.dev/
 
