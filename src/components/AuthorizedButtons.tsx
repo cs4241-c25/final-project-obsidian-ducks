@@ -5,6 +5,7 @@ import Image from 'next/image'
 import React from "react";
 import {ChatRoom, ITEM_CATEGORIES} from "@/lib/types";
 import { redirect } from "next/navigation";
+import { useWebSocket } from "./chat/ChatContext";
 
 interface AuthorizedButtons {
     username: string,
@@ -17,7 +18,7 @@ interface AuthorizedButtons {
 }
 
 export default function AuthorizedButtons(props: AuthorizedButtons){
-
+    const chatManager = useWebSocket()
     async function handleForm(formData: FormData){
         const formattedData = {
             _id: props._id,
@@ -48,8 +49,9 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
           chatters:[props.username,props.session]
         })
       })
-      const resJson:ChatRoom = await response.json()
-      redirect(`/chats/${resJson.chat_id}`)
+      const newChatRoom:ChatRoom = await response.json()
+      chatManager.setChats([newChatRoom,...chatManager.chats])
+      redirect(`/chats/${newChatRoom.chat_id}`)
     }
 
 
