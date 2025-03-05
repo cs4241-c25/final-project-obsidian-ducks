@@ -8,7 +8,7 @@ export default function MessageDisplay(props: {username:string,message:ChatMessa
       <div className="text-sm">
         {props.message.sender}
       </div>
-      <div className="rounded-sm overflow-hidden text-center max-w-5xl px-5 py-2 bg-alice-blue-800 ">
+      <div className="rounded-sm overflow-hidden w-fit text-center max-w-5xl px-5 py-2 bg-alice-blue-800 ">
         <h1 className="text-ellipsis">{props.message.content}</h1>
       </div>
     </div>
