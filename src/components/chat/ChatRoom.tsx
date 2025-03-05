@@ -18,12 +18,6 @@ export default function ChatRoom(props: {chat_id:string}) {
     setCurrentChatIndex(chat_index)
   },[websocket])
 
-  if(websocket.chats.length <= 0) {
-    return <div>
-      <h1>Chats</h1>
-      <CreateChatButton createChat={createChat} username={websocket.userName } />
-    </div>
-  }
 
   async function leaveChat(chat_id:string) {
     const response = await fetch('/api/chats/leave', {
@@ -56,6 +50,17 @@ export default function ChatRoom(props: {chat_id:string}) {
     websocket.setChats([...websocket.chats,new_chat_room])
   }
 
+    if(websocket.chats.length <= 0) {
+      return (  <div className="flex flex-col md:flex-row grow">
+        <div className='flex flex-row md:flex-col border overflow-scroll md:basis-md'>
+        <CreateChatButton createChat={createChat} username={websocket.userName } />
+        </div>
+        <div className="w-full text-3xl flex place-self-center justify-center">
+          Please make a chat to begin chatting!
+        </div>
+      </div>
+      )
+    }
   return (
     <div className="flex flex-col md:flex-row grow">
       <div className='flex flex-row md:flex-col border overflow-scroll md:basis-md'>
