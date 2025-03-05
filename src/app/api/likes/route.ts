@@ -65,20 +65,19 @@ export async function POST(request: Request) {
         const data = await request.json()
         //check if user liked item
         await connectToDatabase();
-        const check =  await Like.findOne({'itemID': data._id, 'isLiked': true})
+        const check =  await Like.findOne({'itemID': data._id})
 
-        const checkItemId =  await Like.findOne({'itemID': data._id})
         console.log(check)
 
-        const likeID = checkItemId.get("_id")
+        const likeID = check.get("_id")
         //user hasn't liked item
-        if(check === null){
+        if(check.isLiked === false){
             const updatedLike = await Like.updateOne({'itemID': data._id} , {$set: {'isLiked': true}})
             // const incrementLikes = await Item.updateOne({'_id': data._id} , {$inc: {'likesCount': 1}})
             const userLikes = await User.updateOne({'username': sessionUser}, {$push: {'likes': likeID}})
         }
         //user has liked the item and is unchecking it - delete from likes
-        if(check){
+        else {
             // const decrementLike = await Item.updateOne({'_id': data._id} , {$inc: {'likesCount': -1}})
             console.log(check.get('_id'))
             const removeUserLike = await User.updateOne({'username': sessionUser}, {$pull: {'likes': check.get('_id')}})
@@ -86,9 +85,9 @@ export async function POST(request: Request) {
             itemCondition = false
         }
 
-        const item = await Item.findOne({'_id': data._id}).exec()
+        // const item = await Item.findOne({'_id': data._id}).exec()
 
-        console.log(item.likes)
+        // console.log(item.likes)
 
         return new Response(
             JSON.stringify(itemCondition),
