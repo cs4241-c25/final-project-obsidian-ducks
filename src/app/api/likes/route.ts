@@ -52,6 +52,7 @@ export async function GET(request: Request){
 // update item likes count
 export async function POST(request: Request) {
   const session = await getServerSession()
+  console.log(session)
   if(session=== null || session.user === undefined || session.user.name === null || session.user.name === undefined) {
     return
   }
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
 
     try {
         //this is the item id
-        let data = await request.json()
+        const data = await request.json()
         //check if user liked item
         await connectToDatabase();
         const check =  await Like.findOne({'itemID': data._id, 'isLiked': true})
@@ -95,7 +96,8 @@ export async function POST(request: Request) {
                 status: 200,
                 statusText: "OK",
                 headers: {"Content-type": "application/json"}
-            });    } catch (e) {
+            });
+    } catch (e) {
         console.error(e);
         return new Response(
             "Failed to like item",

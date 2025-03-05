@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     console.log("This is form data ", formData);
     // Upload image to S3 bucket
-    const sessionUser = formData.get("username") as String
+    const sessionUser = formData.get("username") as string
     const S3 = new S3Client();
     const file = formData.get("image") as File;
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
