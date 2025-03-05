@@ -6,6 +6,7 @@ import React from "react";
 import {ChatRoom, ITEM_CATEGORIES} from "@/lib/types";
 import { redirect } from "next/navigation";
 import { useWebSocket } from "./chat/ChatContext";
+import {useEffect, useState} from "react";
 
 interface AuthorizedButtons {
     username: string,
@@ -19,6 +20,25 @@ interface AuthorizedButtons {
 
 export default function AuthorizedButtons(props: AuthorizedButtons){
     const chatManager = useWebSocket()
+    const [profilePicture, setProfilePicture] = useState<string>("/blank.svg");
+
+    useEffect(() => {
+        async function fetchProfilePicture() {
+            try {
+                const response = await fetch("/api/image", {
+                    method: "POST",
+                    body: JSON.stringify(props.username),
+                });
+                if (!response.ok) throw new Error(response.statusText);
+                const data = await response.json();
+                setProfilePicture(data.profileImage || "/blank.svg");
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        fetchProfilePicture();
+    }, [props.username]);
     async function handleForm(formData: FormData){
         const formattedData = {
             _id: props._id,
@@ -80,7 +100,9 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
                                 <option key={option} value={option}>{option}</option>)}
                                     </select>
                                 <div className={"flex items-center gap-5 pt-4 md:pt-0"}>
-                                    <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
+                                    <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
+                                        <Image alt={"seller icon"} src={profilePicture} width={60} height={60} priority={true} className="w-full h-full object-cover"/>
+                                    </div>
                                     <p>Seller: {props.username}</p>
                                 </div>
                         </span>
@@ -106,8 +128,10 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
                         }
 
                         <div className={"flex items-center gap-5"}>
-                            <Image alt={"seller icon"} src={"/sellerIcon.svg"} width={40} height={40}/>
-                            <p>Seller: {props.username}</p>
+                            <div className= "w-[90px] h-[90px] rounded-full overflow-hidden">
+                                <Image alt={"seller icon"} src={profilePicture} width={90} height={90} priority={true} className="w-full h-full object-cover"/>
+                            </div>
+                                <p>Seller: {props.username}</p>
                         </div>
                     </div>
                     <span className={'flex self-end justify-end whitespace-nowrap'}>
