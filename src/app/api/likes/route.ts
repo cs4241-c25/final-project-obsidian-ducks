@@ -51,9 +51,12 @@ export async function GET(request: Request){
 // happens when like an item
 // update item likes count
 export async function POST(request: Request) {
-    const session = await getServerSession()
-    const sessionUser = JSON.parse(JSON.stringify(session)).user.name
-   let itemCondition = true
+  const session = await getServerSession()
+  if(session=== null || session.user === undefined || session.user.name === null || session.user.name === undefined) {
+    return
+  }
+  const sessionUser = session.user.name
+  let itemCondition = true
 
 
     try {
