@@ -5,6 +5,7 @@ import Image from 'next/image'
 import React from "react";
 import {ChatRoom, ITEM_CATEGORIES} from "@/lib/types";
 import { redirect } from "next/navigation";
+import { useWebSocket } from "./chat/ChatContext";
 import {useEffect, useState} from "react";
 
 interface AuthorizedButtons {
@@ -18,6 +19,7 @@ interface AuthorizedButtons {
 }
 
 export default function AuthorizedButtons(props: AuthorizedButtons){
+    const chatManager = useWebSocket()
     const [profilePicture, setProfilePicture] = useState<string>("/blank.svg");
 
     useEffect(() => {
@@ -67,8 +69,11 @@ export default function AuthorizedButtons(props: AuthorizedButtons){
           chatters:[props.username,props.session]
         })
       })
-      const resJson:ChatRoom = await response.json()
-      redirect(`/chats/${resJson.chat_id}`)
+      const newChatRoom:ChatRoom = await response.json()
+      if(chatManager.chats.find((chat) =>  chat.chat_id===newChatRoom.chat_id) === undefined) {
+        chatManager.setChats([newChatRoom,...chatManager.chats])
+      }
+      redirect(`/chats/${newChatRoom.chat_id}`)
     }
 
 
