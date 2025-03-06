@@ -11,9 +11,8 @@ const messagesRcved = new Counter('messages_received');
 export const options = {
   stages: [
     { duration: '2m30s', target: 100 },
-    { duration: '30', target: 0 },
+    { duration: '1m', target: 0 },
   ],
-  threa
 };
 //
 // export const options = {
@@ -36,6 +35,7 @@ const users = new SharedArray('users', function () {
   return arr
 });
 
+
 export default function test() {
   const url = 'ws://localhost:3001/api/ws';
   const params = { tags: { my_tag: 'hello' } };
@@ -56,11 +56,6 @@ export default function test() {
         console.log("sending create chat")
         let chatters = [users[Math.floor(Math.random() * users.length)]]
         console.log(`creating chat with ${chatters}`)
-        socket.send(JSON.stringify({
-            event: 'CREATE_CHAT',
-            sender: username,
-            chatters: chatters
-        }))
          socket.setInterval(() => {
           if(sent>= 500) {
             console.log(bypassi)
@@ -70,7 +65,7 @@ export default function test() {
               event:"MESSAGE",
               sender: username, // subing this for a
               content:  "YIPEEE",
-              chat_id: chat_ids[0]
+              chatters: [username,...chatters]
             }))
           messagesSent.add(1)
           sent += 1;
@@ -107,7 +102,7 @@ export default function test() {
     });
     socket.on('close', () => console.log('disconnected'));
   });
-  
+
 
   check(res, { 'status is 101': (r) => r && r.status === 101 });
 }

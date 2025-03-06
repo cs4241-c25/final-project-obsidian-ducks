@@ -35,9 +35,9 @@ pub fn main() {
     }
     Error(Nil) -> nessie_cluster.Ignore
   }
-  unstable_process.named_subject(unstable_process.new_name())
-  
-  
+  // unstable_process.named_subject(unstable_process.new_name())
+
+
   let cluster: nessie_cluster.DnsCluster =
       nessie_cluster.with_query(nessie_cluster.new(), dns_query)
       |> io.debug
