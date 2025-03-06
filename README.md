@@ -3,9 +3,12 @@
 
 For our final project, we created an ecommerce platform for WPI students to swap, sell, and buy second-hand items. The platform is called *WPIBuys*. All logos and icons representing WPIBuys were created by the team. Our application was designed to allow users to easily buy and sell items from other WPI students.
 
-https://wpi-buys.fly.dev/
+Website: https://wpi-buys.fly.dev/
+
+Demo Video Link: https://www.youtube.com/watch?v=fW9sTtRRoZY&ab_channel=Swordcom36 
 
 ![homepage](public/homepage.png)
+
 
 ## Technology Stack
 The application was built using Next.js, TypeScript, MongoDB, and Gleam for development and Fly for deployment.
