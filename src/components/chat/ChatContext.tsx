@@ -10,7 +10,7 @@ export type MsgContext = {
   websocket:WebSocket | undefined,
   chats:ChatRoom[],
   setChats:(chats:ChatRoom[]) => void,
-  addOnMessageSub:(key:string,sub:(msg:MEssa) =>void)=>void
+  addOnMessageSub:(key:string,sub:(msg:Message) =>void)=>void
 }
 
 
