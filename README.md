@@ -26,4 +26,17 @@ The key features of our application include:
 4. Live Messaging
 5. Responsive Design
 
+## Contributions
+Team members contributions include:
+1. Colin N - Multiparameter filtering, Profile Page, Co-Design home page
+2. Theresa A - Schemas, Item Page, Like Feature
+3. Mia F - Authorization, Login & Registration Page
+4. Andy T - Sell Page, Figma Designer, Co-Design home page
+5. Nick L - Live Messaging, Deployment, S3 Bucket
+
+## Challenges
+Some challenges that the team faced in completing the project include:
+1. Load time issues when deploying the final application
+2. Fetch errors during deployment
+3. Time issues as all the components were handmade with just TailwindCSS
 
