@@ -9,6 +9,11 @@ Demo Video Link: https://www.youtube.com/watch?v=fW9sTtRRoZY&ab_channel=Swordcom
 
 ![homepage](public/homepage.png)
 
+## Using the Application
+Any user can browse the homepage of the site in our gallery of items for WPIBuys. To sell an item or message a seller a 
+user must sign up to get started. Following signing up, you will be prompted to log in with the information 
+previously used. From there, a user has access to view/edit their profile, add/edit/delete their posts, like items,
+and message sellers about items they are interested in buying. 
 
 ## Technology Stack
 The application was built using Next.js, TypeScript, MongoDB, and Gleam for development and Fly for deployment.
@@ -51,3 +56,16 @@ Some challenges that the team faced in completing the project include:
 1. Load time issues when deploying the final application
 2. Fetch errors during deployment
 3. Time issues as all the components were handmade with just TailwindCSS
+
+## Why we deserve a 100
+The application has varying components of complexity that are functional across
+multiple devices/screens. We've made a valiant effort to be mindful of responsive
+design practices throughout each iteration of this project. We made an application that is clean and simplistic
+in style and functionality with the thought and care we put into thinking through the component-based designs for
+consistent styling throughout the application. Going on theme with our WPIBuys brand, we decided
+to implement live messaging for seller-to-buyer exchanges. This was the biggest piece that made WPIBuys a
+full-functioning e-commerce site for WPI students. Fetching errors and timing issues were the biggest challenges that we faced.
+Many of us learned a great deal about the importance of optimizing our functionality following deploying due to bugs that
+become apparent. This was accomplished by reducing the time we needed to fetch from the backend. The project gave
+each member great knowledge and experience in new technologies (NextJS, Mongoose,...etc.) that will ultimately be
+useful following the completion of this course. 
