@@ -10,10 +10,46 @@ Demo Video Link: https://www.youtube.com/watch?v=fW9sTtRRoZY&ab_channel=Swordcom
 ![homepage](public/homepage.png)
 
 ## Using the Application
-Any user can browse the homepage of the site in our gallery of items for WPIBuys. To sell an item or message a seller a 
-user must sign up to get started. Following signing up, you will be prompted to log in with the information 
+Any user can browse the homepage of the site in our gallery of items for WPIBuys. To sell an item or message a seller a
+user must sign up to get started. Following signing up, you will be prompted to log in with the information
 previously used. From there, a user has access to view/edit their profile, add/edit/delete their posts, like items,
-and message sellers about items they are interested in buying. 
+and message sellers about items they are interested in buying.
+
+## running localy
+1. First, install node js
+2. Choose one
+- install the gleam programing language and erlang virtual machine
+- Install docker
+3. install mongo db for local development
+4. setup an s3 bucket ether localy or remotly see the deployment section for more info
+4. Open the project in a ide of choice or terminal
+5. run command npm install in the root of the project
+6. add a .env file in the project root directory with this template
+`AWS_ACCESS_KEY_ID=
+AWS_ENDPOINT_URL_S3=
+AWS_REGION=auto
+AWS_SECRET_ACCESS_KEY=
+BUCKET_NAME=
+MONGODB_URI=
+AUTH_SECRET=
+CHAT_URL=`
+7. fill out the .env with the approprate info. Chat URL is the name of the chat server. by default its http://localhost:3001
+8. run `npm run dev` in the root of the project
+9. choose one depending on if you picked docker or gleam above
+- in a new terminal ether run `gleam run` gleam-chat/chat_server
+- run `docker build --tag IMAGE_NAME_HERE` and then `docker start IMAGE_NAME_HERE` in the gleam-chat
+
+## How to deploy
+1. create fly.io account
+2. setup fly.io billing
+3. install fly.io cli
+4. run fly deploy in the root directory of the project
+5. this should deploy the main part of the project and create an s3 bucket and the approprite secrets
+6. change directory to the gleam-chat directory and run fly deploy
+7. add the url of the newly deployed chat server to the secrets of the main project. you can do this ether by the fly cli or the website
+8. add the db connection secrets to the secrets of the main server.
+
+
 
 ## Technology Stack
 The application was built using Next.js, TypeScript, MongoDB, and Gleam for development and Fly for deployment.
@@ -68,4 +104,4 @@ full-functioning e-commerce site for WPI students. Fetching errors and timing is
 Many of us learned a great deal about the importance of optimizing our functionality following deploying due to bugs that
 become apparent. This was accomplished by reducing the time we needed to fetch from the backend. The project gave
 each member great knowledge and experience in new technologies (NextJS, Mongoose,...etc.) that will ultimately be
-useful following the completion of this course. 
+useful following the completion of this course.
