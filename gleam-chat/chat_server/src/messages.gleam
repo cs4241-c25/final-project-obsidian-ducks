@@ -49,12 +49,6 @@ fn connect_decoder() {
     _ -> zero.failure(NonValid(event,sender),"not correct event")
   }
 }
-fn create_chat_decoder() {
-  use event <- zero.field("event", zero.string)
-  use sender <- zero.field("sender", zero.string)
-  use chatters <- zero.field("chatters", zero.list(zero.string))
-  zero.success(CreateChat(event,sender,chatters))
-}
 fn chat_message_decoder() {
   use event <- zero.field("event", zero.string)
    use sender <- zero.field("sender", zero.string)
@@ -71,6 +65,12 @@ fn chat_message_decoder() {
     Ok(sucess) -> sucess
     Error(_) -> zero.failure(NonValid(event,sender),"not a valid uuid")
   }
+}
+fn create_chat_decoder() {
+  use event <- zero.field("event", zero.string)
+  use sender <- zero.field("sender", zero.string)
+  use chatters <- zero.field("chatters", zero.list(zero.string))
+  zero.success(CreateChat(event,sender,chatters))
 }
 fn chat_event_decoder() {
   use event <- zero.field("event", zero.string)
